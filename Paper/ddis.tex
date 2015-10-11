@@ -6,7 +6,10 @@
 \documentclass{llncs}
 %
 \usepackage{makeidx}  % allows for indexgeneration
-\usepackage{todonotes}
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\newcommandx{\james}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 %
 
 \begin{document}
@@ -33,11 +36,14 @@
 
 \begin{abstract}
 %Modern electron microscopes acquire image sections at rates of multiple gigabytes per second. Often storing and distributing the dataset is difficult. Rendering requires a registered, stitched, and pyramid decomposed copy of the data, which can take days to compute. Increases in microscope acquisition rates outpace decreases in the time to compute and distribute the data for viewing, and so a different approach is needed. We propose a demand-driven image server for volume viewing which moves towards processing only the requested user display pixels on the fly from the unprocessed dataset. To remove dataset re-storage and re-distribution, clients access the data from the web: the browser viewport details are sent to the server, which replies with just the required pixels. This enables immediate presentation and exploration after data acquisition. We demonstrate the performance of our image server on two large Connectome datasets. We evaluate our infrastructure on a simulated infinitely large volume to validate scalability. We discuss our findings and provide an analysis of requirements for demand-driven rendering of large image volumes.
-Modern electron microscopes can acquire image volumes at very high rate with nano scale resolution. Physical constraints of the machines as well as variation in sample quality result in very variable image quality in-plane and between image sections. Scientists assess the acquired image data qualitatively by using simple quality measures. They rescan data which appears to not be useful. Nevertheless, qualitatively poor data might be quantitatively sufficient for analysis and a high percentage of rescans could be avoided. In addition, manual assessment of images is extremely time consuming and not feasible for the large amount of generated data. This results in a reduced throughput of the electron microscope and ultimately creates a gap between theoretical and practical acquisition speed.
 
-We studied the image quality assessment process performed by scientists after acquisition of electron microscope data. Our research shows that even though scientists perceive data as not useful, XX percent of this data would be sufficient for analysis. Therefor, we propose a novel objective image quality metric which takes post-processing such as contrast normalization, deblurring and segmentation into account. Our metric is based on a classifier trained using semi-supervised learning and delivers a stable assessment of acquired data for analysis. We implemented our metric as part of a demand driven visualization framework for a modern multibeam electron microscope.
+Modern electron microscopes acquire image volumes very quickly with nanometer-scale resolution. However, the physical constraints of the machines and the variations in samples produce variable image quality in-plane and between planes of the volume. After capture, domain-expert scientists often assess the acquired image data qualitatively with simple visual inspection. Images which do not reach an undefined quality threshold are rescanned, which takes time and sets back the EM workflow. This manual assessment and rescanning is time consuming, is infeasible for large samples, and significantly reduces the practical throughput of the microscope. Automatic reviewing and attemped image restoration methods are needed to maximize throughput.
 
-We evaluate our metric on multiple Connectome datasets of different quality. Our results show an overall decrease in required rescanning attempts.
+Often, the goal of image acquisition is cell segmentation and classification. Yet, the quality assessment process performed by domain scientists is one step removed from this goal, as are existing automatic metrics to describe image quality, as they typically attempt to measure image contrast, blah blah. We propose to display a novel image quality assessment to domain scientists which considers 1) the application of image restoration techniques such as contrast normalization, deblurring, and denoising, to show immediately what quality is possible without a rescan, and 2) a lower bound on the achievable final segmentation and classification quality. Our assessment is based on a classifier trained using semi-supervised learning\james{Where did the semi-supervised learning come in?} and delivers a stable assessment of acquired data for analysis. We implemented our metric as part of a demand driven visualization framework for a modern multibeam electron microscope.
+\todo
+
+We evaluate our metric on multiple Connectome datasets of different quality. Our results show an overall decrease in required rescanning attempts - even though scientists intially perceived data to be not useful, XX percent of this data would be sufficient for analysis.
+
 
 \end{abstract}
 \keywords{Demand-driven rendering, electron microscopy, image server.}
@@ -51,7 +57,7 @@ We evaluate our metric on multiple Connectome datasets of different quality. Our
 - subjective metrics\\
 - objective metrics\\
 - we think that in Connectomics, the human visual system is not the right classifier for deciding if images can be used or not\\
-- therefor, previous research does not yield good results\\
+- the real goal is segmentation and classification, so let's try and build this in as early as possible as a quality metric, even if it provides only a lower bound\\
 
 we show variable quality
 
@@ -139,8 +145,11 @@ Show examples of good data and bad data and the results of the segmentation of b
 - compare VI in-plane and across sections (but against what?)
 - maybe use segmentation quality assessment?
 
+\james{Across section measures are basically not possible without Adi's alignment, no?}
+
 \subsection{Learning}
 - learn from each classification but how?
+\james{Daniel, what do you mean here? My understanding is that we already had a classifier that was trained.}
 
 \subsection{Classification}
 

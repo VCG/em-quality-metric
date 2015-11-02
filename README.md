@@ -1,1 +1,1 @@
-A EM quality metric.
+An EM quality metric.

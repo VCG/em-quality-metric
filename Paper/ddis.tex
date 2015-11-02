@@ -6,14 +6,17 @@
 \documentclass{llncs}
 %
 \usepackage{makeidx}  % allows for indexgeneration
-\usepackage{todonotes}
+\usepackage{xargs}
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+
+\newcommandx{\james}[2][1=]{\todo[linecolor=red,backgroundcolor=red!25,bordercolor=red,#1]{#2}}
 %
 
 \begin{document}
 %
-\title{Demand-driven Image Servers for Combating EM Time to Pixel}
+\title{Semi-supervised learning in quality metrics for Electron Microscope data}
 %
-\titlerunning{Demand-driven Image Servers}  % abbreviated title (for running head)
+\titlerunning{Quality Metrics for Electron Microscope data}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
 %                                     \toctitle is used
 %
@@ -32,97 +35,161 @@
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Modern electron microscopes acquire image sections at rates of multiple gigabytes per second. Often storing and distributing the dataset is difficult. Rendering requires a registered, stitched, and pyramid decomposed copy of the data, which can take days to compute. Increases in microscope acquisition rates outpace decreases in the time to compute and distribute the data for viewing, and so a different approach is needed. We propose a demand-driven image server for volume viewing which moves towards processing only the requested user display pixels on the fly from the unprocessed dataset. To remove dataset re-storage and re-distribution, clients access the data from the web: the browser viewport details are sent to the server, which replies with just the required pixels. This enables immediate presentation and exploration after data acquisition. We demonstrate the performance of our image server on two large Connectome datasets. We evaluate our infrastructure on a simulated infinitely large volume to validate scalability. We discuss our findings and provide an analysis of requirements for demand-driven rendering of large image volumes.
+%Modern electron microscopes acquire image sections at rates of multiple gigabytes per second. Often storing and distributing the dataset is difficult. Rendering requires a registered, stitched, and pyramid decomposed copy of the data, which can take days to compute. Increases in microscope acquisition rates outpace decreases in the time to compute and distribute the data for viewing, and so a different approach is needed. We propose a demand-driven image server for volume viewing which moves towards processing only the requested user display pixels on the fly from the unprocessed dataset. To remove dataset re-storage and re-distribution, clients access the data from the web: the browser viewport details are sent to the server, which replies with just the required pixels. This enables immediate presentation and exploration after data acquisition. We demonstrate the performance of our image server on two large Connectome datasets. We evaluate our infrastructure on a simulated infinitely large volume to validate scalability. We discuss our findings and provide an analysis of requirements for demand-driven rendering of large image volumes.
+
+Modern electron microscopes acquire image volumes very quickly with nanometer-scale resolution. However, the physical constraints of the machines and the variations in samples produce variable image quality in-plane and between planes of the volume. After capture, domain-expert scientists often assess the acquired image data qualitatively with simple visual inspection. Images which do not reach an undefined quality threshold are rescanned, which takes time and sets back the EM workflow. This manual assessment and rescanning is time consuming, is infeasible for large samples, and significantly reduces the practical throughput of the microscope. Automatic reviewing and attempted image restoration methods are needed to maximize throughput.
+
+Often, the goal of image acquisition is cell segmentation and classification. Yet, the quality assessment process performed by domain scientists is one step removed from this goal, as are existing automatic metrics to describe image quality, as they typically attempt to measure image contrast, blah blah. We propose to display a novel image quality assessment to domain scientists which considers 1) the application of image restoration techniques such as contrast normalization, deblurring, and denoising, to show immediately what quality is possible without a rescan, and 2) a lower bound on the achievable final segmentation and classification quality. Our assessment is based on a classifier trained using semi-supervised learning\james{Where did the semi-supervised learning come in?} and delivers a stable assessment of acquired data for analysis. We implemented our metric as part of a demand driven visualization framework for a modern multibeam electron microscope.
+\todo
+
+We evaluate our metric on multiple Connectome datasets of different quality. Our results show an overall decrease in required rescanning attempts - even though scientists initially perceived data to be not useful, XX percent of this data would be sufficient for analysis.
+
+
 \end{abstract}
 \keywords{Demand-driven rendering, electron microscopy, image server.}
 
 %
-\section{Intro}
-Paragraph on data bounds: How large is the problem? What kind of data rate do we need as throughput? How fast do existing systems work? How fast are these bounds increasing, and how fast are the bounds and the performance diverging?
+\section{Introduction}
+- modern electron microscopes produce a ton of data\\
+- scientists judge the quality of the data using their experience or simple quality metrics\\
+- we think that a lot of data has sufficient quality for automatic analysis even though the scientists' perception thinks it is bad data\\
+- a lot of research has been performed on image quality metrics to simulate the human visual system\\
+- subjective metrics\\
+- objective metrics\\
+- we think that in Connectomics, the human visual system is not the right classifier for deciding if images can be used or not\\
+- the real goal is segmentation and classification, so let's try and build this in as early as possible as a quality metric, even if it provides only a lower bound\\
 
-``The XXX electron microscope has 12 heads and can read images at 1.21 gigawatts. Even when including time to prepare and load samples, this machine can produce a bazillion image pixels per second. Handling this amount of data is a daunting task for current compute resources.''
+we show variable quality
 
-Paragraphs on pipeline: What does the typical pipeline look like? Which parts take a long time? What impacts upon the time to output pixel?
+we show the current approach of quality assessment and segmentation results for good and bad cases based on it
 
+we describe our metric
 
-\begin{figure}
-\missingfigure{GRAPH}
-\caption{Plot microscope 'time to pixel' for a bunch of different microscopes, and see how it is diverging from compute power.}
-\end{figure}
+we evaluate our metric
 
 
-Paragraph on problems of storage and distribution of data.
 
-Paragraph on problems of aligning and viewing the data.
 
-How to solve? Towards the goal: What progress can we easily make towards this goal? What are low-hanging fruit that most people do badly, and we can attack? Demand-driven rendering.
 
-What we do.
-
-\todo{You can add todos like this!}
 %
 %
 \subsection{Related Work}
-Won-ki work on demand-driven volumetric data
-
-Won-ki work on demand-driven image editing for gigapixel imaging - pyramids still kept on disk, and platform is a desktop software application.
-
-\ref{http://journal.frontiersin.org/article/10.3389/fninf.2014.00089/full?utm_source=newsletter&utm_medium=email&utm_campaign=Neuroscience-w9-2015}
-
-Cite Stackdrop and XTK and Dojo for web-based rendering of medical data.
-
-However, none of these systems account for storage and distribution issues in their approaches. The consideration of storage, distribution, and viewing at the same time must form our approach.
+%Won-ki work on demand-driven volumetric data
 %
+%Won-ki work on demand-driven image editing for gigapixel imaging - pyramids still kept on disk, and platform is a desktop software application.
+%
+%\ref{http://journal.frontiersin.org/article/10.3389/fninf.2014.00089/full?utm_source=newsletter&utm_medium=email&utm_campaign=Neuroscience-w9-2015}
+%
+%Cite Stackdrop and XTK and Dojo for web-based rendering of medical data.
+%
+%However, none of these systems account for storage and distribution issues in their approaches. The consideration of storage, distribution, and viewing at the same time must form our approach.
+%%
+see other document
 
-\section{Implementation}
+
+
+\section{Image Quality of EM data}
+
+\subsection{Acquisition process of a multibeam microscope}
+
+Briefly describe how the acquisition works (sections on wafer, focus sampling, different mFoVs etc.)
+
+\subsection{Variable Image Quality}
+
+Show subjective image quality discrepancies a) in-plane and b) per image section which result from mechanical constraints and other reasons
+
+We should probably have some quantitative measures for this based on several datasets.
 
 \begin{figure}
-\missingfigure{Lalala}
-\caption{\emph{Top:} The classic EM pipeline representing all steps the data must go through before viewing is possible. \emph{Bottom:} Our approach, which attempts to remove all intermediate processing steps.}
+\missingfigure{In-plane image quality discrepancies and per section image quality discrepancies}
+\caption{\emph{Left:} In-plane. \emph{Right:} Per section.}
 \end{figure}
 
-Server cluster with one PC per tile :  )
+\subsection{Traditional Quality Assessment}
 
-\begin{enumerate}
-\item Websocket canvas viewer
-	\begin{enumerate}
-	\item add basic interaction
-	\item add simple 3d rendering of current viewport $+-5$ in z using WebGL
-	\end{enumerate}
-\item Adjust openseadragon interface without advanced caching (this is one of the limitations)
-\item Adjust slide atlas interface without advanced caching (another limitation due to Ajax)
-\item Finish prefetching
-\item Add blending while stitching as in 
-\item Adi: local MLS implementation in OpenCL?
-\end{enumerate}
+Talk about how scientists measure image quality using their experience and also simple metrics.
 
-\subsection{Caching Strategy}
+Maybe describe Josh's metric which is implemented in Matlab.
 
+Show examples of good data and bad data and the results of the segmentation of both. Also, maybe show Josh's metric result. Maybe compare VI against a small manually labeled sub-set?
 
-\section{Results}
+\begin{figure}
+\missingfigure{Good images and bad images and their segmentation result}
+\caption{\emph{Left:} Good image and the segmentation/analysis result. \emph{Right:} Bad image and the segmentation/analysis result.}
+\end{figure}
+
+%
+%Server cluster with one PC per tile :  )
+%
+%\begin{enumerate}
+%\item Websocket canvas viewer
+%	\begin{enumerate}
+%	\item add basic interaction
+%	\item add simple 3d rendering of current viewport $+-5$ in z using WebGL
+%	\end{enumerate}
+%\item Adjust openseadragon interface without advanced caching (this is one of the limitations)
+%\item Adjust slide atlas interface without advanced caching (another limitation due to Ajax)
+%\item Finish prefetching
+%\item Add blending while stitching as in 
+%\item Adi: local MLS implementation in OpenCL?
+%\end{enumerate}
+
+\section{Our Metric}
+
+\subsection{Preprocessing}
+- contrast normalization based on lookup table from microscope\\
+- deblurring using dark channel prior (Jinshan's work)\\
+- segmentation using rhoana or something faster
+
+\subsection{Feature Collection}
+- compare VI in-plane and across sections (but against what?)
+- maybe use segmentation quality assessment?
+
+\james{Across section measures are basically not possible without Adi's alignment, no?}
+
+\subsection{Learning}
+- learn from each classification but how?
+\james{Daniel, what do you mean here? My understanding is that we already had a classifier that was trained.}
+
+\subsection{Classification}
+
+\subsection{The System}
+- the mbeam viewer / butterfly server
+
+\section{Evaluation and Results}
+
+- we test our metric against the traditional quality assessment process
+- and maybe against other previously published methods???\\
+- we hopefully find that a lot of data does not need to be rescanned when using our processing and hopefully the metric shows that
+
 
 \begin{figure}
 \missingfigure{Examples}
 \caption{\emph{Left:} System in use with a cool dataset. \emph{Right:} System in use with another cool dataset. Wow.}
 \end{figure}
-
-Examples: What datasets can we use? Alyssa, Josh
-
-Evaluation: using the 1 or 2 datasets (see above) and maybe a simulated “infinite” datastream. What was the intended evaluation here? Performance?
-
-The slide atlas and openseadragon performance vs. our websocket
+%
+%Examples: What datasets can we use? Alyssa, Josh
+%
+%Evaluation: using the 1 or 2 datasets (see above) and maybe a simulated “infinite” datastream. What was the intended evaluation here? Performance?
+%
+%The slide atlas and openseadragon performance vs. our websocket
 
 \begin{table}
 \missingfigure{Examples}
 \caption{Quantitative performance results. So good.}
 \end{table}
 
+\begin{figure}
+\missingfigure{Plot of microscope throughput / rescanning}
+\caption{\emph{Shows hopefully that a zickzack curve gets smoothed out}}
+\end{figure}
+
 
 \section{Discussion}
 
 Limitations of current approach
 
-Look at current bottlenecks in pipeline; project out bottlenecks, propose solutions to those bottlenecks.
+%Look at current bottlenecks in pipeline; project out bottlenecks, propose solutions to those bottlenecks.
 
 
 %

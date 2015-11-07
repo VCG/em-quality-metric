@@ -1,4 +1,5 @@
 from metric import Metric
+from util import Util
 import numpy as np
 
 class DiscrepancyMeasure(Metric):
@@ -19,12 +20,12 @@ class DiscrepancyMeasure(Metric):
   month={Aug},}
   '''
 
-  @staticmethod
-  def apply2D(label_array, image_array):
+  @classmethod
+  def apply2D(cls, label_array, image_array):
     '''
     '''
     # mask the image_array using the label_array
     masked_array = np.array(image_array)
     masked_array[label_array == 0] = 0
-
+    
     return np.sum(image_array[:,:] - masked_array[:,:])

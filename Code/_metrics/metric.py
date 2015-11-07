@@ -15,17 +15,17 @@ class Metric(object):
     '''
     Apply the metric to a label_array with shape Y,X.
     '''
-    return 0
+    return -1
 
-  @staticmethod
-  def apply(label_array, image_array=np.zeros(0)):
+  @classmethod
+  def apply(cls, label_array, image_array=np.zeros(0)):
     '''
     Apply the metric to a label_array with shape Y,X,Z.
     '''
 
     twoD_sum = 0
 
-
+    # 2D case
     if label_array.ndim == 2:
       return cls.apply2D(label_array[:,:], image_array[:,:])
 

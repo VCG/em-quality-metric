@@ -22,6 +22,8 @@ class SplitError(Error):
         s = SplitError()
         s._meta = {}
         s._meta['merge'] = scipy.misc.imrotate(self._meta['merge'], degrees, interp='nearest')
+        s._meta['image'] = scipy.misc.imrotate(self._meta['image'], degrees, interp='nearest')
+        s._meta['prob'] = scipy.misc.imrotate(self._meta['prob'], degrees, interp='nearest')
         s._meta['label1'] = scipy.misc.imrotate(self._meta['label1'], degrees, interp='nearest')
         s._meta['label2'] = scipy.misc.imrotate(self._meta['label2'], degrees, interp='nearest')
         s._meta['overlap'] = scipy.misc.imrotate(self._meta['overlap'], degrees, interp='nearest')
@@ -43,12 +45,12 @@ class SplitError(Error):
         return m        
         
     @staticmethod
-    def create(image, segmentation, label, thumb=True):
+    def create(image, prob, segmentation, label, thumb=True):
         '''
         '''
         m = SplitError()
         ws = m.split(image, segmentation, label)
-        m._meta = m.analyze_border(ws, label, ws.max()-1, ws.max())
+        m._meta = m.analyze_border(image, prob, ws, label, ws.max()-1, ws.max())
         if thumb:
             m._has_thumb = True
             m._thumb = m.create_thumb(image, m._meta)
@@ -69,7 +71,7 @@ class SplitError(Error):
             s.store(os.path.join(training_path,'split'))
         
     @staticmethod
-    def generate(image, label, n=10, thumb=False, rotate=True):
+    def generate(image, prob, label, n=10, thumb=False, rotate=True):
         '''
         '''
 
@@ -81,17 +83,31 @@ class SplitError(Error):
             label_filled = Util.fill(label[z], label_zeros.astype(np.bool))
             label_filled_relabeled = skimage.measure.label(label_filled).astype(np.uint64)
 
-            labels = range(len(Util.get_histogram(label_filled_relabeled)))[1:] ### remove!!
+            print 'Working on z', z
+
+            labels = range(len(Util.get_histogram(label_filled_relabeled)))#[1:] ### remove!!
             for l in labels:
 
                 for i in range(n):
 
-                    s = SplitError.create(image[z], label_filled_relabeled, l, thumb)
+                    upper_limit = 3
+
+                    s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb)
                     while not s:
-                        s = SplitError.create(image[z], label_filled_relabeled, l, thumb)
+
+                        if upper_limit == 0:
+                          #print "Upper limit reached."
+                          break 
+
+                        s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb)
+                        upper_limit -= 1
+
+                    if not s:
+                      continue
 
                     yield s
                     if rotate:
                         yield s.rotate(90)
                         yield s.rotate(180)
                         yield s.rotate(270)
+

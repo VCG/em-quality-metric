@@ -107,8 +107,34 @@ class Error(object):
             output[c[0]-bbox[0], c[1]-bbox[2]] = [255,0,0]
 
         return output        
+
+    def create_tensors(self, image, prob, merge_output):
+        '''
+        '''
+        if not merge_output:
+            return None
         
-    def analyze_border(self, array, original_label, label1, label2, overlap=10, patch_size=(75,75)):
+        bbox = merge_output['bbox']
+
+        image_bbox = image[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
+        bin1 = merge_output['label1']
+        bin2 = merge_output['label2']
+        prob = prob[bbox[0]:bbox[1]+1, bbox[2]:bbox[3]+1]
+        overlap = merge_output['overlap']
+
+        return [image_bbox, bin1, bin2, prob, overlap]
+
+        # we return
+        # 1) image
+        # 2) binary mask 1
+        # 3) binary mask 2
+        # 4) prob
+        # 5) overlap
+
+        
+
+        
+    def analyze_border(self, image, prob, array, original_label, label1, label2, overlap=10, patch_size=(75,75)):
         
         # threshold for label1
         array1 = Util.threshold(array, label1).astype(np.uint8)
@@ -199,6 +225,8 @@ class Error(object):
 
         output = {}
         output['id'] = str(uuid.uuid4())
+        output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+        output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
         output['label'] = original_label
         output['bbox'] = bbox
         output['border'] = border_yx

@@ -1,0 +1,1978 @@
+d@dragon:~/Downloads $>ipython
+Python 2.7.5 (default, Mar  9 2014, 22:15:05) 
+Type "copyright", "credits" or "license" for more information.
+
+IPython 2.0.0 -- An enhanced Interactive Python.
+?         -> Introduction and overview of IPython's features.
+%quickref -> Quick reference.
+help      -> Python's own help system.
+object?   -> Details about 'object', use 'object??' for extra details.
+
+In [1]: from mnist import *
+Using gpu device 0: GeForce GTX TITAN (CNMeM is disabled)
+
+In [2]: network = main(model='cnn', num_epochs=5)
+Loading data...
+Building model and compiling functions...
+/Users/d/Library/Python/2.7/lib/python/site-packages/theano/tensor/nnet/__init__.py:111: UserWarning: The `image_shape` keyword argument to `tensor.nnet.conv2d` is deprecated, it has been renamed to `input_shape`.
+  warnings.warn("The `image_shape` keyword argument to "
+Starting training...
+Epoch 1 of 5 took 9.966s
+  training loss:    1.589772
+  validation loss:    0.369302
+  validation accuracy:    90.16 %
+Epoch 2 of 5 took 10.086s
+  training loss:    0.505041
+  validation loss:    0.187192
+  validation accuracy:    94.85 %
+Epoch 3 of 5 took 9.991s
+  training loss:    0.344989
+  validation loss:    0.141936
+  validation accuracy:    96.02 %
+Epoch 4 of 5 took 10.045s
+  training loss:    0.284707
+  validation loss:    0.115901
+  validation accuracy:    96.78 %
+Epoch 5 of 5 took 9.870s
+  training loss:    0.245319
+  validation loss:    0.102894
+  validation accuracy:    97.07 %
+Final results:
+  test loss:      0.098949
+  test accuracy:    96.99 %
+
+In [3]: network
+Out[3]: <lasagne.layers.dense.DenseLayer at 0x10f5f9a90>
+
+In [4]: network.
+network.W                     network.get_output_for        network.input_layer           network.nonlinearity          network.params
+network.add_param             network.get_output_shape_for  network.input_shape           network.num_units             
+network.b                     network.get_params            network.name                  network.output_shape          
+
+In [4]: network.
+network.W                     network.get_output_for        network.input_layer           network.nonlinearity          network.params
+network.add_param             network.get_output_shape_for  network.input_shape           network.num_units             
+network.b                     network.get_params            network.name                  network.output_shape          
+
+In [4]: network.in
+network.input_layer  network.input_shape  
+
+In [4]: network.input_layer
+network.input_layer
+
+In [4]: d1 = network.input_layer
+
+In [5]: d1
+Out[5]: <lasagne.layers.noise.DropoutLayer at 0x10f5f93d0>
+
+In [6]: d2 = d1.
+d1.add_param             d1.get_output_shape_for  d1.input_layer           d1.name                  d1.p                     d1.rescale
+d1.get_output_for        d1.get_params            d1.input_shape           d1.output_shape          d1.params                
+
+In [6]: d2 = d1.in
+d1.input_layer  d1.input_shape  
+
+In [6]: d2 = d1.input_layer
+
+In [7]: d2
+Out[7]: <lasagne.layers.dense.DenseLayer at 0x10f5f9310>
+
+In [8]: d3 = d2.in
+d2.input_layer  d2.input_shape  
+
+In [8]: d3 = d2.input_
+d2.input_layer  d2.input_shape  
+
+In [8]: d3 = d2.input_layer
+
+In [9]: d3
+Out[9]: <lasagne.layers.noise.DropoutLayer at 0x10f5f9350>
+
+In [10]: m2 = d3.i
+d3.input_layer  d3.input_shape  
+
+In [10]: m2 = d3.input_layer
+
+In [11]: m2
+Out[11]: <lasagne.layers.pool.MaxPool2DLayer at 0x10f5f90d0>
+
+In [12]: c2 = m2.i
+m2.ignore_border  m2.input_layer    m2.input_shape    
+
+In [12]: c2 = m2.in
+m2.input_layer  m2.input_shape  
+
+In [12]: c2 = m2.input_layer
+
+In [13]: m1 = c2.in
+c2.input_layer  c2.input_shape  
+
+In [13]: m1 = c2.input_layer
+
+In [14]: m1
+Out[14]: <lasagne.layers.pool.MaxPool2DLayer at 0x10f5e6050>
+
+In [15]: c1 = m1.in
+m1.input_layer  m1.input_shape  
+
+In [15]: c1 = m1.input_layer
+
+In [16]: ls
+0 (1).tif
+0 (2).tif
+0.tif
+01284395.pdf
+01309714.pdf
+04b_03/
+04b_03.zip
+1-s2.0-0031320395001697-main.pdf
+1-s2.0-S1053811907003485-main.pdf
+1-s2.0-S1076633203006718-main.pdf
+10985665_10207382084897286_7126632530872568243_n.jpg
+11112810_10207747666356594_379132935016688479_n.jpg
+11903948_10208178208279873_3451055343097314391_n.jpg
+141030163150_0001.pdf
+1419274453student questionnaire (grades 1-4).pdf
+166 RRDC Registration Packet (11.8.14).doc
+1896562.pdf
+20141016073706-06194-data.gpx
+2015-05-26 07.26.01.jpg
+2015-05-26 07.30.15.jpg
+2015-07-12 03.09.58.jpg
+2015-07-12 03.10.18.jpg
+20150329_121511.mp4
+201506111322.pdf
+201506111331 (1).pdf
+201506111331.pdf
+22068_ftp.pdf
+2361.full.pdf
+38_1.pdf
+3c00b07f-c491-4212-8a3f-a3c044616795.canvas
+3c00b07f-c491-4212-8a3f-a3c044616795.canvas.gz
+4350237741_1.pdf
+543565380cf2bf1f1f2a5d6c.pdf
+61442V_1.pdf
+74212_Nunez-Iglesias_Graph-based Active Learning of Agglomeration (GALA)- a Python library to segment 2D and 3D neuroimages.bib
+892967.pdf
+905685.pdf
+93940K (1).pdf
+93940K.pdf
+939610 (1).pdf
+939610.pdf
+94430Z.pdf
+About Downloads.lpdf/
+Agreement (1).doc
+Agreement 11.23.15.docx
+Agreement.doc
+Agreement.pdf
+Appointment_of_Guardian_Ad_Litem_5.28.15 (1).pdf
+Appointment_of_Guardian_Ad_Litem_5.28.15.pdf
+Artwork_Project_22122014_0259/
+Artwork_Project_22122014_0259.zip
+Artwork_Project_22122014_0300/
+Artwork_Project_22122014_0300.zip
+Artwork_Project_22122014_0303/
+Artwork_Project_22122014_0303.zip
+BOX 26.1 Kuffler's Study of Center-Surround Retinal Ganglian Cells.doc
+BashUpdateMavericks.dmg
+Browsers
+CBS 2F Scanner_20151202_145224.pdf
+CITI_Certificate.pdf
+CITI_humanresearch.pdf
+CS 171 Introductory Survey 2015 [CS 171 Introductory Survey] (Responses).xlsx
+CS171_final_project_proposal.pdf
+CS278-latest (1).py
+CS278-latest.py
+CUDA_JPEG/
+CUDA_JPEG.zip
+Care.com_receipt.pdf
+Cevennes1.j2k
+Child Support Guidelines 2 Worksheet 10 7 14.pdf
+CoRD.app/
+CoRD_0.5.7.zip
+Color.pdf
+ConnectomeExplorer_Vis2013.mp4
+CreativeCloudInstaller.dmg
+D Hähn (1).docx
+D Hähn.docx
+DENTAL (1).pdf
+DENTAL.pdf
+DS-64 lost passport.pdf
+D_Haehn CWDE Approved.pdf
+DataSegmentCompression.ppt
+Dataram_RAMDisk_4_4_0_RC32.msi
+DenkFocus.pdf
+Dhstroketest.resources/
+Dhstroketest.xml.gz
+DropboxInstaller.dmg
+ECS.zip
+ECS_Compressed/
+EG2013-STAR.pdf
+Emergency Motion for Temporary Orders 6.29.15.pdf
+Experiment_ Introduction to Conduction Velocity (Neural Speed).pdf
+FAER Information - Daniel Hähn (1).pdf
+FAER Information - Daniel Hähn.pdf
+FINAL REPORT.pdf
+FileZilla_3.10.1.1_macosx-x86.app.tar.bz2.dmg
+Final Exam Practice Questions Answers - edited.docx
+Financial Statement Short Form.PDF
+Firefox 28.0.dmg
+Free Ruler 1.7b5.app/
+FreeRuler1.7b5.zip
+GPSBabel-1.5.1.dmg
+Geekbench 3.app/
+Geekbench-3.1.5-Mac.zip
+Git-1.9.5-preview20150319.exe
+GoogleChromeCanary.dmg
+GoogleVoiceAndVideoSetup.dmg
+Gortler_UnstructuredLumigraph.avi
+Gortler_UnstructuredLumigraph.avi.zip
+Guardian_Ad_Litem_letter_and_appointment_6.4.15 (1).pdf
+Guardian_Ad_Litem_letter_and_appointment_6.4.15.pdf
+Guide_to_Citing_in_the_Life_Sciences (1).pdf
+Guide_to_Citing_in_the_Life_Sciences.pdf
+HCOM_non-employee_reimbursement_form (1).pdf
+HDFView-2.11.0-Darwin.dmg
+HW1/
+HW1.7z
+Haehn, Daniel RQ2DQ.pdf
+Haehn-MasterThesis2010.pdf
+HaehnDaniel1162014TaxDocs.pdf
+Hardware_Virtual_Textures.pptx
+Harvard Educational Registration System.html
+ICPSR_34933/
+ICPSR_34933.zip
+IMG_02052014_164702.png
+IMG_6417.CR2
+IMG_6417.xmp
+IUI05_isphere_J.doc
+Inkscape-0.48.5-2+X11.dmg
+Jacobs et al. Nature Neurosci 2013 (1).pdf
+Jacobs et al. Nature Neurosci 2013.pdf
+Jacobs_10_Jenelle_Haehn_Daniel (1).pdf
+Jacobs_10_Jenelle_Haehn_Daniel.pdf
+Kain et al. Nature 2013.pdf
+Leap_Motion_Installer_release_public_mac_x64_1.2.0+10933_ah1675.dmg
+Lecture5_handout.key (1).pdf
+Lecture5_handout.key (2).pdf
+Lecture5_handout.key (3).pdf
+Lecture5_handout.key.pdf
+Lecture6_action_potential.key (1).pdf
+Lecture6_action_potential.key (2).pdf
+Lecture6_action_potential.key.pdf
+Ledger.Pdf
+Lefebvre 2012 Nature.pdf
+LibreOffice_4.2.2_MacOS_x86-64.dmg
+MCB 80 Midterm Exam 2014 Answers Students.pdf
+MCB 80 Midterm Exam 2014 Students.pdf
+MCB 80 Syllabus 2014 v3 (1).pdf
+MCB 80 Syllabus 2014 v3 (2).pdf
+MCB 80 Syllabus 2014 v3 (3).pdf
+MCB 80 Syllabus 2014 v3.pdf
+MCB Optional Review 2014.pdf
+MCB80_2011_FinalExam_PracticeQs (1).pdf
+MCB80_2011_FinalExam_PracticeQs (2).pdf
+MCB80_2011_FinalExam_PracticeQs.pdf
+MCB80_2012_FinalExam_PracticeQs (1).pdf
+MCB80_2012_FinalExam_PracticeQs.pdf
+MCB80_2012_MidermFinal_PracticeQs (1).pdf
+MCB80_2012_MidermFinal_PracticeQs.pdf
+MCB80_2013_Final_PracticeQs (1).pdf
+MCB80_2013_Final_PracticeQs.pdf
+MCB80_2014_Lecture10 (1).pdf
+MCB80_2014_Lecture10.pdf
+MCB80_2014_Lecture10Qs (1).pdf
+MCB80_2014_Lecture10Qs.pdf
+MCB80_2014_Lecture11 (1).pdf
+MCB80_2014_Lecture11.pdf
+MCB80_2014_Lecture11Qs (1).pdf
+MCB80_2014_Lecture11Qs.pdf
+MCB80_2014_Lecture13 (1).pdf
+MCB80_2014_Lecture13 (2).pdf
+MCB80_2014_Lecture13.pdf
+MCB80_2014_Lecture13Qs (1).pdf
+MCB80_2014_Lecture13Qs.pdf
+MCB80_2014_Lecture14Qs (1).pdf
+MCB80_2014_Lecture14Qs.pdf
+MCB80_2014_Lecture15 (1).pdf
+MCB80_2014_Lecture15.pdf
+MCB80_2014_Lecture15Qs (1).pdf
+MCB80_2014_Lecture15Qs.pdf
+MCB80_2014_Lecture18.pdf
+MCB80_2014_Lecture18Qs.pdf
+MCB80_2014_Lecture19.pdf
+MCB80_2014_Lecture19Qs.pdf
+MCB80_2014_Lecture2 (1).pdf
+MCB80_2014_Lecture2.pdf
+MCB80_2014_Lecture20.pdf
+MCB80_2014_Lecture20Qs.pdf
+MCB80_2014_Lecture21.pdf
+MCB80_2014_Lecture21Qs.pdf
+MCB80_2014_Lecture22 (1).pdf
+MCB80_2014_Lecture22.pdf
+MCB80_2014_Lecture22Qs.pdf
+MCB80_2014_Lecture23.pdf
+MCB80_2014_Lecture23Qs.pdf
+MCB80_2014_Lecture24.pdf
+MCB80_2014_Lecture24Qs.pdf
+MCB80_2014_Lecture25.pdf
+MCB80_2014_Lecture25Qs.pdf
+MCB80_2014_Lecture2Qs.pdf
+MCB80_2014_Lecture3Qs.pdf
+MCB80_2014_Lecture4.pdf
+MCB80_2014_Lecture4Qs.pdf
+MCB80_2014_Lecture5Qs.pdf
+MCB80_2014_Lecture6Qs.pdf
+MCB80_2014_Lecture7 (1).pdf
+MCB80_2014_Lecture7 (2).pdf
+MCB80_2014_Lecture7.pdf
+MCB80_2014_Lecture7Qs.pdf
+MCB80_2014_Lecture8 (1).pdf
+MCB80_2014_Lecture8 (2).pdf
+MCB80_2014_Lecture8 (3).pdf
+MCB80_2014_Lecture8.pdf
+MCB80_2014_Lecture9 (1).pdf
+MCB80_2014_Lecture9 (2).pdf
+MCB80_2014_Lecture9.pdf
+MCB80_2014_Lecture9Qs (1).pdf
+MCB80_2014_Lecture9Qs.pdf
+MCB80_2014_PS1.pdf
+MCB80_2014_PS2.pdf
+MCB80_2014_PS3.pdf
+MCB80_2014_PS4 (1).pdf
+MCB80_2014_PS4.pdf
+MCB80_2014_PS5.pdf
+MCB80_2014_TermPaperGuidelines.pdf
+MCB80_2014_TermPaper_CoverPage (1).pdf
+MCB80_2014_TermPaper_CoverPage.pdf
+MCB80_Fall2014_Lecture16.pdf
+MCB80_Fall2014_Lecture16Qs.pdf
+MCB80_Fall2014_Lecture17 (1).pdf
+MCB80_Fall2014_Lecture17.pdf
+MCB80_Fall2014_Lecture17Qs.pdf
+MCB80_Fall2014_Lecture8Qs.pdf
+MCWEB_BUNDLE_no_autoplay.zip
+MacTeX.pkg
+Mansfield Attendance record.pdf
+Mental Canvas, LLC PIIA-HAEHN (1).doc
+Mental Canvas, LLC PIIA-HAEHN.doc
+MenuMeters.dmg
+MeshLabMac_v133.dmg
+MultiSEM ZEN metadata interfacing (1).pdf
+MultiSEM ZEN metadata interfacing.pdf
+NFFBAR (1).pdf
+NFFBAR.pdf
+Nature-2014-Wu et al.pdf
+Nitzan Peleg - C.V - new.pdf
+Nitzan Peleg - C.V.pdf
+Offer Letter-HAEHN.docx
+OpenCL project/
+OpenCL project.zip
+OpenCLImageRoutines.qtz
+Opera_20.0.1387.91_Setup.dmg
+Opera_Next_21.0.1432.31_Setup.dmg
+Order (stipulation) 7.1.15.pdf
+Order__status_conference__4.23.14.pdf
+PC (1).zip
+PC.zip
+PC_Compressed/
+Parenting Agreement Final3 NE 10 8 14 (1).doc
+Parenting Agreement Final3 NE 10 8 14.doc
+Parenting Agreement NE 8 25 14 (DRAFT) (1).doc
+Parenting Agreement NE 8 25 14 (DRAFT) and changes by daniel september 22.doc
+Parenting Agreement NE 8 25 14 (DRAFT).doc
+Parenting Agreement wn v.2 9.29.14.doc
+Pet_Friendly_Housing_Policies-2013-2014.pdf
+Police Report (Carver) 6.29.15.pdf
+Progress report Connectomics William Zhang.docx
+Proposed_Order_6.30 (1).pdf
+Proposed_Order_6.30.pdf
+PyOpenGL-Demo-3.0.1b1/
+PyOpenGL-Demo-3.0.1b1.zip
+RECORD_12.01.11.pdf
+RRDC Instructions for vacation.pages
+RRDC Instructions for vacationPDF.pdf
+Rental Application.pdf
+Retreat09.JPG
+RetreatSchedule2015.pdf
+Ruff et al. Science 2013 (1).pdf
+Ruff et al. Science 2013.pdf
+Ruff_10_Jenelle_Haehn_Daniel (1).pdf
+Ruff_10_Jenelle_Haehn_Daniel (2).pdf
+Ruff_10_Jenelle_Haehn_Daniel.pdf
+SFS Zoom 6 v2.8.resources/
+SFS Zoom 6 v2.8.xml.gz
+SFS Zoom 6 v5.5.resources/
+SFS Zoom 6 v5.5.xml.gz
+SFS Zoom 7 v3.6.resources/
+SFS Zoom 7 v3.6.xml.gz
+SFS_Zoom_5_v5.3.resources/
+SFS_Zoom_5_v5.3.xml.gz
+SMSExport_168.dmg
+SQRP_ES_Calculator_2014-2015.xls
+SSRN-id2418439.pdf
+SZIP-U/
+SZIP-U.tar.gz
+Save the Date.pdf
+School Instructions.docx
+Science-2014-Akers-598-602 (1).pdf
+Science-2014-Akers-598-602.pdf
+Science-2014-Baldwin-929-33.pdf
+Science-2014-Bryson-94-7 (1).pdf
+Science-2014-Bryson-94-7.pdf
+Science-2014-Yang-1173-8 (1).pdf
+Science-2014-Yang-1173-8.pdf
+Sciencedirect_articles_16Oct2015_11-57-16.476/
+Sciencedirect_articles_16Oct2015_11-57-16.476.zip
+Scratching an itch through the scalp to the brain_The New Yorker.pdf
+Section.xml
+Sfy butterfly2.resources/
+Sfy butterfly2.xml.gz
+Sfy_zoom_7_v1.1.resources/
+Sfy_zoom_7_v1.1.xml
+Sfy_zoom_7_v1.1.xml.gz
+Silverlight.dmg
+Skype_6.15.60.330.dmg
+Slicer-4.3.1-macosx-amd64.dmg
+SoftonicDownloader_for_jmp (1).exe
+SoftonicDownloader_for_jmp.exe
+Stipulation_of_Parenting_Time_7.1.15 (1).pdf
+Stipulation_of_Parenting_Time_7.1.15.pdf
+StrokeTest.resources/
+StrokeTest.xml.gz
+Stroketest2.resources/
+Stroketest2.xml
+Stroketest2.xml.gz
+Stroketestnew.resources/
+Stroketestnew.xml.gz
+Sublime Text Build 3059.dmg
+SuperMario64HD 2.app/
+SuperMario64HD.app/
+SuperMario64HD_Mac.zip
+Suschapt.doc
+T1sub.nii.gz
+TP1_Czupryn_Sample (1).pdf
+TP1_Czupryn_Sample.pdf
+TP1_Freiwald_Sample.pdf
+TP1_Hochberg_Sample.pdf
+TP2_Bero_Sample.pdf
+TP2_Lefebvre_Sample (1).pdf
+TP2_Lefebvre_Sample.pdf
+TaxReturn (1) (1).pdf
+TaxReturn (1).pdf
+TaxReturn.pdf
+Temporary Order 6.29.15.pdf
+Term Paper Grading Rubric Students 2014 (1).pdf
+Term Paper Grading Rubric Students 2014.pdf
+TestImage.resources.zip
+TestImage.xml.gz
+TexmakerMacosxLion/
+TexmakerMacosxLion.zip
+Thousands_ThreeCylinders_importedfromMojo_classified2BK4_2_export_s1175/
+Thousands_ThreeCylinders_importedfromMojo_classified2BK4_2_export_s1175.zip
+TicketOrder20140713-1654729.pdf
+TicketOrder20140713-1656135.pdf
+TinkerTool.dmg
+Tmax 5th birthday invite.pdf
+Untitled Screencast.webm
+VISKids.xlsx
+Verizon-Bill-06-18-2014.pdf
+Warner-Schmidt et al. PNAS 2011.pdf
+Welcome.xls
+WhatsApp Chat_ -+1 781‑605‑9354-.txt
+Will form/
+Will form (2).doc
+Will form.zip
+Will formpdf.pdf
+William Zhang (1).pdf
+William Zhang.pdf
+WilliamZhang Report.pdf
+XQuartz-2.7.5.dmg
+XQuartz-2.7.7.dmg
+Zinsen 2013 Merck Finck17042014 (1).pdf
+Zinsen 2013 Merck Finck17042014.pdf
+Zinsen 2013 kann16042014.pdf
+Zinsen 201316042014 (1).pdf
+Zinsen 201316042014.pdf
+Zoom_Farm_Raster.resources/
+Zoom_Farm_Raster.resources.zip
+Zoom_Farm_Raster.xml
+Zoom_Farm_Raster.xml.gz
+Zou_et_al-2004-Statistics_in_Medicine.pdf
+activity_613669493.gpx
+activity_613669493.kml
+amyn.ppt
+answers.md
+api_enc_test*
+api_enc_test.c
+blockerc10.ppm
+butterfly.resources.zip
+butterfly.xml
+butterfly.xml.gz
+cbsidlm-sp1_0_595-CDDVD_Label_Maker-SEO-174300.dmg
+certificate (1).pdf
+certificate.pdf
+chain_of_events1 (1).txt
+chain_of_events1.txt
+challenge_clientdata (1).csv
+challenge_clientdata.csv
+changes-cga12 (1).tex
+changes-cga12.tex
+checkFileQual.m
+checkFileQualFull.m
+citations.nbib
+classifyImage.py
+cmpto_j2k.h
+cooltext117989479642943.gif
+coverletter_haehn.pdf
+cuda-mac-5.5.28_10.9_64.pkg
+cuda_6.5.14_mac_64 (1).pkg
+cuda_6.5.14_mac_64.pkg
+cuda_7.5.20_mac.dmg
+diff.pdf
+dojo (1).pdf
+dojo (2).pdf
+dojo (3).pdf
+dojo (4).pdf
+dojo.pdf
+download
+download (1)
+download.j2k
+dropbox.py
+ess.0.86.tgz
+eticket.pdf
+favicons/
+favicons.zip
+fiji-macosx.dmg
+firefox-30.0a2.en-US.mac (1).dmg
+firefox-30.0a2.en-US.mac.dmg
+firefox-36.0a1.en-US.mac.dmg
+fleurim@fas.harvard.edu_20140407_134244.pdf
+fleurim@fas.harvard.edu_20140501_142957.pdf
+fleurim@fas.harvard.edu_20140501_143415.pdf
+fleurim@fas.harvard.edu_20140521_165108.pdf
+fleurim@fas.harvard.edu_20140530_141947.pdf
+fleurim@fas.harvard.edu_20140729_115055.pdf
+fleurim@fas.harvard.edu_20140729_115648 (1).pdf
+fleurim@fas.harvard.edu_20140811_180312.pdf
+fleurim@fas.harvard.edu_20140922_144635.pdf
+fleurim@fas.harvard.edu_20140926_151132.pdf
+fleurim@fas.harvard.edu_20140929_150921.pdf
+fleurim@fas.harvard.edu_20141006_180022 (1).pdf
+fleurim@fas.harvard.edu_20141006_180022 (2).pdf
+fleurim@fas.harvard.edu_20141006_180022.pdf
+fleurim@fas.harvard.edu_20141030_145100.pdf
+fleurim@fas.harvard.edu_20141103_113724.pdf
+fleurim@fas.harvard.edu_20141120_121246.pdf
+fninf-08-00034 (1).pdf
+fninf-08-00034 (2).pdf
+fninf-08-00034.pdf
+git-1.9.0-intel-universal-snow-leopard (1).dmg
+git-1.9.0-intel-universal-snow-leopard.dmg
+glm-0.9.A.2/
+glm-0.9.A.2.zip
+googlechrome.dmg
+haehn_0824 (1).pdf
+haehn_0824.pdf
+haehn_headshot.png
+haehn_problemset1.pdf
+haehn_problemset2.jpg
+hardship_appeal_final.pdf
+hdf5-1.8.7-mac-intel-x86_64-static/
+hdf5-1.8.7-mac-intel-x86_64-static.tar.gz
+hgpu.org_titles.txt
+highsmith.dzi
+hubway_2011_07_through_2013_11/
+hubway_2011_07_through_2013_11.zip
+i20.pdf
+iExplorer-3.5.2.1.dmg
+iOS 8 beta 4 - iPad (4th generation Model A1458) - 12A4331d/
+ieeecopyrightform.doc
+image (1).png
+image (2).png
+image.png
+installgoogledrive.dmg
+ios_8_beta_4__ipad_4th_generation_model_a1458__12a4331d.zip
+itit.2009.0537.pdf
+itksnap-2.4.0-20121121-MacOS-x86_64/
+itksnap-2.4.0-20121121-MacOS-x86_64.zip
+jQuery-slimScroll-1.3.0/
+jQuery-slimScroll-1.3.0.zip
+jdk-8-macosx-x64.dmg
+jquery-1.11.2.js
+jquery-1.11.2.min.js
+jquery-1.11.2.min.map
+jquery.cookie-1.4.1.min.js
+jquery.nicescroll.340/
+jquery.nicescroll.340.zip
+kfzauszug.pdf
+latexdiff/
+latexdiff.zip
+lesson06/
+lesson06.tar.gz
+letterf.resources.zip
+letterf.xml.gz
+libcmptoj2k.1.dylib
+loadingfreebie.psd
+loadingfreebie.psd_.zip
+master_thesis_serkan_arikan.pdf
+matting.tar.gz
+mbraak-jqTree-1.0.0-2-ge8a510e.tar.gz
+mbraak-jqTree-e8a510e/
+mcb80assignment4haehn (1).pdf
+mcb80assignment4haehn.pdf
+mcb80assignment5haehn.pdf
+mental_canvas_haehn_signed.pdf
+mnist.py
+mnist.pyc
+morphology-3.py
+nature03352.pdf
+nature03721.ris
+offerltr-HAEHN.pdf
+opencv-2.4.10.zip
+opencv-3.0.0.zip
+openjpeg-2.1.0-Darwin-i386/
+openjpeg-2.1.0-Darwin-i386.tar.gz
+openjpeg-2.1.0-Linux-i386.tar.gz
+openseadragon-bin-1.2.0/
+openseadragon-bin-1.2.0.zip
+openseadragon-bin-2.0.0/
+openseadragon-bin-2.0.0 2/
+openseadragon-bin-2.0.0.zip
+osxfuse-2.6.2 (1).dmg
+osxfuse-2.6.2.dmg
+oux3pm0rk_activity_613669493.gpx
+papers_340_386.dmg
+parental nomination gaurdianship.pages
+parental nomination gaurdianshipPDF.pdf
+pass.pdf
+passport app.pdf
+pepper.png
+pepper_record1.jpg
+pepper_record2.jpg
+pet_authorization_form.jpg
+petyka_retro_computer_short/
+petyka_retro_computer_short.zip
+pfister--p-Desig-Bibtex (1).bib
+pfister--p-Desig-Bibtex (2).bib
+pfister--p-Desig-Bibtex (3).bib
+pfister--p-Desig-Bibtex (4).bib
+pfister--p-Desig-Bibtex.bib
+pfister-publications-Bibtex (1).bib
+pfister-publications-Bibtex (2).bib
+pfister-publications-Bibtex (3).bib
+pfister-publications-Bibtex (4).bib
+pfister-publications-Bibtex (5).bib
+pfister-publications-Bibtex.bib
+pixelmix/
+pixelmix.zip
+proofreading_retreat2015.ppt
+pycuda-2014.1/
+pycuda-2014.1 (1).tar.gz
+pycuda-2014.1.tar.gz
+rapport052009_elektroniskversjon.pdf
+raw.tiff
+re/
+re.zip
+read_volume.py
+rebecca_events_april2015.pdf
+rebecca_text_messages_april2015.pdf
+render_json_2 (1).py
+render_json_2 (2).py
+render_json_2 (3).py
+render_json_2 (4).py
+render_json_2.py
+repokey.pem
+repokey.zip
+resume_haehn (1).pdf
+resume_haehn (2).pdf
+resume_haehn.pdf
+rtf (1).rtf
+rtf (2).rtf
+rtf.rtf
+scan.pdf
+science.bib
+section 5 review question answers (1).pdf
+section 5 review question answers.pdf
+section 5 review questions.docx
+sectioning_update_2.html
+sections_update.pdf
+seg_bw.tiff
+seg_c.tiff
+splashnew/
+splashnew.zip
+sshfs-2.5.0.pkg
+ssn.pdf
+superbowl/
+superbowl.zip
+t10k-images-idx3-ubyte.gz
+t10k-labels-idx1-ubyte.gz
+test (1).jp2
+test.gpx
+test.igc
+test.jp2
+test2.jp2
+tf_Daniel/
+tf_Daniel (1).7z
+tf_Daniel-1/
+tf_Daniel.7z
+ticket.pdf
+train-images-idx3-ubyte.gz
+train-labels-idx1-ubyte.gz
+ubuntu-14.04.1-server-amd64.iso
+ubuntu-14.04.3-desktop-amd64.iso
+unity-4.5.1.dmg
+vis13_rebuttal_coverletter (1).tex
+vis13_rebuttal_coverletter.tex
+visa.pdf
+vlc-2.1.4.dmg
+vtkpython-6.2.0-Darwin-64bit.dmg
+webgl.html
+week5.docx
+william rec harvard.docx
+winter_retreat_2015.zip
+zoomp6.mcs
+
+In [17]: c1
+Out[17]: <lasagne.layers.conv.Conv2DLayer at 0x10f5e6090>
+
+In [18]: c1.in
+c1.input_layer  c1.input_shape  
+
+In [18]: c1.input_layer
+Out[18]: <lasagne.layers.input.InputLayer at 0x10f520f10>
+
+In [19]: input_layer = c1.in
+c1.input_layer  c1.input_shape  
+
+In [19]: input_layer = c1.input_layer
+
+In [20]: c1.
+c1.W                     c1.filter_size           c1.get_params            c1.nonlinearity          c1.params                
+c1.add_param             c1.get_W_shape           c1.input_layer           c1.num_filters           c1.stride                
+c1.b                     c1.get_output_for        c1.input_shape           c1.output_shape          c1.untie_biases          
+c1.convolution           c1.get_output_shape_for  c1.name                  c1.pad                   
+
+In [20]: c1.W
+Out[20]: W
+
+In [21]: W = c1.W
+
+In [22]: W.ge
+W.get_parents                W.get_scalar_constant_value  W.get_value                  W.get_value_return_ndarray   
+
+In [22]: W.get_v
+W.get_value                 W.get_value_return_ndarray  
+
+In [22]: W.get_value
+W.get_value                 W.get_value_return_ndarray  
+
+In [22]: W.get_value
+W.get_value                 W.get_value_return_ndarray  
+
+In [22]: W.get_value()
+Out[22]: 
+array([[[[ -6.80902228e-02,   5.02191894e-02,   1.11155631e-03,
+           -2.34885942e-02,  -2.61981972e-02],
+         [  7.22615570e-02,  -6.82900846e-02,  -5.44814169e-02,
+           -1.44275697e-02,   4.67225127e-02],
+         [  1.06053911e-02,   6.34949580e-02,   1.42456954e-02,
+            1.50084738e-02,  -1.98684651e-02],
+         [  1.40276225e-02,  -6.57675266e-02,  -3.86726968e-02,
+            5.09656109e-02,  -4.13138536e-04],
+         [  3.04102490e-04,  -9.61702503e-03,  -8.08364451e-02,
+           -6.06806502e-02,  -5.79717681e-02]]],
+
+
+       [[[ -3.18188630e-02,   1.04506873e-01,   6.37975112e-02,
+            1.83926299e-01,   2.24640161e-01],
+         [  1.98848352e-01,   1.42868981e-01,   1.66312754e-01,
+            2.11084142e-01,   6.21258542e-02],
+         [  2.33008504e-01,   1.76396251e-01,   8.10477063e-02,
+           -6.29315004e-02,  -7.50017986e-02],
+         [  8.05326365e-03,  -3.63233872e-02,  -1.40926823e-01,
+           -4.90103327e-02,  -9.88852605e-02],
+         [ -5.08260652e-02,  -1.57160666e-02,  -1.33217201e-01,
+           -1.38982669e-01,  -8.83563235e-02]]],
+
+
+       [[[  5.61246946e-02,   1.59670025e-01,   4.79601547e-02,
+            1.43489912e-01,   5.11488244e-02],
+         [  2.24262610e-01,   2.10691363e-01,   2.52802283e-01,
+            2.66400188e-01,   2.27794185e-01],
+         [  6.34032711e-02,   8.15166533e-02,   1.16620973e-01,
+            1.66943043e-01,   2.46828333e-01],
+         [ -1.90382197e-01,  -2.21208796e-01,  -1.19479271e-02,
+            5.59246130e-02,   8.99474323e-02],
+         [ -2.17738301e-01,  -1.21970043e-01,  -7.52063543e-02,
+            1.05753303e-01,   1.47746205e-01]]],
+
+
+       [[[  9.13902000e-02,   1.01171255e-01,   1.76763654e-01,
+            1.98920205e-01,   1.28195509e-01],
+         [  1.34275377e-01,   3.64403352e-02,   2.08256077e-02,
+            1.10969990e-01,   1.59222603e-01],
+         [ -4.28920053e-02,   2.04778463e-02,  -4.38399501e-02,
+           -2.37493850e-02,   1.08269572e-01],
+         [ -7.63988122e-02,  -4.34364192e-02,  -8.68064016e-02,
+           -9.55499038e-02,   3.03148478e-02],
+         [ -3.53614725e-02,  -1.01807348e-01,  -1.05366647e-01,
+           -1.67427938e-02,  -5.62951490e-02]]],
+
+
+       [[[  1.20367236e-01,   7.39563257e-02,   1.63757041e-01,
+            1.98798746e-01,   1.14403911e-01],
+         [  6.00661524e-02,  -1.43430359e-03,  -2.50367913e-02,
+           -1.11411675e-04,  -4.15363871e-02],
+         [ -7.29748011e-02,   6.73712045e-02,   4.25835047e-03,
+           -2.69982107e-02,  -9.47905853e-02],
+         [ -7.33513711e-03,  -5.39215170e-02,   5.62366694e-02,
+            2.52860039e-02,  -1.33171231e-01],
+         [ -7.15010315e-02,   5.63431531e-02,  -2.81842612e-02,
+           -9.28956121e-02,   1.50747336e-02]]],
+
+
+       [[[  3.04555167e-02,  -6.08944222e-02,  -5.57974279e-02,
+            2.39788890e-02,  -3.45644914e-02],
+         [ -2.25030016e-02,  -7.48073757e-02,  -8.01998526e-02,
+           -1.12376459e-01,  -1.94598809e-02],
+         [ -7.76534481e-03,  -9.78898481e-02,  -1.65710505e-02,
+            1.83218550e-02,  -6.29922524e-02],
+         [ -7.22794756e-02,  -8.49638060e-02,  -1.24811511e-02,
+           -7.32200146e-02,   5.70748560e-02],
+         [ -7.24157393e-02,  -1.71634872e-02,   8.38748552e-03,
+           -4.78142276e-02,  -1.01824254e-02]]],
+
+
+       [[[  1.52993985e-02,  -1.17067166e-01,  -7.77446479e-02,
+           -5.26218899e-02,  -1.35552194e-02],
+         [ -6.79639876e-02,  -2.95693427e-02,  -1.14960805e-01,
+           -9.32324827e-02,  -8.31429288e-02],
+         [ -1.87914316e-02,  -1.48697523e-03,   1.79950371e-02,
+           -1.05986714e-01,  -6.58351332e-02],
+         [  1.48429990e-01,   1.63644373e-01,   8.51074383e-02,
+            1.98485516e-02,  -6.63675293e-02],
+         [  2.56196596e-04,   3.94292660e-02,   1.19471721e-01,
+            1.08584248e-01,   1.66390557e-02]]],
+
+
+       [[[ -1.54517010e-01,  -7.31428564e-02,   5.52986152e-02,
+            9.84354466e-02,   9.28687528e-02],
+         [ -1.13955133e-01,  -2.44022347e-03,  -7.20091388e-02,
+            1.92573622e-01,   1.92218706e-01],
+         [ -9.32086259e-02,  -3.77920158e-02,   1.38015226e-01,
+            1.44991651e-01,   1.84267849e-01],
+         [ -8.94883052e-02,  -4.56552692e-02,   9.71486196e-02,
+            1.99787572e-01,   2.81333812e-02],
+         [ -7.98967928e-02,   5.33991754e-02,   1.05797745e-01,
+            8.42575058e-02,   8.40348843e-03]]],
+
+
+       [[[  1.73227802e-01,   4.02396284e-02,  -3.61740701e-02,
+           -7.86638930e-02,  -1.36187106e-01],
+         [  1.32135391e-01,   3.46459672e-02,  -3.35270260e-03,
+           -1.06119990e-01,  -5.65767214e-02],
+         [  1.83958113e-01,   1.21308506e-01,   4.25155461e-02,
+            6.27742708e-02,   2.16457695e-02],
+         [  9.56179351e-02,   1.01291381e-01,   1.25130042e-01,
+            5.32516725e-02,  -1.10799614e-02],
+         [  1.05507366e-01,   1.30578518e-01,   7.31904209e-02,
+            4.83438484e-02,   1.22252889e-01]]],
+
+
+       [[[  2.46796712e-01,   2.31397539e-01,   1.86268374e-01,
+            1.11748189e-01,   1.08393632e-01],
+         [  2.52429187e-01,   1.99367434e-01,   9.25835297e-02,
+            6.38008267e-02,   7.21892491e-02],
+         [ -3.26900333e-02,  -2.63358187e-02,   3.78167145e-02,
+           -1.57526731e-02,  -1.78911611e-02],
+         [ -2.00178072e-01,  -1.70557335e-01,  -4.73685078e-02,
+           -3.12337391e-02,   7.71529078e-02],
+         [ -1.68827951e-01,  -1.99519873e-01,  -1.40495792e-01,
+           -5.06502166e-02,  -2.06146929e-02]]],
+
+
+       [[[ -1.07645229e-01,  -1.53731644e-01,   4.09467146e-04,
+           -3.79721448e-02,   5.91916516e-02],
+         [  1.49726450e-01,  -4.38216329e-02,  -3.92567664e-02,
+            9.82900560e-02,   4.43147533e-02],
+         [  2.05437765e-01,   1.81494281e-01,   1.33862793e-01,
+            2.37086266e-01,   1.80387899e-01],
+         [  1.09600797e-01,   3.92535217e-02,   9.85717550e-02,
+            1.62781864e-01,   2.46957973e-01],
+         [  6.44649416e-02,   6.88084438e-02,  -2.08813958e-02,
+            1.92952618e-01,   2.05042258e-01]]],
+
+
+       [[[  3.41615938e-02,  -7.73713514e-02,  -1.93232317e-02,
+           -6.80241361e-02,  -5.74241243e-02],
+         [ -3.58582512e-02,   2.78712139e-02,  -9.65193361e-02,
+           -1.42541572e-01,  -1.19202062e-01],
+         [ -2.62912712e-03,   1.21492438e-01,   5.91562465e-02,
+           -4.04644758e-02,  -1.34217024e-01],
+         [  7.82358274e-02,   7.18070418e-02,   1.12040482e-01,
+            1.24550760e-01,   6.29533688e-03],
+         [  1.32792771e-01,   1.44326687e-01,   1.31950468e-01,
+            1.72114730e-01,   1.59058481e-01]]],
+
+
+       [[[ -8.08391944e-02,  -1.26901135e-01,  -4.62633669e-02,
+           -9.30032581e-02,  -1.27301738e-01],
+         [  2.52530091e-02,   2.61360202e-02,  -7.17316195e-02,
+            7.60675073e-02,   3.07960790e-02],
+         [  6.37888014e-02,   6.50630295e-02,   3.28178070e-02,
+            4.19200175e-02,   8.19221064e-02],
+         [ -2.61708498e-02,   1.17779247e-01,   9.55114961e-02,
+            4.82162237e-02,   1.92280971e-02],
+         [ -2.76299063e-02,  -7.93115497e-02,  -1.11901879e-01,
+           -7.70790130e-02,  -5.71015812e-02]]],
+
+
+       [[[ -6.88435361e-02,  -2.69515365e-02,   2.59300433e-02,
+            1.57413781e-02,   5.62846214e-02],
+         [ -1.34843038e-02,   7.05795065e-02,   9.37299896e-03,
+            8.60171244e-02,   1.29075065e-01],
+         [  4.40690704e-02,   5.33738062e-02,   2.84768753e-02,
+           -4.69701067e-02,  -6.42735660e-02],
+         [  5.34388758e-02,  -8.06334987e-02,  -7.36649632e-02,
+           -5.48016876e-02,  -2.94597503e-02],
+         [ -6.14870563e-02,   1.83113050e-02,   5.89149538e-03,
+           -4.23396472e-03,  -9.19308737e-02]]],
+
+
+       [[[ -9.53742415e-02,  -7.44373444e-03,   2.73271184e-02,
+           -6.16919883e-02,  -1.03318393e-01],
+         [  9.85317901e-02,   1.39476240e-01,   4.32568379e-02,
+            4.51409966e-02,  -2.11132709e-02],
+         [  1.95308641e-01,   2.28529021e-01,   2.14982808e-01,
+            1.48172572e-01,  -1.28558725e-02],
+         [  1.46999002e-01,   2.96627760e-01,   1.59756824e-01,
+            1.56258747e-01,   4.36682999e-02],
+         [  8.66016299e-02,   1.72729164e-01,   2.97171772e-02,
+           -4.24358323e-02,   5.92469238e-03]]],
+
+
+       [[[ -7.78365433e-02,  -1.06518520e-02,  -1.14004031e-01,
+            1.28560672e-02,  -5.11503555e-02],
+         [ -8.41850266e-02,  -6.18604533e-02,  -4.11521159e-02,
+           -3.80628593e-02,  -1.53068239e-02],
+         [ -5.43037280e-02,  -1.19112499e-01,  -1.22759201e-01,
+           -8.09343159e-02,   9.67078190e-03],
+         [ -5.14208227e-02,  -4.21872102e-02,  -1.20214112e-02,
+           -6.61492646e-02,  -6.13240898e-02],
+         [ -1.40342191e-02,  -9.17897969e-02,   3.07974257e-02,
+           -2.75576711e-02,   9.39256400e-02]]],
+
+
+       [[[ -3.96879613e-02,   1.51608288e-02,  -1.52362986e-02,
+            4.96189967e-02,  -1.05029687e-01],
+         [ -8.70914683e-02,  -2.34338380e-02,   7.16169253e-02,
+           -1.90525539e-02,  -7.87586123e-02],
+         [ -4.14139293e-02,   5.73120676e-02,   2.12740172e-02,
+           -1.01389445e-01,  -3.11783850e-02],
+         [ -7.35803396e-02,   7.81349763e-02,  -4.77707870e-02,
+           -3.75142246e-02,   2.16081645e-02],
+         [ -4.26015258e-02,  -3.29815596e-02,  -7.54175261e-02,
+            3.06131169e-02,   3.04345079e-02]]],
+
+
+       [[[  1.72308102e-01,   2.00874150e-01,   3.20429057e-02,
+            7.36260936e-02,   9.00278054e-03],
+         [  2.27333352e-01,   2.15693697e-01,   1.25933841e-01,
+            6.19205721e-02,  -4.05099988e-02],
+         [  8.86402130e-02,   1.00167453e-01,   9.38086957e-03,
+            1.29988487e-03,   1.36726415e-02],
+         [ -6.91669285e-02,  -8.17210078e-02,   8.99318233e-03,
+            9.56987590e-02,   3.79623994e-02],
+         [ -1.58797696e-01,   2.75285617e-02,   6.02337718e-02,
+            7.64501989e-02,   1.22663811e-01]]],
+
+
+       [[[  1.28415348e-02,  -1.56254452e-02,   5.64321084e-03,
+            8.24040025e-02,   8.36743861e-02],
+         [ -4.82735410e-02,   4.74538701e-03,   6.41666800e-02,
+            1.10984102e-01,   3.64941135e-02],
+         [ -2.16747262e-02,   3.49949226e-02,   8.94085169e-02,
+           -1.21324575e-02,  -2.10249759e-02],
+         [  1.07319586e-01,   1.22401409e-01,   1.13887832e-01,
+           -5.05461246e-02,  -7.62061477e-02],
+         [  4.70864475e-02,   1.21606752e-01,   5.93084097e-03,
+           -3.21395397e-02,  -7.41953850e-02]]],
+
+
+       [[[  1.69214159e-02,   1.30494595e-01,   1.03108399e-01,
+            3.22007202e-02,   1.09937347e-01],
+         [  1.02435723e-01,   1.68529794e-01,   1.00835115e-01,
+            1.72879715e-02,  -4.80081104e-02],
+         [  1.07978843e-01,   4.20140438e-02,   4.42220792e-02,
+           -1.07623480e-01,  -1.16972692e-01],
+         [  1.21373519e-01,   1.15539983e-01,  -3.72912213e-02,
+           -1.04271114e-01,  -1.02111019e-01],
+         [  1.49961978e-01,   3.29580903e-02,  -4.89022359e-02,
+           -1.24041572e-01,  -5.52466363e-02]]],
+
+
+       [[[  1.52180195e-01,   1.01017728e-01,  -4.76940088e-02,
+           -6.65047988e-02,  -9.14016515e-02],
+         [  2.20577791e-01,   1.22136153e-01,  -1.18453503e-01,
+           -7.18477368e-02,  -1.52506933e-01],
+         [  1.85486451e-01,   1.32248566e-01,  -9.12234858e-02,
+           -1.10295750e-01,  -6.09633438e-02],
+         [  1.10829987e-01,   1.22628078e-01,  -4.24826331e-02,
+           -1.00673169e-01,  -1.08354382e-01],
+         [  8.86721313e-02,   1.39410645e-01,   7.00470433e-02,
+           -7.12184906e-02,  -1.15807138e-01]]],
+
+
+       [[[ -9.52112079e-02,  -7.63624385e-02,  -1.99382320e-01,
+           -5.17268069e-02,  -1.21548891e-01],
+         [ -2.41842438e-02,  -9.92970616e-02,  -6.93604872e-02,
+           -7.60777369e-02,   7.38511980e-02],
+         [  7.79289082e-02,   1.37504473e-01,   1.40831202e-01,
+            1.34177029e-01,   1.16520591e-01],
+         [  1.85397074e-01,   1.36156827e-01,   1.59358352e-01,
+            1.64484337e-01,   8.51142332e-02],
+         [ -3.81846540e-03,   7.16984496e-02,  -3.14198323e-02,
+            4.52102311e-02,  -1.17924251e-02]]],
+
+
+       [[[  4.81686071e-02,   9.92868543e-02,   1.41356856e-01,
+            1.75431356e-01,  -1.15752844e-02],
+         [  9.23707113e-02,   2.49757141e-01,   2.02575892e-01,
+            7.93312937e-02,  -1.45374611e-02],
+         [  1.69309184e-01,   9.31103528e-02,   1.77499071e-01,
+            1.71686318e-02,   4.83541749e-02],
+         [  6.43025115e-02,   1.45157307e-01,  -1.85667761e-02,
+            3.59957665e-02,  -4.85063456e-02],
+         [  2.76705418e-02,  -3.12953219e-02,  -4.02071066e-02,
+            5.00480831e-03,  -9.40176323e-02]]],
+
+
+       [[[  6.72473162e-02,   2.82550789e-02,   5.85643202e-02,
+            1.68765828e-01,   1.44447088e-01],
+         [ -6.85401410e-02,   5.44847287e-02,   1.09975927e-01,
+            1.72069341e-01,   4.11311071e-03],
+         [  1.66892167e-02,  -2.19628327e-02,   5.25803789e-02,
+           -4.60797027e-02,   1.02659494e-01],
+         [  2.99509764e-02,   1.96774006e-02,  -3.57972905e-02,
+           -6.00509904e-02,   7.36766085e-02],
+         [ -8.85390118e-03,   3.67877074e-02,  -5.62489182e-02,
+            4.37275805e-02,  -3.23829800e-02]]],
+
+
+       [[[  1.12995703e-03,   3.69748212e-02,   2.31670476e-02,
+           -2.19753888e-02,  -5.28094731e-02],
+         [ -1.77453086e-02,   1.28596583e-02,   7.89475888e-02,
+           -8.64404514e-02,  -5.78167364e-02],
+         [  2.37187818e-02,   5.54081127e-02,   5.14633395e-02,
+            5.14959618e-02,  -7.58766830e-02],
+         [ -5.80072254e-02,  -5.51787987e-02,  -9.21523571e-03,
+           -7.37373382e-02,   3.61659043e-02],
+         [ -4.50494550e-02,  -9.79026854e-02,  -2.95310300e-02,
+           -4.78024706e-02,  -5.87819815e-02]]],
+
+
+       [[[  5.47634857e-03,   2.09666789e-02,  -1.55499414e-01,
+           -7.88952634e-02,  -9.63604227e-02],
+         [ -1.73793025e-02,   7.82347396e-02,  -7.69872665e-02,
+           -5.62912710e-02,   2.31107115e-03],
+         [ -5.48303276e-02,   1.59806549e-03,   5.06969355e-02,
+            5.80584593e-02,   1.57927155e-01],
+         [  1.19557083e-01,   9.35133547e-02,   1.80978209e-01,
+            1.26262516e-01,   1.62057176e-01],
+         [  1.05581048e-03,   2.61168480e-02,   1.07849035e-02,
+            1.14586584e-01,  -3.65443341e-02]]],
+
+
+       [[[  1.02545284e-02,  -3.41740064e-02,  -1.12997442e-01,
+            1.27677098e-02,  -1.12723708e-01],
+         [  1.64460223e-02,  -1.25037014e-01,  -5.24328090e-02,
+           -4.14077044e-02,  -1.10271998e-01],
+         [ -6.17055595e-02,  -1.12764306e-01,  -1.14300847e-01,
+           -1.05193317e-01,  -1.09070063e-01],
+         [  1.44046292e-01,   1.40283421e-01,   9.82574187e-03,
+           -2.52457689e-02,  -4.47350666e-02],
+         [  1.23734675e-01,   9.93128419e-02,   2.11119711e-01,
+            1.45180628e-01,   4.78611626e-02]]],
+
+
+       [[[ -3.98974903e-02,  -1.11800417e-01,  -2.18163319e-02,
+           -3.21878567e-02,  -1.68820582e-02],
+         [  7.74822012e-02,  -6.52049556e-02,  -4.92793955e-02,
+           -7.23526682e-05,  -2.52540372e-02],
+         [ -1.28229000e-02,  -3.71170491e-02,   5.92790321e-02,
+            3.89146246e-02,   7.82133862e-02],
+         [  4.13825400e-02,   1.95187002e-01,   1.50988653e-01,
+            1.02428392e-01,   7.17724189e-02],
+         [  2.12149531e-01,   2.26252332e-01,   3.14970799e-02,
+            3.20531353e-02,   1.57864280e-02]]],
+
+
+       [[[  1.65294349e-01,   1.45041376e-01,  -3.60346176e-02,
+           -3.72705571e-02,  -8.00271481e-02],
+         [  2.12643012e-01,   4.17591147e-02,  -2.40877774e-02,
+           -9.38513204e-02,  -1.40740767e-01],
+         [  2.19331950e-01,   1.32033676e-01,  -3.95447910e-02,
+           -1.34669945e-01,  -7.97812119e-02],
+         [  2.09290862e-01,   5.36345653e-02,  -1.17985629e-01,
+           -1.46258220e-01,  -6.54006302e-02],
+         [  1.66755751e-01,   7.46557042e-02,  -1.21102475e-01,
+           -4.34403457e-02,  -7.81283677e-02]]],
+
+
+       [[[  2.99377352e-01,   2.37260804e-01,   1.53030187e-01,
+           -6.83644712e-02,  -8.48755985e-02],
+         [  1.73080176e-01,   2.97703773e-01,   1.13000326e-01,
+           -5.90769062e-03,  -8.86558592e-02],
+         [  2.06892967e-01,   1.99796095e-01,   1.18469968e-01,
+           -5.49938641e-02,  -1.31114006e-01],
+         [  1.98651433e-01,   1.81353182e-01,   8.94020051e-02,
+           -7.82449469e-02,   4.08343319e-03],
+         [  1.54154658e-01,   1.01624124e-01,   7.55338073e-02,
+            3.36646587e-02,  -4.61748894e-03]]],
+
+
+       [[[  2.27623619e-02,  -2.21315697e-02,  -1.15270659e-01,
+           -8.57732594e-02,  -1.55726194e-01],
+         [  5.86142726e-02,   1.09927587e-01,  -4.44868505e-02,
+            7.53887519e-02,  -5.70444353e-02],
+         [  1.14974238e-01,   4.76101488e-02,   3.44023630e-02,
+            9.57698897e-02,  -6.31016716e-02],
+         [  2.19054590e-03,   5.88401482e-02,   6.84995204e-03,
+            2.37073656e-02,   7.34482035e-02],
+         [ -2.37817075e-02,  -3.30299102e-02,   9.08579901e-02,
+            5.92621267e-02,   8.56758505e-02]]],
+
+
+       [[[  4.37461622e-02,   1.22341014e-01,   4.92105410e-02,
+           -9.50241834e-02,   1.45365531e-02],
+         [  7.24856779e-02,  -4.57622297e-03,  -6.45306110e-02,
+           -1.18486635e-01,   5.54925017e-02],
+         [ -1.64207555e-02,  -8.16436559e-02,  -4.64116223e-02,
+           -1.49230817e-02,  -7.57440999e-02],
+         [ -5.06298766e-02,  -7.49810264e-02,  -9.32289734e-02,
+           -7.09393993e-02,  -2.47640479e-02],
+         [ -1.29431307e-01,  -1.13632970e-01,  -1.12003513e-01,
+           -1.74722041e-03,  -8.28486755e-02]]]], dtype=float32)
+
+In [23]: W = W.get_value()
+
+In [24]: W
+Out[24]: 
+array([[[[ -6.80902228e-02,   5.02191894e-02,   1.11155631e-03,
+           -2.34885942e-02,  -2.61981972e-02],
+         [  7.22615570e-02,  -6.82900846e-02,  -5.44814169e-02,
+           -1.44275697e-02,   4.67225127e-02],
+         [  1.06053911e-02,   6.34949580e-02,   1.42456954e-02,
+            1.50084738e-02,  -1.98684651e-02],
+         [  1.40276225e-02,  -6.57675266e-02,  -3.86726968e-02,
+            5.09656109e-02,  -4.13138536e-04],
+         [  3.04102490e-04,  -9.61702503e-03,  -8.08364451e-02,
+           -6.06806502e-02,  -5.79717681e-02]]],
+
+
+       [[[ -3.18188630e-02,   1.04506873e-01,   6.37975112e-02,
+            1.83926299e-01,   2.24640161e-01],
+         [  1.98848352e-01,   1.42868981e-01,   1.66312754e-01,
+            2.11084142e-01,   6.21258542e-02],
+         [  2.33008504e-01,   1.76396251e-01,   8.10477063e-02,
+           -6.29315004e-02,  -7.50017986e-02],
+         [  8.05326365e-03,  -3.63233872e-02,  -1.40926823e-01,
+           -4.90103327e-02,  -9.88852605e-02],
+         [ -5.08260652e-02,  -1.57160666e-02,  -1.33217201e-01,
+           -1.38982669e-01,  -8.83563235e-02]]],
+
+
+       [[[  5.61246946e-02,   1.59670025e-01,   4.79601547e-02,
+            1.43489912e-01,   5.11488244e-02],
+         [  2.24262610e-01,   2.10691363e-01,   2.52802283e-01,
+            2.66400188e-01,   2.27794185e-01],
+         [  6.34032711e-02,   8.15166533e-02,   1.16620973e-01,
+            1.66943043e-01,   2.46828333e-01],
+         [ -1.90382197e-01,  -2.21208796e-01,  -1.19479271e-02,
+            5.59246130e-02,   8.99474323e-02],
+         [ -2.17738301e-01,  -1.21970043e-01,  -7.52063543e-02,
+            1.05753303e-01,   1.47746205e-01]]],
+
+
+       [[[  9.13902000e-02,   1.01171255e-01,   1.76763654e-01,
+            1.98920205e-01,   1.28195509e-01],
+         [  1.34275377e-01,   3.64403352e-02,   2.08256077e-02,
+            1.10969990e-01,   1.59222603e-01],
+         [ -4.28920053e-02,   2.04778463e-02,  -4.38399501e-02,
+           -2.37493850e-02,   1.08269572e-01],
+         [ -7.63988122e-02,  -4.34364192e-02,  -8.68064016e-02,
+           -9.55499038e-02,   3.03148478e-02],
+         [ -3.53614725e-02,  -1.01807348e-01,  -1.05366647e-01,
+           -1.67427938e-02,  -5.62951490e-02]]],
+
+
+       [[[  1.20367236e-01,   7.39563257e-02,   1.63757041e-01,
+            1.98798746e-01,   1.14403911e-01],
+         [  6.00661524e-02,  -1.43430359e-03,  -2.50367913e-02,
+           -1.11411675e-04,  -4.15363871e-02],
+         [ -7.29748011e-02,   6.73712045e-02,   4.25835047e-03,
+           -2.69982107e-02,  -9.47905853e-02],
+         [ -7.33513711e-03,  -5.39215170e-02,   5.62366694e-02,
+            2.52860039e-02,  -1.33171231e-01],
+         [ -7.15010315e-02,   5.63431531e-02,  -2.81842612e-02,
+           -9.28956121e-02,   1.50747336e-02]]],
+
+
+       [[[  3.04555167e-02,  -6.08944222e-02,  -5.57974279e-02,
+            2.39788890e-02,  -3.45644914e-02],
+         [ -2.25030016e-02,  -7.48073757e-02,  -8.01998526e-02,
+           -1.12376459e-01,  -1.94598809e-02],
+         [ -7.76534481e-03,  -9.78898481e-02,  -1.65710505e-02,
+            1.83218550e-02,  -6.29922524e-02],
+         [ -7.22794756e-02,  -8.49638060e-02,  -1.24811511e-02,
+           -7.32200146e-02,   5.70748560e-02],
+         [ -7.24157393e-02,  -1.71634872e-02,   8.38748552e-03,
+           -4.78142276e-02,  -1.01824254e-02]]],
+
+
+       [[[  1.52993985e-02,  -1.17067166e-01,  -7.77446479e-02,
+           -5.26218899e-02,  -1.35552194e-02],
+         [ -6.79639876e-02,  -2.95693427e-02,  -1.14960805e-01,
+           -9.32324827e-02,  -8.31429288e-02],
+         [ -1.87914316e-02,  -1.48697523e-03,   1.79950371e-02,
+           -1.05986714e-01,  -6.58351332e-02],
+         [  1.48429990e-01,   1.63644373e-01,   8.51074383e-02,
+            1.98485516e-02,  -6.63675293e-02],
+         [  2.56196596e-04,   3.94292660e-02,   1.19471721e-01,
+            1.08584248e-01,   1.66390557e-02]]],
+
+
+       [[[ -1.54517010e-01,  -7.31428564e-02,   5.52986152e-02,
+            9.84354466e-02,   9.28687528e-02],
+         [ -1.13955133e-01,  -2.44022347e-03,  -7.20091388e-02,
+            1.92573622e-01,   1.92218706e-01],
+         [ -9.32086259e-02,  -3.77920158e-02,   1.38015226e-01,
+            1.44991651e-01,   1.84267849e-01],
+         [ -8.94883052e-02,  -4.56552692e-02,   9.71486196e-02,
+            1.99787572e-01,   2.81333812e-02],
+         [ -7.98967928e-02,   5.33991754e-02,   1.05797745e-01,
+            8.42575058e-02,   8.40348843e-03]]],
+
+
+       [[[  1.73227802e-01,   4.02396284e-02,  -3.61740701e-02,
+           -7.86638930e-02,  -1.36187106e-01],
+         [  1.32135391e-01,   3.46459672e-02,  -3.35270260e-03,
+           -1.06119990e-01,  -5.65767214e-02],
+         [  1.83958113e-01,   1.21308506e-01,   4.25155461e-02,
+            6.27742708e-02,   2.16457695e-02],
+         [  9.56179351e-02,   1.01291381e-01,   1.25130042e-01,
+            5.32516725e-02,  -1.10799614e-02],
+         [  1.05507366e-01,   1.30578518e-01,   7.31904209e-02,
+            4.83438484e-02,   1.22252889e-01]]],
+
+
+       [[[  2.46796712e-01,   2.31397539e-01,   1.86268374e-01,
+            1.11748189e-01,   1.08393632e-01],
+         [  2.52429187e-01,   1.99367434e-01,   9.25835297e-02,
+            6.38008267e-02,   7.21892491e-02],
+         [ -3.26900333e-02,  -2.63358187e-02,   3.78167145e-02,
+           -1.57526731e-02,  -1.78911611e-02],
+         [ -2.00178072e-01,  -1.70557335e-01,  -4.73685078e-02,
+           -3.12337391e-02,   7.71529078e-02],
+         [ -1.68827951e-01,  -1.99519873e-01,  -1.40495792e-01,
+           -5.06502166e-02,  -2.06146929e-02]]],
+
+
+       [[[ -1.07645229e-01,  -1.53731644e-01,   4.09467146e-04,
+           -3.79721448e-02,   5.91916516e-02],
+         [  1.49726450e-01,  -4.38216329e-02,  -3.92567664e-02,
+            9.82900560e-02,   4.43147533e-02],
+         [  2.05437765e-01,   1.81494281e-01,   1.33862793e-01,
+            2.37086266e-01,   1.80387899e-01],
+         [  1.09600797e-01,   3.92535217e-02,   9.85717550e-02,
+            1.62781864e-01,   2.46957973e-01],
+         [  6.44649416e-02,   6.88084438e-02,  -2.08813958e-02,
+            1.92952618e-01,   2.05042258e-01]]],
+
+
+       [[[  3.41615938e-02,  -7.73713514e-02,  -1.93232317e-02,
+           -6.80241361e-02,  -5.74241243e-02],
+         [ -3.58582512e-02,   2.78712139e-02,  -9.65193361e-02,
+           -1.42541572e-01,  -1.19202062e-01],
+         [ -2.62912712e-03,   1.21492438e-01,   5.91562465e-02,
+           -4.04644758e-02,  -1.34217024e-01],
+         [  7.82358274e-02,   7.18070418e-02,   1.12040482e-01,
+            1.24550760e-01,   6.29533688e-03],
+         [  1.32792771e-01,   1.44326687e-01,   1.31950468e-01,
+            1.72114730e-01,   1.59058481e-01]]],
+
+
+       [[[ -8.08391944e-02,  -1.26901135e-01,  -4.62633669e-02,
+           -9.30032581e-02,  -1.27301738e-01],
+         [  2.52530091e-02,   2.61360202e-02,  -7.17316195e-02,
+            7.60675073e-02,   3.07960790e-02],
+         [  6.37888014e-02,   6.50630295e-02,   3.28178070e-02,
+            4.19200175e-02,   8.19221064e-02],
+         [ -2.61708498e-02,   1.17779247e-01,   9.55114961e-02,
+            4.82162237e-02,   1.92280971e-02],
+         [ -2.76299063e-02,  -7.93115497e-02,  -1.11901879e-01,
+           -7.70790130e-02,  -5.71015812e-02]]],
+
+
+       [[[ -6.88435361e-02,  -2.69515365e-02,   2.59300433e-02,
+            1.57413781e-02,   5.62846214e-02],
+         [ -1.34843038e-02,   7.05795065e-02,   9.37299896e-03,
+            8.60171244e-02,   1.29075065e-01],
+         [  4.40690704e-02,   5.33738062e-02,   2.84768753e-02,
+           -4.69701067e-02,  -6.42735660e-02],
+         [  5.34388758e-02,  -8.06334987e-02,  -7.36649632e-02,
+           -5.48016876e-02,  -2.94597503e-02],
+         [ -6.14870563e-02,   1.83113050e-02,   5.89149538e-03,
+           -4.23396472e-03,  -9.19308737e-02]]],
+
+
+       [[[ -9.53742415e-02,  -7.44373444e-03,   2.73271184e-02,
+           -6.16919883e-02,  -1.03318393e-01],
+         [  9.85317901e-02,   1.39476240e-01,   4.32568379e-02,
+            4.51409966e-02,  -2.11132709e-02],
+         [  1.95308641e-01,   2.28529021e-01,   2.14982808e-01,
+            1.48172572e-01,  -1.28558725e-02],
+         [  1.46999002e-01,   2.96627760e-01,   1.59756824e-01,
+            1.56258747e-01,   4.36682999e-02],
+         [  8.66016299e-02,   1.72729164e-01,   2.97171772e-02,
+           -4.24358323e-02,   5.92469238e-03]]],
+
+
+       [[[ -7.78365433e-02,  -1.06518520e-02,  -1.14004031e-01,
+            1.28560672e-02,  -5.11503555e-02],
+         [ -8.41850266e-02,  -6.18604533e-02,  -4.11521159e-02,
+           -3.80628593e-02,  -1.53068239e-02],
+         [ -5.43037280e-02,  -1.19112499e-01,  -1.22759201e-01,
+           -8.09343159e-02,   9.67078190e-03],
+         [ -5.14208227e-02,  -4.21872102e-02,  -1.20214112e-02,
+           -6.61492646e-02,  -6.13240898e-02],
+         [ -1.40342191e-02,  -9.17897969e-02,   3.07974257e-02,
+           -2.75576711e-02,   9.39256400e-02]]],
+
+
+       [[[ -3.96879613e-02,   1.51608288e-02,  -1.52362986e-02,
+            4.96189967e-02,  -1.05029687e-01],
+         [ -8.70914683e-02,  -2.34338380e-02,   7.16169253e-02,
+           -1.90525539e-02,  -7.87586123e-02],
+         [ -4.14139293e-02,   5.73120676e-02,   2.12740172e-02,
+           -1.01389445e-01,  -3.11783850e-02],
+         [ -7.35803396e-02,   7.81349763e-02,  -4.77707870e-02,
+           -3.75142246e-02,   2.16081645e-02],
+         [ -4.26015258e-02,  -3.29815596e-02,  -7.54175261e-02,
+            3.06131169e-02,   3.04345079e-02]]],
+
+
+       [[[  1.72308102e-01,   2.00874150e-01,   3.20429057e-02,
+            7.36260936e-02,   9.00278054e-03],
+         [  2.27333352e-01,   2.15693697e-01,   1.25933841e-01,
+            6.19205721e-02,  -4.05099988e-02],
+         [  8.86402130e-02,   1.00167453e-01,   9.38086957e-03,
+            1.29988487e-03,   1.36726415e-02],
+         [ -6.91669285e-02,  -8.17210078e-02,   8.99318233e-03,
+            9.56987590e-02,   3.79623994e-02],
+         [ -1.58797696e-01,   2.75285617e-02,   6.02337718e-02,
+            7.64501989e-02,   1.22663811e-01]]],
+
+
+       [[[  1.28415348e-02,  -1.56254452e-02,   5.64321084e-03,
+            8.24040025e-02,   8.36743861e-02],
+         [ -4.82735410e-02,   4.74538701e-03,   6.41666800e-02,
+            1.10984102e-01,   3.64941135e-02],
+         [ -2.16747262e-02,   3.49949226e-02,   8.94085169e-02,
+           -1.21324575e-02,  -2.10249759e-02],
+         [  1.07319586e-01,   1.22401409e-01,   1.13887832e-01,
+           -5.05461246e-02,  -7.62061477e-02],
+         [  4.70864475e-02,   1.21606752e-01,   5.93084097e-03,
+           -3.21395397e-02,  -7.41953850e-02]]],
+
+
+       [[[  1.69214159e-02,   1.30494595e-01,   1.03108399e-01,
+            3.22007202e-02,   1.09937347e-01],
+         [  1.02435723e-01,   1.68529794e-01,   1.00835115e-01,
+            1.72879715e-02,  -4.80081104e-02],
+         [  1.07978843e-01,   4.20140438e-02,   4.42220792e-02,
+           -1.07623480e-01,  -1.16972692e-01],
+         [  1.21373519e-01,   1.15539983e-01,  -3.72912213e-02,
+           -1.04271114e-01,  -1.02111019e-01],
+         [  1.49961978e-01,   3.29580903e-02,  -4.89022359e-02,
+           -1.24041572e-01,  -5.52466363e-02]]],
+
+
+       [[[  1.52180195e-01,   1.01017728e-01,  -4.76940088e-02,
+           -6.65047988e-02,  -9.14016515e-02],
+         [  2.20577791e-01,   1.22136153e-01,  -1.18453503e-01,
+           -7.18477368e-02,  -1.52506933e-01],
+         [  1.85486451e-01,   1.32248566e-01,  -9.12234858e-02,
+           -1.10295750e-01,  -6.09633438e-02],
+         [  1.10829987e-01,   1.22628078e-01,  -4.24826331e-02,
+           -1.00673169e-01,  -1.08354382e-01],
+         [  8.86721313e-02,   1.39410645e-01,   7.00470433e-02,
+           -7.12184906e-02,  -1.15807138e-01]]],
+
+
+       [[[ -9.52112079e-02,  -7.63624385e-02,  -1.99382320e-01,
+           -5.17268069e-02,  -1.21548891e-01],
+         [ -2.41842438e-02,  -9.92970616e-02,  -6.93604872e-02,
+           -7.60777369e-02,   7.38511980e-02],
+         [  7.79289082e-02,   1.37504473e-01,   1.40831202e-01,
+            1.34177029e-01,   1.16520591e-01],
+         [  1.85397074e-01,   1.36156827e-01,   1.59358352e-01,
+            1.64484337e-01,   8.51142332e-02],
+         [ -3.81846540e-03,   7.16984496e-02,  -3.14198323e-02,
+            4.52102311e-02,  -1.17924251e-02]]],
+
+
+       [[[  4.81686071e-02,   9.92868543e-02,   1.41356856e-01,
+            1.75431356e-01,  -1.15752844e-02],
+         [  9.23707113e-02,   2.49757141e-01,   2.02575892e-01,
+            7.93312937e-02,  -1.45374611e-02],
+         [  1.69309184e-01,   9.31103528e-02,   1.77499071e-01,
+            1.71686318e-02,   4.83541749e-02],
+         [  6.43025115e-02,   1.45157307e-01,  -1.85667761e-02,
+            3.59957665e-02,  -4.85063456e-02],
+         [  2.76705418e-02,  -3.12953219e-02,  -4.02071066e-02,
+            5.00480831e-03,  -9.40176323e-02]]],
+
+
+       [[[  6.72473162e-02,   2.82550789e-02,   5.85643202e-02,
+            1.68765828e-01,   1.44447088e-01],
+         [ -6.85401410e-02,   5.44847287e-02,   1.09975927e-01,
+            1.72069341e-01,   4.11311071e-03],
+         [  1.66892167e-02,  -2.19628327e-02,   5.25803789e-02,
+           -4.60797027e-02,   1.02659494e-01],
+         [  2.99509764e-02,   1.96774006e-02,  -3.57972905e-02,
+           -6.00509904e-02,   7.36766085e-02],
+         [ -8.85390118e-03,   3.67877074e-02,  -5.62489182e-02,
+            4.37275805e-02,  -3.23829800e-02]]],
+
+
+       [[[  1.12995703e-03,   3.69748212e-02,   2.31670476e-02,
+           -2.19753888e-02,  -5.28094731e-02],
+         [ -1.77453086e-02,   1.28596583e-02,   7.89475888e-02,
+           -8.64404514e-02,  -5.78167364e-02],
+         [  2.37187818e-02,   5.54081127e-02,   5.14633395e-02,
+            5.14959618e-02,  -7.58766830e-02],
+         [ -5.80072254e-02,  -5.51787987e-02,  -9.21523571e-03,
+           -7.37373382e-02,   3.61659043e-02],
+         [ -4.50494550e-02,  -9.79026854e-02,  -2.95310300e-02,
+           -4.78024706e-02,  -5.87819815e-02]]],
+
+
+       [[[  5.47634857e-03,   2.09666789e-02,  -1.55499414e-01,
+           -7.88952634e-02,  -9.63604227e-02],
+         [ -1.73793025e-02,   7.82347396e-02,  -7.69872665e-02,
+           -5.62912710e-02,   2.31107115e-03],
+         [ -5.48303276e-02,   1.59806549e-03,   5.06969355e-02,
+            5.80584593e-02,   1.57927155e-01],
+         [  1.19557083e-01,   9.35133547e-02,   1.80978209e-01,
+            1.26262516e-01,   1.62057176e-01],
+         [  1.05581048e-03,   2.61168480e-02,   1.07849035e-02,
+            1.14586584e-01,  -3.65443341e-02]]],
+
+
+       [[[  1.02545284e-02,  -3.41740064e-02,  -1.12997442e-01,
+            1.27677098e-02,  -1.12723708e-01],
+         [  1.64460223e-02,  -1.25037014e-01,  -5.24328090e-02,
+           -4.14077044e-02,  -1.10271998e-01],
+         [ -6.17055595e-02,  -1.12764306e-01,  -1.14300847e-01,
+           -1.05193317e-01,  -1.09070063e-01],
+         [  1.44046292e-01,   1.40283421e-01,   9.82574187e-03,
+           -2.52457689e-02,  -4.47350666e-02],
+         [  1.23734675e-01,   9.93128419e-02,   2.11119711e-01,
+            1.45180628e-01,   4.78611626e-02]]],
+
+
+       [[[ -3.98974903e-02,  -1.11800417e-01,  -2.18163319e-02,
+           -3.21878567e-02,  -1.68820582e-02],
+         [  7.74822012e-02,  -6.52049556e-02,  -4.92793955e-02,
+           -7.23526682e-05,  -2.52540372e-02],
+         [ -1.28229000e-02,  -3.71170491e-02,   5.92790321e-02,
+            3.89146246e-02,   7.82133862e-02],
+         [  4.13825400e-02,   1.95187002e-01,   1.50988653e-01,
+            1.02428392e-01,   7.17724189e-02],
+         [  2.12149531e-01,   2.26252332e-01,   3.14970799e-02,
+            3.20531353e-02,   1.57864280e-02]]],
+
+
+       [[[  1.65294349e-01,   1.45041376e-01,  -3.60346176e-02,
+           -3.72705571e-02,  -8.00271481e-02],
+         [  2.12643012e-01,   4.17591147e-02,  -2.40877774e-02,
+           -9.38513204e-02,  -1.40740767e-01],
+         [  2.19331950e-01,   1.32033676e-01,  -3.95447910e-02,
+           -1.34669945e-01,  -7.97812119e-02],
+         [  2.09290862e-01,   5.36345653e-02,  -1.17985629e-01,
+           -1.46258220e-01,  -6.54006302e-02],
+         [  1.66755751e-01,   7.46557042e-02,  -1.21102475e-01,
+           -4.34403457e-02,  -7.81283677e-02]]],
+
+
+       [[[  2.99377352e-01,   2.37260804e-01,   1.53030187e-01,
+           -6.83644712e-02,  -8.48755985e-02],
+         [  1.73080176e-01,   2.97703773e-01,   1.13000326e-01,
+           -5.90769062e-03,  -8.86558592e-02],
+         [  2.06892967e-01,   1.99796095e-01,   1.18469968e-01,
+           -5.49938641e-02,  -1.31114006e-01],
+         [  1.98651433e-01,   1.81353182e-01,   8.94020051e-02,
+           -7.82449469e-02,   4.08343319e-03],
+         [  1.54154658e-01,   1.01624124e-01,   7.55338073e-02,
+            3.36646587e-02,  -4.61748894e-03]]],
+
+
+       [[[  2.27623619e-02,  -2.21315697e-02,  -1.15270659e-01,
+           -8.57732594e-02,  -1.55726194e-01],
+         [  5.86142726e-02,   1.09927587e-01,  -4.44868505e-02,
+            7.53887519e-02,  -5.70444353e-02],
+         [  1.14974238e-01,   4.76101488e-02,   3.44023630e-02,
+            9.57698897e-02,  -6.31016716e-02],
+         [  2.19054590e-03,   5.88401482e-02,   6.84995204e-03,
+            2.37073656e-02,   7.34482035e-02],
+         [ -2.37817075e-02,  -3.30299102e-02,   9.08579901e-02,
+            5.92621267e-02,   8.56758505e-02]]],
+
+
+       [[[  4.37461622e-02,   1.22341014e-01,   4.92105410e-02,
+           -9.50241834e-02,   1.45365531e-02],
+         [  7.24856779e-02,  -4.57622297e-03,  -6.45306110e-02,
+           -1.18486635e-01,   5.54925017e-02],
+         [ -1.64207555e-02,  -8.16436559e-02,  -4.64116223e-02,
+           -1.49230817e-02,  -7.57440999e-02],
+         [ -5.06298766e-02,  -7.49810264e-02,  -9.32289734e-02,
+           -7.09393993e-02,  -2.47640479e-02],
+         [ -1.29431307e-01,  -1.13632970e-01,  -1.12003513e-01,
+           -1.74722041e-03,  -8.28486755e-02]]]], dtype=float32)
+
+In [25]: W.shape
+Out[25]: (32, 1, 5, 5)
+
+In [26]: W_vis = np.re
+np.real           np.rec            np.recfromcsv     np.reciprocal     np.remainder      np.require        np.resize         np.result_type
+np.real_if_close  np.recarray       np.recfromtxt     np.record         np.repeat         np.reshape        np.restoredot     
+
+In [26]: W_vis = np.reshape(W, (32, 25))
+
+In [27]: python `python -c "import os, theano; print os.path.dirname(theano.__file__)"`/misc/check_blas.py
+  File "<ipython-input-27-9d6f84fd5ade>", line 1
+    python `python -c "import os, theano; print os.path.dirname(theano.__file__)"`/misc/check_blas.py
+           ^
+SyntaxError: invalid syntax
+
+
+In [28]: tile_raster_images(X=W, img_shape=(patchSize, patchSize), tile_shape=(10,10), tile_spacing=(1, 1),
+   ....:                                   scale_rows_to_unit_interval=True,
+   ....:                                   output_pixel_vals=True)
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-28-12151dcf43de> in <module>()
+----> 1 tile_raster_images(X=W, img_shape=(patchSize, patchSize), tile_shape=(10,10), tile_spacing=(1, 1),
+      2                                   scale_rows_to_unit_interval=True,
+      3                                   output_pixel_vals=True)
+
+NameError: name 'tile_raster_images' is not defined
+
+In [29]: tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+                                  scale_rows_to_unit_interval=True,
+                                  output_pixel_vals=True)
+---------------------------------------------------------------------------
+NameError                                 Traceback (most recent call last)
+<ipython-input-29-fce2e094a797> in <module>()
+----> 1 tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+      2                                   scale_rows_to_unit_interval=True,
+      3                                   output_pixel_vals=True)
+
+NameError: name 'tile_raster_images' is not defined
+
+In [30]: from utils import *
+---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+<ipython-input-30-1cf78c680c74> in <module>()
+----> 1 from utils import *
+
+ImportError: No module named utils
+
+In [31]: import sys
+
+In [32]: sys.path
+Out[32]: 
+['',
+ '/usr/local/bin',
+ '/Library/Python/2.7/site-packages/pip-1.5.4-py2.7.egg',
+ '/Library/Python/2.7/site-packages/closure_linter-2.3.13-py2.7.egg',
+ '/Library/Python/2.7/site-packages/python_gflags-2.0-py2.7.egg',
+ '/Library/Python/2.7/site-packages/mahotas-1.3.0_git-py2.7-macosx-10.9-intel.egg',
+ '/Users/d/src/devel/pythonpath',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python27.zip',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-darwin',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/plat-mac/lib-scriptpackages',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-tk',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-old',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/lib-dynload',
+ '/Users/d/Library/Python/2.7/lib/python/site-packages',
+ '/usr/local/lib/python2.7/site-packages',
+ '/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/PyObjC',
+ '/Library/Python/2.7/site-packages',
+ '/Library/Python/2.7/site-packages/PIL',
+ '/Library/Python/2.7/site-packages/IPython/extensions',
+ '/Users/d/.ipython']
+
+In [33]: sys.path.append('/Users/d/Projects/em-qaulity-metric/Code/verena')
+
+In [34]: import utils
+---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+<ipython-input-34-32411ba4e9a6> in <module>()
+----> 1 import utils
+
+ImportError: No module named utils
+
+In [35]: from utils import *
+---------------------------------------------------------------------------
+ImportError                               Traceback (most recent call last)
+<ipython-input-35-1cf78c680c74> in <module>()
+----> 1 from utils import *
+
+ImportError: No module named utils
+
+In [36]: import utils
+
+In [37]: utils.tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+   ....:                                   scale_rows_to_unit_interval=True,
+   ....:                                   output_pixel_vals=True)
+Out[37]: 
+array([[ 21, 218, 136, ..., 217, 175, 173],
+       [254,  20,  43, ..., 164, 148, 153],
+       [152, 240, 158, ..., 134, 103, 102],
+       ..., 
+       [  0,   0,   0, ...,   0,   0,   0],
+       [  0,   0,   0, ...,   0,   0,   0],
+       [  0,   0,   0, ...,   0,   0,   0]], dtype=uint8)
+
+In [38]: img = utils.tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+                                  scale_rows_to_unit_interval=True,
+                                  output_pixel_vals=True)
+
+In [39]: import matplotlib
+
+In [40]: import matplotlib.pyplot as plt
+p
+In [41]: plt.imshow(img); plt.show()
+
+In [42]: plt.imshow(img, cm); plt.show()
+cmap=        cmp          cmpto_j2k.h  
+
+In [42]: plt.imshow(img, cmap='gray'); plt.show()
+
+In [43]: network = main(model='cnn2', num_epochs=5)
+Loading data...
+Building model and compiling functions...
+Starting training...
+Epoch 1 of 5 took 20.306s
+  training loss:    1.411117
+  validation loss:    0.303669
+  validation accuracy:    91.98 %
+Epoch 2 of 5 took 20.265s
+  training loss:    0.422098
+  validation loss:    0.166066
+  validation accuracy:    95.31 %
+Epoch 3 of 5 took 20.270s
+  training loss:    0.293460
+  validation loss:    0.128328
+  validation accuracy:    96.30 %
+Epoch 4 of 5 took 20.262s
+  training loss:    0.237587
+  validation loss:    0.107562
+  validation accuracy:    97.03 %
+Epoch 5 of 5 took 20.384s
+  training loss:    0.205672
+  validation loss:    0.094687
+  validation accuracy:    97.41 %
+Final results:
+  test loss:      0.091272
+  test accuracy:    97.19 %
+
+In [44]: network
+Out[44]: <lasagne.layers.dense.DenseLayer at 0x111c0a450>
+
+In [45]: d1 = network.in
+network.input_layer  network.input_shape  
+
+In [45]: d1 = network.input_layer
+
+In [46]: d1
+Out[46]: <lasagne.layers.noise.DropoutLayer at 0x111c115d0>
+
+In [47]: b = d1.in
+d1.input_layer  d1.input_shape  
+
+In [47]: b = d1.input_layer
+
+In [48]: b
+Out[48]: <lasagne.layers.dense.DenseLayer at 0x111c11850>
+
+In [49]: b = b.in
+b.input_layer  b.input_shape  
+
+In [49]: b = b.input_layer
+
+In [50]: b
+Out[50]: <lasagne.layers.noise.DropoutLayer at 0x111c11990>
+
+In [51]: b = b.in
+b.input_layer  b.input_shape  
+
+In [51]: b = b.input_layer
+
+In [52]: b
+Out[52]: <lasagne.layers.merge.ConcatLayer at 0x111c11650>
+
+In [53]: b.
+b.add_param             b.get_output_for        b.get_params            b.input_shapes          b.output_shape          
+b.axis                  b.get_output_shape_for  b.input_layers          b.name                  b.params                
+
+In [53]: b = b.in
+b.input_layers  b.input_shapes  
+
+In [53]: b = b.input_layers
+
+In [54]: b
+Out[54]: 
+[<lasagne.layers.pool.MaxPool2DLayer at 0x111c07090>,
+ <lasagne.layers.pool.MaxPool2DLayer at 0x111c2dfd0>]
+
+In [55]: c = b[0]
+
+In [56]: c
+Out[56]: <lasagne.layers.pool.MaxPool2DLayer at 0x111c07090>
+
+In [57]: c = c.in
+c.input_layer  c.input_shape  
+
+In [57]: c = c.input_layer
+
+In [58]: c
+Out[58]: <lasagne.layers.conv.Conv2DLayer at 0x106f0ad50>
+
+In [59]: c = c.i
+c.input_layer  c.input_shape  
+
+In [59]: c = c.input_
+c.input_layer  c.input_shape  
+
+In [59]: c = c.input_layer
+
+In [60]: c
+Out[60]: <lasagne.layers.pool.MaxPool2DLayer at 0x104d02c10>
+
+In [61]: c = c.input_layer
+
+In [62]: c
+Out[62]: <lasagne.layers.conv.Conv2DLayer at 0x106eeb090>
+
+In [63]: c = c.input_layer
+
+In [64]: c
+Out[64]: <lasagne.layers.input.InputLayer at 0x112212e90>
+
+In [65]: c
+Out[65]: <lasagne.layers.input.InputLayer at 0x112212e90>
+
+In [66]: c.
+c.add_param             c.get_output_shape_for  c.input_var             c.output_shape          c.shape                 
+c.get_output_for        c.get_params            c.name                  c.params                
+
+In [66]: c = b[0]
+
+In [67]: c
+Out[67]: <lasagne.layers.pool.MaxPool2DLayer at 0x111c07090>
+
+In [68]: c = c.input_layer
+
+In [69]: c
+Out[69]: <lasagne.layers.conv.Conv2DLayer at 0x106f0ad50>
+
+In [70]: d = c.in
+c.input_layer  c.input_shape  
+
+In [70]: d = c.input_layer
+
+In [71]: d
+Out[71]: <lasagne.layers.pool.MaxPool2DLayer at 0x104d02c10>
+
+In [72]: c = d.in
+d.input_layer  d.input_shape  
+
+In [72]: c = d.input_layer
+
+In [73]: c
+Out[73]: <lasagne.layers.conv.Conv2DLayer at 0x106eeb090>
+
+In [74]: d = c.in
+c.input_layer  c.input_shape  
+
+In [74]: d = c.input_
+c.input_layer  c.input_shape  
+
+In [74]: d = c.input_layer
+
+In [75]: d
+Out[75]: <lasagne.layers.input.InputLayer at 0x112212e90>
+
+In [76]: c
+Out[76]: <lasagne.layers.conv.Conv2DLayer at 0x106eeb090>
+
+In [77]: W_vis = np.reshape(c., (32, 25))
+c.W                     c.filter_size           c.get_params            c.nonlinearity          c.params                
+c.add_param             c.get_W_shape           c.input_layer           c.num_filters           c.stride                
+c.b                     c.get_output_for        c.input_shape           c.output_shape          c.untie_biases          
+c.convolution           c.get_output_shape_for  c.name                  c.pad                   
+
+In [77]: W_vis = np.reshape(c.W.ge, (32, 25))
+c.W.get_parents                c.W.get_scalar_constant_value  c.W.get_value                  c.W.get_value_return_ndarray   
+
+In [77]: W_vis = np.reshape(c.W.get_, (32, 25))
+c.W.get_parents                c.W.get_scalar_constant_value  c.W.get_value                  c.W.get_value_return_ndarray   
+
+In [77]: W_vis = np.reshape(c.W.get_v, (32, 25))
+c.W.get_value                 c.W.get_value_return_ndarray  
+
+In [77]: W_vis = np.reshape(c.W.get_value(), (32, 25))
+
+In [78]: img = utils.tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+                                  scale_rows_to_unit_interval=True,
+                                  output_pixel_vals=True)
+
+In [79]: plt.imshow(img, cmap='gray'); plt.show()
+
+In [80]: c = b[1]
+
+In [81]: c
+Out[81]: <lasagne.layers.pool.MaxPool2DLayer at 0x111c2dfd0>
+
+In [82]: d = c.input_layer
+
+In [83]: d
+Out[83]: <lasagne.layers.conv.Conv2DLayer at 0x111c07850>
+
+In [84]: c = d.input_layer
+
+In [85]: c
+Out[85]: <lasagne.layers.pool.MaxPool2DLayer at 0x111c079d0>
+
+In [86]: d = c.input_layer
+
+In [87]: d
+Out[87]: <lasagne.layers.conv.Conv2DLayer at 0x111c07b50>
+
+In [88]: c = d.input_layer
+
+In [89]: c
+Out[89]: <lasagne.layers.input.InputLayer at 0x111c07110>
+
+In [90]: d
+Out[90]: <lasagne.layers.conv.Conv2DLayer at 0x111c07b50>
+
+In [91]: c = d
+
+In [92]: W_vis = np.reshape(c.W.get_value(), (32, 25))
+
+In [93]: img = utils.tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+                                  scale_rows_to_unit_interval=True,
+                                  output_pixel_vals=True)
+
+In [94]: plt.imshow(img, cmap='gray'); plt.show()
+^C---------------------------------------------------------------------------
+KeyboardInterrupt                         Traceback (most recent call last)
+/System/Library/Frameworks/Python.framework/Versions/2.7/Extras/lib/python/matplotlib/backends/backend_macosx.pyc in close(self)
+    377             self.show()
+    378 
+--> 379     def close(self):
+    380         Gcf.destroy(self.num)
+    381 
+
+KeyboardInterrupt: 
+
+
+
+
+
+In [95]: 
+
+In [95]: 
+
+In [95]: 
+
+In [95]: 
+
+In [95]: network = main(model='cnn', num_epochs=0)
+Loading data...
+Building model and compiling functions...
+Starting training...
+Final results:
+  test loss:      2.338337
+  test accuracy:    9.32 %
+
+In [96]: d = ne
+network  next     
+
+In [96]: d = network.in
+network.input_layer  network.input_shape  
+
+In [96]: d = network.input_layer
+
+In [97]: d
+Out[97]: <lasagne.layers.noise.DropoutLayer at 0x111bf6e10>
+
+In [98]: c = d.in
+d.input_layer  d.input_shape  
+
+In [98]: c = d.input_
+d.input_layer  d.input_shape  
+
+In [98]: c = d.input_layer
+
+In [99]: c
+Out[99]: <lasagne.layers.dense.DenseLayer at 0x111bf6b50>
+
+In [100]: d = c.input_layer
+
+In [101]: d
+Out[101]: <lasagne.layers.noise.DropoutLayer at 0x111bf67d0>
+
+In [102]: c = d.input_layer
+
+In [103]: c
+Out[103]: <lasagne.layers.pool.MaxPool2DLayer at 0x111c03990>
+
+In [104]: d = c.input_layer
+
+In [105]: d
+Out[105]: <lasagne.layers.conv.Conv2DLayer at 0x111c03290>
+
+In [106]: c = d.input_layer
+
+In [107]: c
+Out[107]: <lasagne.layers.pool.MaxPool2DLayer at 0x10f7ac410>
+
+In [108]: d = c.input_layer
+
+In [109]: d
+Out[109]: <lasagne.layers.conv.Conv2DLayer at 0x10f7ac390>
+
+In [110]: c = d.input_layer
+
+In [111]: c
+Out[111]: <lasagne.layers.input.InputLayer at 0x10f7ac150>
+
+In [112]: c = d
+
+In [113]: W_vis = np.reshape(c.W.get_value(), (32, 25))
+
+In [114]: img = utils.tile_raster_images(X=W_vis, img_shape=(5, 5), tile_shape=(10,10), tile_spacing=(1, 1),
+                                  scale_rows_to_unit_interval=True,
+                                  output_pixel_vals=True)
+
+In [115]: plt.imshow(img, cmap='gray'); plt.show()
+

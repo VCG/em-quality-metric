@@ -4,7 +4,7 @@ import numpy as np
 import os
 import scipy.misc
 import skimage.measure
-
+from skimage import img_as_ubyte
 
 
 from error import Error
@@ -33,6 +33,43 @@ class SplitError(Error):
             s._thumb = scipy.misc.imrotate(self._thumb, degrees, interp='nearest')
 
         return s
+
+
+    def fliplr(self):
+        '''
+        '''
+        s = SplitError()
+        s._meta = {}
+        s._meta['merge'] = np.fliplr(self._meta['merge'])#cv2.flip(self._meta['merge'], how)
+        s._meta['image'] = np.fliplr(self._meta['image'])#cv2.flip(self._meta['image'], how)
+        s._meta['prob'] = np.fliplr(self._meta['prob'])#cv2.flip(self._meta['prob'], how)
+        s._meta['label1'] = np.fliplr(self._meta['label1'])#cv2.flip(self._meta['label1'], how)
+        s._meta['label2'] = np.fliplr(self._meta['label2'])#cv2.flip(self._meta['label2'], how)
+        s._meta['overlap'] = np.fliplr(self._meta['overlap'])#cv2.flip(self._meta['overlap'], how)
+
+        if self._has_thumb:
+            s._has_thumb = True
+            s._thumb = np.fliplr(self._thumb)
+
+        return s
+
+    def flipud(self):
+        '''
+        '''
+        s = SplitError()
+        s._meta = {}
+        s._meta['merge'] = np.flipud(self._meta['merge'])#cv2.flip(self._meta['merge'], how)
+        s._meta['image'] = np.flipud(self._meta['image'])#cv2.flip(self._meta['image'], how)
+        s._meta['prob'] = np.flipud(self._meta['prob'])#cv2.flip(self._meta['prob'], how)
+        s._meta['label1'] = np.flipud(self._meta['label1'])#cv2.flip(self._meta['label1'], how)
+        s._meta['label2'] = np.flipud(self._meta['label2'])#cv2.flip(self._meta['label2'], how)
+        s._meta['overlap'] = np.flipud(self._meta['overlap'])#cv2.flip(self._meta['overlap'], how)
+
+        if self._has_thumb:
+            s._has_thumb = True
+            s._thumb = np.flipud(self._thumb)
+
+        return s    
 
     @staticmethod
     def load(uuid):
@@ -71,7 +108,7 @@ class SplitError(Error):
             s.store(os.path.join(training_path,'split'))
         
     @staticmethod
-    def generate(image, prob, label, n=10, thumb=False, rotate=True):
+    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True):
         '''
         '''
 
@@ -85,7 +122,7 @@ class SplitError(Error):
 
             print 'Working on z', z
 
-            labels = range(len(Util.get_histogram(label_filled_relabeled)))#[1:] ### remove!!
+            labels = range(len(Util.get_histogram(label_filled_relabeled)))[1:] ### remove!!
             for l in labels:
 
                 for i in range(n):
@@ -106,8 +143,19 @@ class SplitError(Error):
                       continue
 
                     yield s
+
+                    if flip:
+                        yield s.fliplr()
+                        yield s.flipud()
+
                     if rotate:
                         yield s.rotate(90)
                         yield s.rotate(180)
-                        yield s.rotate(270)
+                        m270 = s.rotate(270)
+                        yield m270
+                        if flip:
+                            yield m270.fliplr()
+                            yield m270.flipud()
+
+
 

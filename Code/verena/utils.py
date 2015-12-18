@@ -31,7 +31,7 @@ def threshold_probability_image(prediction, fileName="test.png"):
         raw_input("paused.")
 
 
-def tile_raster_images(X, img_shape, tile_shape, tile_spacing=(0, 0),
+def tile_raster_images(X, img_shape=(5,5), tile_shape=(10,10), tile_spacing=(0, 0),
                        scale_rows_to_unit_interval=True,
                        output_pixel_vals=True):
     """

@@ -209,18 +209,34 @@ class Error(object):
         new_border_center = [border_center[0], border_center[1]]
         if border_center[0] < patch_size[0]/2:
             new_border_center[0] = patch_size[0]/2
+            return None
         if border_center[0]+patch_size[0]/2 >= merged_array.shape[0]:
             new_border_center[0] = merged_array.shape[0] - patch_size[0]/2 - 1
+            return None
         if border_center[1] < patch_size[1]/2:
             new_border_center[1] = patch_size[1]/2
+            return None
         if border_center[1]+patch_size[1]/2 >= merged_array.shape[1]:
             new_border_center[1] = merged_array.shape[1] - patch_size[1]/2 - 1
+            return None
 
         
         bbox = [new_border_center[0]-patch_size[0]/2, 
                 new_border_center[0]+patch_size[0]/2,
                 new_border_center[1]-patch_size[1]/2, 
                 new_border_center[1]+patch_size[1]/2]
+
+
+        ### workaround to not sample white border of probability map
+        if bbox[0] <= 33:
+            return None
+        if bbox[1] >= merged_array.shape[0]-33:
+            return None
+        if bbox[2] <= 33:
+            return None
+        if bbox[3] >= merged_array.shape[1]-33:
+            return None
+
 
 
         output = {}

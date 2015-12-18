@@ -28,14 +28,17 @@ if __name__ == '__main__':
     for image_path in img_files:
         print image_path
         image = mahotas.imread(image_path)
-        imageSize = 1024
+
+        image = np.pad(image, 40, 'reflect')
+
+        imageSize = 1024+80
         image = image[0:imageSize,0:imageSize]
         
         start_time = time.clock()
         image = normalizeImage(image) - 0.5
         
         #GPU
-        image_shared = theano.shared(np.float64(image))
+        image_shared = theano.shared(np.float32(image))
         image_shared = image_shared.reshape((1,1,imageSize,imageSize))
         
         x = T.matrix('x')
@@ -120,6 +123,8 @@ if __name__ == '__main__':
         
         prob_img = shift(prob_img,(32,32))
         
+        prob_img = prob_img[40:-40,40:-40]
+
         mahotas.imsave(image_path[:-4] + '_syn.tif', 
                        np.uint8((1-prob_img)*255))
         

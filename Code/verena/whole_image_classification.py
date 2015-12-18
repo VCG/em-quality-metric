@@ -110,7 +110,7 @@ if __name__ == '__main__':
     image = normalizeImage(image) - 0.5
     
     #GPU
-    image_shared = theano.shared(np.float64(image))
+    image_shared = theano.shared(np.float64(image))#theano.shared(np.float64(image))
     image_shared = image_shared.reshape((1,1,imageSize,imageSize))
 
     x = T.matrix('x')

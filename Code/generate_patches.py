@@ -21,7 +21,7 @@ DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
 GOLD_PATH = os.path.join(DATA_PATH,'gold/')
 IMAGE_PATH = os.path.join(DATA_PATH,'input/')
 PROB_PATH = os.path.join(DATA_PATH,'prob/')
-PATCH_PATH = os.path.join(DATA_PATH,'patches_large/')
+PATCH_PATH = os.path.join(DATA_PATH,'patches_large2/')
 
 
 gold = _metrics.Util.read(GOLD_PATH+'*.tif')
@@ -57,7 +57,7 @@ def generate_patches(_type, start_slice, end_slice, count, filename):
     max_per_slice = int(count / (end_slice - start_slice)) + 1
     print 'Max per slice', max_per_slice
 
-    for s in _type.generate(images[start_slice:end_slice], probs[start_slice:end_slice], gold[start_slice:end_slice], n=3, thumb=False, rotate=False, flip=False, randomize_slice=True, randomize_label=True, max_per_slice=max_per_slice):
+    for s in _type.generate(images[start_slice:end_slice], probs[start_slice:end_slice], gold[start_slice:end_slice], n=10, thumb=False, rotate=True, flip=True, randomize_slice=True, randomize_label=True, max_per_slice=max_per_slice):
     #for s in _metrics.SplitError.generate(images, gold, 10, thumb=False, rotate=True):    
 
         #data.append(s)

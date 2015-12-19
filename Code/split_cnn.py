@@ -29,6 +29,7 @@ class SplitCNN(object):
     self._FILTER_SIZE = (5,5)
     self._NO_FILTERS2 = 32
     self._FILTER_SIZE2 = (5,5)
+    self._EPOCH_CALLBACK = None
 
     self._training_loss = []
     self._validation_loss = []
@@ -250,6 +251,13 @@ class SplitCNN(object):
         self._validation_loss.append(val_err / val_batches)
         self._validation_acc.append(val_acc / val_batches * 100)
 
+        # call the epoch callback
+        if epoch % (self._EPOCHS / 5) == 0:
+          self._EPOCH_CALLBACK(self, layers, epoch)
+
+    # one final callback
+    self._EPOCH_CALLBACK(self, layers, epoch)
+
     # After training, we compute and print the test error:
     test_err = 0
     test_acc = 0
@@ -427,6 +435,7 @@ class SplitCNN(object):
   def visualize_filters(self, layer):
 
     W = layer.W.get_value()
+    # print W
 
     shape = W.shape
     W_vis = np.reshape(W, (shape[0], shape[2]*shape[3]))

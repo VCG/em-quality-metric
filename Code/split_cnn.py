@@ -29,6 +29,9 @@ class SplitCNN(object):
     self._FILTER_SIZE = (5,5)
     self._NO_FILTERS2 = 32
     self._FILTER_SIZE2 = (5,5)
+    self._THIRD_CONV_LAYER = False
+    self._NO_FILTERS3 = 32
+    self._FILTER_SIZE3 = (5,5)    
     self._EPOCH_CALLBACK = None
 
     self._training_loss = []
@@ -177,7 +180,7 @@ class SplitCNN(object):
     overlap_var = T.tensor4('overlap')
     target_var = T.ivector('targets')
 
-    layers = self.build(image_var, prob_var, binary1_var, binary2_var, overlap_var)
+    layers = self.build(image_var, prob_var, binary1_var, binary2_var, overlap_var, self._THIRD_CONV_LAYER)
     network = layers['dense']['network']
 
     # Create a loss expression for training, i.e., a scalar objective we want
@@ -281,7 +284,7 @@ class SplitCNN(object):
     return layers
 
 
-  def gen_network(self, layers, name, input_var):
+  def gen_network(self, layers, name, input_var, third_conv_layer=False):
     '''
     '''
 
@@ -325,6 +328,23 @@ class SplitCNN(object):
 
     layers[name]['network'] = max_pool_layer2
 
+    if third_conv_layer:
+
+      # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
+      c2d_layer3 = lasagne.layers.Conv2DLayer(
+              max_pool_layer, num_filters=self._NO_FILTERS3, filter_size=self._FILTER_SIZE3,
+              nonlinearity=lasagne.nonlinearities.rectify)
+
+      layers[name]['c2d_layer3'] = c2d_layer3
+
+      max_pool_layer3 = lasagne.layers.MaxPool2DLayer(c2d_layer3, pool_size=(2, 2))
+
+      layers[name]['max_pool_layer3'] = max_pool_layer3
+
+      layers[name]['network'] = max_pool_layer3
+
+    
+
 
     return layers
 
@@ -332,7 +352,7 @@ class SplitCNN(object):
 
 
 
-  def build(self, input_image, input_prob, input_binary1, input_binary2, input_overlap):
+  def build(self, input_image, input_prob, input_binary1, input_binary2, input_overlap, third_conv_layer=False):
     '''
     '''
     # As a third model, we'll create a CNN of two convolution + pooling stages
@@ -340,11 +360,11 @@ class SplitCNN(object):
 
     layers = {}
 
-    layers = self.gen_network(layers, 'image', input_image)
-    layers = self.gen_network(layers, 'prob', input_prob)
-    layers = self.gen_network(layers, 'binary1', input_binary1)
-    layers = self.gen_network(layers, 'binary2', input_binary2)
-    layers = self.gen_network(layers, 'overlap', input_overlap)
+    layers = self.gen_network(layers, 'image', input_image, third_conv_layer)
+    layers = self.gen_network(layers, 'prob', input_prob, third_conv_layer)
+    layers = self.gen_network(layers, 'binary1', input_binary1, third_conv_layer)
+    layers = self.gen_network(layers, 'binary2', input_binary2, third_conv_layer)
+    layers = self.gen_network(layers, 'overlap', input_overlap, third_conv_layer)
 
     #
     #

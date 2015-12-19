@@ -30,6 +30,9 @@ if __name__ == '__main__':
   parser.add_argument("-fs1", "--filtersize1", type=int, help="the filtersize 1", default=5)
   parser.add_argument("-f2", "--filters2", type=int, help="the number of filters 2", default=32)
   parser.add_argument("-fs2", "--filtersize2", type=int, help="the filtersize 2", default=5)
+  parser.add_argument("-tcl", "--thirdconvlayer", type=bool, help="use a third conv layer", default=False)
+  parser.add_argument("-f3", "--filters3", type=int, help="the number of filters 2", default=32)
+  parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=5)  
 
 
   args = parser.parse_args()
@@ -114,6 +117,9 @@ if __name__ == '__main__':
   s._FILTER_SIZE = (args.filtersize1,args.filtersize1)
   s._NO_FILTERS2 = args.filters2
   s._FILTER_SIZE2 = (args.filtersize2,args.filtersize2)
+  s._THIRD_CONV_LAYER = args.thirdconvlayer
+  s._NO_FILTERS3 = args.filters3
+  s._FILTER_SIZE3 = (args.filtersize3,args.filtersize3)
   s._EPOCH_CALLBACK = store_filters
 
   print 'Network configured.. running now!'

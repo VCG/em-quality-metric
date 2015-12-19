@@ -8,7 +8,7 @@
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH --gres=gpu
 #SBATCH --mem=8000
-#SBATCH -t 1-12:00
+#SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
 #SBATCH -o /n/home05/haehn/slurm/out.txt

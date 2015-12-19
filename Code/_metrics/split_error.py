@@ -108,12 +108,19 @@ class SplitError(Error):
             s.store(os.path.join(training_path,'split'))
         
     @staticmethod
-    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True):
+    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True, randomize_slice=False, randomize_label=False, max_per_slice=-1):
         '''
         '''
 
         # run through all slices
-        for z in range(image.shape[0]):
+
+        if randomize_slice:
+            z_s = np.arange(image.shape[0])
+            np.random.shuffle(z_s)
+        else:
+            z_s = range(image.shape[0]) 
+
+        for z in z_s:
 
             # fill segmentation
             label_zeros = Util.threshold(label[z], 0)
@@ -122,8 +129,18 @@ class SplitError(Error):
 
             print 'Working on z', z
 
-            labels = range(len(Util.get_histogram(label_filled_relabeled)))[1:] ### remove!!
+            slice_counter = 0
+
+            if randomize_label:
+                labels = np.arange(len(Util.get_histogram(label_filled_relabeled)))
+                np.random.shuffle(labels)
+            else:
+                labels = range(len(Util.get_histogram(label_filled_relabeled)))    
+
             for l in labels:
+
+                if slice_counter >= max_per_slice:
+                    continue
 
                 for i in range(n):
 
@@ -143,19 +160,52 @@ class SplitError(Error):
                       continue
 
                     yield s
+                    slice_counter += 1
+                    if slice_counter >= max_per_slice:
+                        continue                    
 
                     if flip:
                         yield s.fliplr()
+                        slice_counter += 1
+                        if slice_counter >= max_per_slice:
+                            continue
+
                         yield s.flipud()
+                        slice_counter += 1
+                        if slice_counter >= max_per_slice:
+                            continue                        
 
                     if rotate:
                         yield s.rotate(90)
+                        slice_counter += 1
+                        if slice_counter >= max_per_slice:
+                            continue
+
+
                         yield s.rotate(180)
+                        slice_counter += 1
+                        if slice_counter >= max_per_slice:
+                            continue
+
+
                         m270 = s.rotate(270)
                         yield m270
+                        slice_counter += 1
+                        if slice_counter >= max_per_slice:
+                            continue
+
+
                         if flip:
                             yield m270.fliplr()
+                            slice_counter += 1
+                            if slice_counter >= max_per_slice:
+                                continue
+
+
                             yield m270.flipud()
+                            slice_counter += 1
+                            if slice_counter >= max_per_slice:
+                                continue                            
 
 
 

@@ -7,15 +7,7 @@ import time
 
 import lasagne
 
-EPOCHS = 5
-BATCH_SIZE = 500
-LEARNING_RATE = 0.01
-MOMENTUM = 0.9
-INPUT_SHAPE = (500, 1, 28, 28)
-NO_FILTERS = 32
-FILTER_SIZE = (5,5)
-NO_FILTERS2 = 32
-FILTER_SIZE2 = (5,5)
+
 
 class SplitCNN(object):
 
@@ -25,69 +17,150 @@ class SplitCNN(object):
     #self.initialize()
     self._dbg = None
 
+    self._DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
+    self._PATCH_PATH = os.path.join(self._DATA_PATH,'patches_small/')
+
+    self._EPOCHS = 5
+    self._BATCH_SIZE = 5#00
+    self._LEARNING_RATE = 0.0001
+    self._MOMENTUM = 0.9
+    self._INPUT_SHAPE = (None, 1, 75, 75)#(None, 75, 75)#(None, 1, 75, 75)
+    self._NO_FILTERS = 32
+    self._FILTER_SIZE = (5,5)
+    self._NO_FILTERS2 = 32
+    self._FILTER_SIZE2 = (5,5)
+
 
   # ################## Download and prepare the MNIST dataset ##################
   # This is just some way of getting the MNIST dataset from an online location
   # and loading it into numpy arrays. It doesn't involve Lasagne at all.
 
   def load_dataset(self):
-      # We first define a download function, supporting both Python 2 and 3.
-      if sys.version_info[0] == 2:
-          from urllib import urlretrieve
-      else:
-          from urllib.request import urlretrieve
+      # # We first define a download function, supporting both Python 2 and 3.
+      # if sys.version_info[0] == 2:
+      #     from urllib import urlretrieve
+      # else:
+      #     from urllib.request import urlretrieve
 
-      def download(filename, source='http://yann.lecun.com/exdb/mnist/'):
-          print("Downloading %s" % filename)
-          urlretrieve(source + filename, filename)
+      # def download(filename, source='http://yann.lecun.com/exdb/mnist/'):
+      #     print("Downloading %s" % filename)
+      #     urlretrieve(source + filename, filename)
 
-      # We then define functions for loading MNIST images and labels.
-      # For convenience, they also download the requested files if needed.
-      import gzip
+      # # We then define functions for loading MNIST images and labels.
+      # # For convenience, they also download the requested files if needed.
+      # import gzip
 
-      def load_mnist_images(filename):
-          if not os.path.exists(filename):
-              download(filename)
-          # Read the inputs in Yann LeCun's binary format.
-          with gzip.open(filename, 'rb') as f:
-              data = np.frombuffer(f.read(), np.uint8, offset=16)
-          # The inputs are vectors now, we reshape them to monochrome 2D images,
-          # following the shape convention: (examples, channels, rows, columns)
-          data = data.reshape(-1, 1, 28, 28)
-          # The inputs come as bytes, we convert them to float32 in range [0,1].
-          # (Actually to range [0, 255/256], for compatibility to the version
-          # provided at http://deeplearning.net/data/mnist/mnist.pkl.gz.)
-          return data / np.float32(256)
+      # def load_mnist_images(filename):
+      #     if not os.path.exists(filename):
+      #         download(filename)
+      #     # Read the inputs in Yann LeCun's binary format.
+      #     with gzip.open(filename, 'rb') as f:
+      #         data = np.frombuffer(f.read(), np.uint8, offset=16)
+      #     # The inputs are vectors now, we reshape them to monochrome 2D images,
+      #     # following the shape convention: (examples, channels, rows, columns)
+      #     data = data.reshape(-1, 1, 28, 28)
+          
+      #     # The inputs come as bytes, we convert them to float32 in range [0,1].
+      #     # (Actually to range [0, 255/256], for compatibility to the version
+      #     # provided at http://deeplearning.net/data/mnist/mnist.pkl.gz.)
+      #     return data / np.float32(256)
 
-      def load_mnist_labels(filename):
-          if not os.path.exists(filename):
-              download(filename)
-          # Read the labels in Yann LeCun's binary format.
-          with gzip.open(filename, 'rb') as f:
-              data = np.frombuffer(f.read(), np.uint8, offset=8)
-          # The labels are vectors of integers now, that's exactly what we want.
-          return data
+      # def load_mnist_labels(filename):
+      #     if not os.path.exists(filename):
+      #         download(filename)
+      #     # Read the labels in Yann LeCun's binary format.
+      #     with gzip.open(filename, 'rb') as f:
+      #         data = np.frombuffer(f.read(), np.uint8, offset=8)
+      #     # The labels are vectors of integers now, that's exactly what we want.
+      #     return data
 
-      # We can now download and read the training and test set images and labels.
-      X_train = load_mnist_images('train-images-idx3-ubyte.gz')
-      y_train = load_mnist_labels('train-labels-idx1-ubyte.gz')
-      X_test = load_mnist_images('t10k-images-idx3-ubyte.gz')
-      y_test = load_mnist_labels('t10k-labels-idx1-ubyte.gz')
+      # # We can now download and read the training and test set images and labels.
+      # X_train = load_mnist_images('train-images-idx3-ubyte.gz')
+      # y_train = load_mnist_labels('train-labels-idx1-ubyte.gz')
+      # X_test = load_mnist_images('t10k-images-idx3-ubyte.gz')
+      # y_test = load_mnist_labels('t10k-labels-idx1-ubyte.gz')
 
-      # We reserve the last 10000 training examples for validation.
-      X_train, X_val = X_train[:-10000], X_train[-10000:]
-      y_train, y_val = y_train[:-10000], y_train[-10000:]
+      # # We reserve the last 10000 training examples for validation.
+      # X_train, X_val = X_train[:-10000], X_train[-10000:]
+      # y_train, y_val = y_train[:-10000], y_train[-10000:]
 
-      # We just return all the arrays in order, as expected in main().
-      # (It doesn't matter how we do this as long as we can read them again.)
-      return X_train, y_train, X_val, y_val, X_test, y_test    
+      # # We just return all the arrays in order, as expected in main().
+      # # (It doesn't matter how we do this as long as we can read them again.)
+      # return X_train, y_train, X_val, y_val, X_test, y_test    
+
+      #
+      #
+      # LOAD PATCHES
+      #
+      #
+      training = np.load(self._PATCH_PATH+'train.npz')
+      training_targets = np.load(self._PATCH_PATH+'train_targets.npz')
+
+      #
+      # we also normalize all binary images as uint8
+      #
+      training = {
+        'image': training['image'].reshape(-1, 1, 75, 75),
+        'prob': training['prob'].reshape(-1, 1, 75, 75),
+        'binary1': training['binary1'].reshape(-1, 1, 75, 75)*255,
+        'binary2': training['binary2'].reshape(-1, 1, 75, 75)*255,
+        'overlap': training['overlap'].reshape(-1, 1, 75, 75)*255, 
+      }
+
+      training_targets = training_targets['targets'].astype(np.uint8)
+
+
+
+      val = np.load(self._PATCH_PATH+'val.npz')
+      val_targets = np.load(self._PATCH_PATH+'val_targets.npz')
+
+      #
+      # we also normalize all binary images as uint8
+      #
+      val = {
+        'image': val['image'].reshape(-1, 1, 75, 75),
+        'prob': val['prob'].reshape(-1, 1, 75, 75),
+        'binary1': val['binary1'].reshape(-1, 1, 75, 75)*255,
+        'binary2': val['binary2'].reshape(-1, 1, 75, 75)*255,
+        'overlap': val['overlap'].reshape(-1, 1, 75, 75)*255, 
+      }
+
+      val_targets = val_targets['targets'].astype(np.uint8)
+
+
+
+      test = np.load(self._PATCH_PATH+'test.npz')
+      test_targets = np.load(self._PATCH_PATH+'test_targets.npz')
+
+      #
+      # we also normalize all binary images as uint8
+      #
+      test = {
+        'image': test['image'].reshape(-1, 1, 75, 75),
+        'prob': test['prob'].reshape(-1, 1, 75, 75),
+        'binary1': test['binary1'].reshape(-1, 1, 75, 75)*255,
+        'binary2': test['binary2'].reshape(-1, 1, 75, 75)*255,
+        'overlap': test['overlap'].reshape(-1, 1, 75, 75)*255, 
+      }
+
+      test_targets = test_targets['targets'].astype(np.uint8)
+
+      #val = np.load(PATCH_PATH+'val.npz')
+      #val_targets = np.load(PATCH_PATH+'val_targets.npz')
+
+      return training, training_targets, val, val_targets, test, test_targets
+
+
 
   def run(self, num_epochs=5):
     '''
     '''
     # Load the dataset
     print("Loading data...")
+    #X_train, y_train, X_val, y_val, X_test, y_test = self.load_dataset()
     X_train, y_train, X_val, y_val, X_test, y_test = self.load_dataset()
+    # X_val = X_test = X_train
+    # y_val = y_test = y_train
 
     # Prepare Theano variables for inputs and targets
     image_var = T.tensor4('image')
@@ -112,7 +185,7 @@ class SplitCNN(object):
     # Descent (SGD) with Nesterov momentum, but Lasagne offers plenty more.
     params = lasagne.layers.get_all_params(network, trainable=True)
     updates = lasagne.updates.nesterov_momentum(
-            loss, params, learning_rate=LEARNING_RATE, momentum=MOMENTUM)
+            loss, params, learning_rate=self._LEARNING_RATE, momentum=self._MOMENTUM)
 
     # Create a loss expression for validation/testing. The crucial difference
     # here is that we do a deterministic forward pass through the network,
@@ -136,32 +209,32 @@ class SplitCNN(object):
     print("Starting training...")
     # We iterate over epochs:
 
-    for epoch in range(num_epochs):
+    for epoch in range(self._EPOCHS):
         # In each epoch, we do a full pass over the training data:
         train_err = 0
         train_batches = 0
         start_time = time.time()
-        for batch in self.iterate_minibatches(X_train, y_train, BATCH_SIZE, shuffle=True):
-            inputs, targets = batch
-            # print inputs, targets
-            self._dbg = (inputs, targets)
-            train_err += train_fn(inputs, inputs, inputs, inputs, inputs, targets)
+        for batch in self.iterate_minibatches(X_train, y_train, self._BATCH_SIZE, shuffle=False):
+            images, probs, binary1s, binary2s, overlaps, targets = batch
+            self._dbg = images, probs, binary1s
+            train_err += train_fn(images, probs, binary1s, binary2s, overlaps, targets)
             train_batches += 1
 
         # And a full pass over the validation data:
         val_err = 0
         val_acc = 0
         val_batches = 0
-        for batch in self.iterate_minibatches(X_val, y_val, BATCH_SIZE, shuffle=False):
-            inputs, targets = batch
-            err, acc = val_fn(inputs, inputs, inputs, inputs, inputs, targets)
+        for batch in self.iterate_minibatches(X_val, y_val, self._BATCH_SIZE, shuffle=False):
+            #inputs, targets = batch
+            images, probs, binary1s, binary2s, overlaps, targets = batch
+            err, acc = val_fn(images, probs, binary1s, binary2s, overlaps, targets)
             val_err += err
             val_acc += acc
             val_batches += 1
 
         # Then we print the results for this epoch:
         print("Epoch {} of {} took {:.3f}s".format(
-            epoch + 1, num_epochs, time.time() - start_time))
+            epoch + 1, self._EPOCHS, time.time() - start_time))
         print("  training loss:\t\t{:.6f}".format(train_err / train_batches))
         print("  validation loss:\t\t{:.6f}".format(val_err / val_batches))
         print("  validation accuracy:\t\t{:.2f} %".format(
@@ -171,9 +244,11 @@ class SplitCNN(object):
     test_err = 0
     test_acc = 0
     test_batches = 0
-    for batch in self.iterate_minibatches(X_test, y_test, BATCH_SIZE, shuffle=False):
-        inputs, targets = batch
-        err, acc = val_fn(inputs, inputs, inputs, inputs, inputs, targets)
+    for batch in self.iterate_minibatches(X_test, y_test, self._BATCH_SIZE, shuffle=False):
+        # inputs, targets = batch
+        # err, acc = val_fn(inputs, inputs, inputs, inputs, inputs, targets)
+        images, probs, binary1s, binary2s, overlaps, targets = batch
+        err, acc = val_fn(images, probs, binary1s, binary2s, overlaps, targets)        
         test_err += err
         test_acc += acc
         test_batches += 1
@@ -192,7 +267,7 @@ class SplitCNN(object):
     layers[name] = {}
 
     # Input layer, as usual:
-    input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
+    input_layer = lasagne.layers.InputLayer(shape=self._INPUT_SHAPE,
                                         input_var=input_var)
     # This time we do not apply input dropout, as it tends to work less well
     # for convolutional layers.
@@ -202,7 +277,7 @@ class SplitCNN(object):
     # Convolutional layer with 32 kernels of size 5x5. Strided and padded
     # convolutions are supported as well; see the docstring.
     c2d_layer = lasagne.layers.Conv2DLayer(
-            input_layer, num_filters=NO_FILTERS, filter_size=FILTER_SIZE,
+            input_layer, num_filters=self._NO_FILTERS, filter_size=self._FILTER_SIZE,
             nonlinearity=lasagne.nonlinearities.rectify,
             W=lasagne.init.GlorotUniform())
     # Expert note: Lasagne provides alternative convolutional layers that
@@ -218,7 +293,7 @@ class SplitCNN(object):
 
     # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
     c2d_layer2 = lasagne.layers.Conv2DLayer(
-            max_pool_layer, num_filters=NO_FILTERS2, filter_size=FILTER_SIZE2,
+            max_pool_layer, num_filters=self._NO_FILTERS2, filter_size=self._FILTER_SIZE2,
             nonlinearity=lasagne.nonlinearities.rectify)
 
     layers[name]['c2d_layer2'] = c2d_layer2
@@ -249,239 +324,6 @@ class SplitCNN(object):
     layers = self.gen_network(layers, 'binary1', input_binary1)
     layers = self.gen_network(layers, 'binary2', input_binary2)
     layers = self.gen_network(layers, 'overlap', input_overlap)
-
-    # #
-    # # IMAGE LAYER
-    # #
-
-    # layers['image'] = {}
-
-    # # Input layer, as usual:
-    # input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
-    #                                     input_var=input_image)
-    # # This time we do not apply input dropout, as it tends to work less well
-    # # for convolutional layers.
-
-    # layers['image']['input_layer'] = input_layer
-
-    # # Convolutional layer with 32 kernels of size 5x5. Strided and padded
-    # # convolutions are supported as well; see the docstring.
-    # c2d_layer = lasagne.layers.Conv2DLayer(
-    #         input_layer, num_filters=NO_FILTERS, filter_size=FILTER_SIZE,
-    #         nonlinearity=lasagne.nonlinearities.rectify,
-    #         W=lasagne.init.GlorotUniform())
-    # # Expert note: Lasagne provides alternative convolutional layers that
-    # # override Theano's choice of which implementation to use; for details
-    # # please see http://lasagne.readthedocs.org/en/latest/user/tutorial.html.
-
-    # layers['image']['c2d_layer'] = c2d_layer
-
-    # # Max-pooling layer of factor 2 in both dimensions:
-    # max_pool_layer = lasagne.layers.MaxPool2DLayer(c2d_layer, pool_size=(2, 2))
-
-    # layers['image']['max_pool_layer'] = max_pool_layer
-
-    # # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
-    # c2d_layer2 = lasagne.layers.Conv2DLayer(
-    #         max_pool_layer, num_filters=NO_FILTERS2, filter_size=FILTER_SIZE2,
-    #         nonlinearity=lasagne.nonlinearities.rectify)
-
-    # layers['image']['c2d_layer2'] = c2d_layer2
-
-    # max_pool_layer2 = lasagne.layers.MaxPool2DLayer(c2d_layer2, pool_size=(2, 2))
-
-    # layers['image']['max_pool_layer2'] = max_pool_layer2
-
-    # layers['image']['network'] = max_pool_layer2
-
-
-
-    # #
-    # # PROB LAYER
-    # #
-
-    # layers['prob'] = {}
-
-    # # Input layer, as usual:
-    # input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
-    #                                     input_var=input_prob)
-    # # This time we do not apply input dropout, as it tends to work less well
-    # # for convolutional layers.
-
-    # layers['prob']['input_layer'] = input_layer
-
-    # # Convolutional layer with 32 kernels of size 5x5. Strided and padded
-    # # convolutions are supported as well; see the docstring.
-    # c2d_layer = lasagne.layers.Conv2DLayer(
-    #         input_layer, num_filters=NO_FILTERS, filter_size=FILTER_SIZE,
-    #         nonlinearity=lasagne.nonlinearities.rectify,
-    #         W=lasagne.init.GlorotUniform())
-    # # Expert note: Lasagne provides alternative convolutional layers that
-    # # override Theano's choice of which implementation to use; for details
-    # # please see http://lasagne.readthedocs.org/en/latest/user/tutorial.html.
-
-    # layers['prob']['c2d_layer'] = c2d_layer
-
-    # # Max-pooling layer of factor 2 in both dimensions:
-    # max_pool_layer = lasagne.layers.MaxPool2DLayer(c2d_layer, pool_size=(2, 2))
-
-    # layers['prob']['max_pool_layer'] = max_pool_layer
-
-    # # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
-    # c2d_layer2 = lasagne.layers.Conv2DLayer(
-    #         max_pool_layer, num_filters=NO_FILTERS2, filter_size=FILTER_SIZE2,
-    #         nonlinearity=lasagne.nonlinearities.rectify)
-
-    # layers['prob']['c2d_layer2'] = c2d_layer2
-
-    # max_pool_layer2 = lasagne.layers.MaxPool2DLayer(c2d_layer2, pool_size=(2, 2))
-
-    # layers['prob']['max_pool_layer2'] = max_pool_layer2
-
-    # layers['prob']['network'] = max_pool_layer2
-
-
-
-
-    # #
-    # # BINARY MASK 1
-    # #
-
-    # layers['binary1'] = {}
-
-    # # Input layer, as usual:
-    # input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
-    #                                     input_var=input_binary1)
-    # # This time we do not apply input dropout, as it tends to work less well
-    # # for convolutional layers.
-
-    # layers['binary1']['input_layer'] = input_layer
-
-    # # Convolutional layer with 32 kernels of size 5x5. Strided and padded
-    # # convolutions are supported as well; see the docstring.
-    # c2d_layer = lasagne.layers.Conv2DLayer(
-    #         input_layer, num_filters=NO_FILTERS, filter_size=FILTER_SIZE,
-    #         nonlinearity=lasagne.nonlinearities.rectify,
-    #         W=lasagne.init.GlorotUniform())
-    # # Expert note: Lasagne provides alternative convolutional layers that
-    # # override Theano's choice of which implementation to use; for details
-    # # please see http://lasagne.readthedocs.org/en/latest/user/tutorial.html.
-
-    # layers['binary1']['c2d_layer'] = c2d_layer
-
-    # # Max-pooling layer of factor 2 in both dimensions:
-    # max_pool_layer = lasagne.layers.MaxPool2DLayer(c2d_layer, pool_size=(2, 2))
-
-    # layers['binary1']['max_pool_layer'] = max_pool_layer
-
-    # # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
-    # c2d_layer2 = lasagne.layers.Conv2DLayer(
-    #         max_pool_layer, num_filters=NO_FILTERS2, filter_size=FILTER_SIZE2,
-    #         nonlinearity=lasagne.nonlinearities.rectify)
-
-    # layers['binary1']['c2d_layer2'] = c2d_layer2
-
-    # max_pool_layer2 = lasagne.layers.MaxPool2DLayer(c2d_layer2, pool_size=(2, 2))
-
-    # layers['binary1']['max_pool_layer2'] = max_pool_layer2
-
-    # layers['binary1']['network'] = max_pool_layer2
-
-
-
-    # #
-    # # BINARY MASK 2
-    # #
-
-    # layers['binary2'] = {}
-
-    # # Input layer, as usual:
-    # input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
-    #                                     input_var=input_binary2)
-    # # This time we do not apply input dropout, as it tends to work less well
-    # # for convolutional layers.
-
-    # layers['binary2']['input_layer'] = input_layer
-
-    # # Convolutional layer with 32 kernels of size 5x5. Strided and padded
-    # # convolutions are supported as well; see the docstring.
-    # c2d_layer = lasagne.layers.Conv2DLayer(
-    #         input_layer, num_filters=32, filter_size=(5, 5),
-    #         nonlinearity=lasagne.nonlinearities.rectify,
-    #         W=lasagne.init.GlorotUniform())
-    # # Expert note: Lasagne provides alternative convolutional layers that
-    # # override Theano's choice of which implementation to use; for details
-    # # please see http://lasagne.readthedocs.org/en/latest/user/tutorial.html.
-
-    # layers['binary2']['c2d_layer'] = c2d_layer
-
-    # # Max-pooling layer of factor 2 in both dimensions:
-    # max_pool_layer = lasagne.layers.MaxPool2DLayer(c2d_layer, pool_size=(2, 2))
-
-    # layers['binary2']['max_pool_layer'] = max_pool_layer
-
-    # # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
-    # c2d_layer2 = lasagne.layers.Conv2DLayer(
-    #         max_pool_layer, num_filters=32, filter_size=(5, 5),
-    #         nonlinearity=lasagne.nonlinearities.rectify)
-
-    # layers['binary2']['c2d_layer2'] = c2d_layer2
-
-    # max_pool_layer2 = lasagne.layers.MaxPool2DLayer(c2d_layer2, pool_size=(2, 2))
-
-    # layers['binary2']['max_pool_layer2'] = max_pool_layer2
-
-    # layers['binary2']['network'] = max_pool_layer2
-
-
-
-
-    # #
-    # # OVERLAP
-    # #
-
-    # layers['overlap'] = {}
-
-    # # Input layer, as usual:
-    # input_layer = lasagne.layers.InputLayer(shape=INPUT_SHAPE,
-    #                                     input_var=input_overlap)
-    # # This time we do not apply input dropout, as it tends to work less well
-    # # for convolutional layers.
-
-    # layers['overlap']['input_layer'] = input_layer
-
-    # # Convolutional layer with 32 kernels of size 5x5. Strided and padded
-    # # convolutions are supported as well; see the docstring.
-    # c2d_layer = lasagne.layers.Conv2DLayer(
-    #         input_layer, num_filters=32, filter_size=(5, 5),
-    #         nonlinearity=lasagne.nonlinearities.rectify,
-    #         W=lasagne.init.GlorotUniform())
-    # # Expert note: Lasagne provides alternative convolutional layers that
-    # # override Theano's choice of which implementation to use; for details
-    # # please see http://lasagne.readthedocs.org/en/latest/user/tutorial.html.
-
-    # layers['overlap']['c2d_layer'] = c2d_layer
-
-    # # Max-pooling layer of factor 2 in both dimensions:
-    # max_pool_layer = lasagne.layers.MaxPool2DLayer(c2d_layer, pool_size=(2, 2))
-
-    # layers['overlap']['max_pool_layer'] = max_pool_layer
-
-    # # Another convolution with 32 5x5 kernels, and another 2x2 pooling:
-    # c2d_layer2 = lasagne.layers.Conv2DLayer(
-    #         max_pool_layer, num_filters=32, filter_size=(5, 5),
-    #         nonlinearity=lasagne.nonlinearities.rectify)
-
-    # layers['overlap']['c2d_layer2'] = c2d_layer2
-
-    # max_pool_layer2 = lasagne.layers.MaxPool2DLayer(c2d_layer2, pool_size=(2, 2))
-
-    # layers['overlap']['max_pool_layer2'] = max_pool_layer2
-
-    # layers['overlap']['network'] = max_pool_layer2
-
-
-
 
     #
     #
@@ -554,16 +396,20 @@ class SplitCNN(object):
   # several changes in the main program, though, and is not demonstrated here.
 
   def iterate_minibatches(self, inputs, targets, batchsize, shuffle=False):
-      assert len(inputs) == len(targets)
+      assert len(inputs['image']) == len(targets)
+      assert len(inputs['prob']) == len(targets)
+      assert len(inputs['binary1']) == len(targets)
+      assert len(inputs['binary2']) == len(targets)
+      assert len(inputs['overlap']) == len(targets)
       if shuffle:
           indices = np.arange(len(inputs))
           np.random.shuffle(indices)
-      for start_idx in range(0, len(inputs) - batchsize + 1, batchsize):
+      for start_idx in range(0, len(inputs['image']) - batchsize + 1, batchsize):
           if shuffle:
               excerpt = indices[start_idx:start_idx + batchsize]
           else:
               excerpt = slice(start_idx, start_idx + batchsize)
-          yield inputs[excerpt], targets[excerpt]
+          yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary1'][excerpt], inputs['binary2'][excerpt], inputs['overlap'][excerpt], targets[excerpt]
 
   def visualize_filters(self, layer):
 
@@ -696,3 +542,5 @@ class SplitCNN(object):
                           tile_col * (W + Ws): tile_col * (W + Ws) + W
                           ] = this_img * c
           return out_array
+
+

@@ -30,6 +30,12 @@ class SplitCNN(object):
     self._NO_FILTERS2 = 32
     self._FILTER_SIZE2 = (5,5)
 
+    self._training_loss = []
+    self._validation_loss = []
+    self._validation_acc = []
+    self._test_loss = []
+    self._test_acc = []
+
 
   # ################## Download and prepare the MNIST dataset ##################
   # This is just some way of getting the MNIST dataset from an online location
@@ -240,6 +246,10 @@ class SplitCNN(object):
         print("  validation accuracy:\t\t{:.2f} %".format(
             val_acc / val_batches * 100))
 
+        self._training_loss.append(train_err / train_batches)
+        self._validation_loss.append(val_err / val_batches)
+        self._validation_acc.append(val_acc / val_batches * 100)
+
     # After training, we compute and print the test error:
     test_err = 0
     test_acc = 0
@@ -255,7 +265,10 @@ class SplitCNN(object):
     print("Final results:")
     print("  test loss:\t\t\t{:.6f}".format(test_err / test_batches))
     print("  test accuracy:\t\t{:.2f} %".format(
-        test_acc / test_batches * 100))    
+        test_acc / test_batches * 100))
+
+    self._test_loss.append(test_err / test_batches)
+    self._test_acc.append(test_acc / test_batches * 100)
 
     return layers
 

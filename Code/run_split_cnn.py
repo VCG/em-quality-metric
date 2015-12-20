@@ -12,7 +12,7 @@ from StringIO import StringIO
 import sys
 
 import argparse
-
+import time
 
 if __name__ == '__main__':
 
@@ -131,13 +131,15 @@ if __name__ == '__main__':
   sys.stderr = stderr_buffer
 
 
+  t0 = time.time()
+
   #
   # RUN THE NETWORK
   #
   layers = s.run()
 
-
-
+  t1 = time.time()
+  total_time = t1 - t0
 
 
   # grab final values
@@ -155,6 +157,9 @@ if __name__ == '__main__':
 
   with open(OUTPUT_PATH+os.sep+'err.log', 'w') as f:
     f.write(stderr_buffer.getvalue())
+
+  with open(OUTPUT_PATH+os.sep+'time.log', 'w') as f:
+    f.write(str(total_time))
 
   sys.stdout = old_stdout
   sys.stderr = old_stderr

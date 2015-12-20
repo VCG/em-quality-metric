@@ -6,7 +6,7 @@
 import sys
 from string import Template
 
-PATCH_PATH = 'patches_medium'
+PATCH_PATH = 'patches_large2'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
 
 slurm_header = """#!/bin/bash
@@ -53,8 +53,8 @@ exit 0;
 """)
 
 
-epochs = [100]
-batchsize = [10,100,500]#[100, 500, 1000]
+epochs = [100,500]
+batchsize = [100,1000,5000]#[100, 500, 1000]
 learning_rate = [0.000001, 0.00001, 0.0001, 0.001, 0.01]
 momentum = [0.9, 1.0]
 thirdconvlayer = [False, True]

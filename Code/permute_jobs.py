@@ -1,3 +1,8 @@
+#
+# LAUNCH THE JOBS WITH:
+# for f in *.slurm; do sbatch $f; done
+#
+
 import sys
 from string import Template
 

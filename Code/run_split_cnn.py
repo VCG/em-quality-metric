@@ -39,10 +39,10 @@ if __name__ == '__main__':
 
   if args.runmode == 'local':
     args.datapath = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
-    args.outputpath = '/Volumes/DATA1/split_cnn/'
+    args.outputpath = '/Volumes/DATA1/split_cnn/'+args.patchpath+'/'
   elif args.runmode == 'cluster':
     args.datapath = '/n/regal/pfister_lab/haehn/'
-    args.outputpath = '/n/regal/pfister_lab/haehn/split_cnn/'
+    args.outputpath = '/n/regal/pfister_lab/haehn/split_cnn/'+args.patchpath+'/'
 
   args_as_text = vars(args)
 

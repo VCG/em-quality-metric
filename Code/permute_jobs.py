@@ -9,8 +9,7 @@ from string import Template
 PATCH_PATH = 'patches_medium'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
 
-slurm_header = """
-#!/bin/bash
+slurm_header = """#!/bin/bash
 #
 # add all other SBATCH directives here...
 #

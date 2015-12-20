@@ -87,6 +87,7 @@ if __name__ == '__main__':
     ax.plot(epochs, training_loss, 'k--', label='Training Loss')
     ax.plot(epochs, validation_loss, 'k:', label='Validation Loss')
     ax.plot(epochs, validation_acc, 'k', label='Validation Accuracy')
+    ax.set_yscale('log')
 
     # Now add the legend with some customizations.
     legend = ax.legend(loc='upper center', shadow=True)

@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
 
+import pickle
+
 import os
 import uuid
 
@@ -61,6 +63,13 @@ if __name__ == '__main__':
 
   with open(OUTPUT_PATH+os.sep+'configuration.txt', 'w') as f:
     f.write(str(args_as_text))
+
+
+  def store_network(s, layers, epoch):
+
+    with open(OUTPUT_PATH+os.sep+'network_'+str(epoch)+'.p', 'wb') as f:
+      pickle.dump(layers, f)
+
 
 
   def store_filters(s, layers, epoch):
@@ -122,6 +131,7 @@ if __name__ == '__main__':
   s._NO_FILTERS3 = args.filters3
   s._FILTER_SIZE3 = (args.filtersize3,args.filtersize3)
   s._EPOCH_CALLBACK = store_filters
+  s._CONV_CALLBACK = store_network
 
   print 'Network configured.. running now!'
   old_stdout = sys.stdout

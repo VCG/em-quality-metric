@@ -1,3 +1,4 @@
+import copy
 import numpy as np
 import os
 import sys
@@ -33,6 +34,7 @@ class SplitCNN(object):
     self._NO_FILTERS3 = 32
     self._FILTER_SIZE3 = (5,5)    
     self._EPOCH_CALLBACK = None
+    self._CONV_CALLBACK = None
 
     self._training_loss = []
     self._validation_loss = []
@@ -219,6 +221,10 @@ class SplitCNN(object):
     print("Starting training...")
     # We iterate over epochs:
 
+    min_val_loss = np.inf
+    patience_counter = 0
+    good_layers = None
+
     for epoch in range(self._EPOCHS):
         # In each epoch, we do a full pass over the training data:
         train_err = 0
@@ -257,6 +263,25 @@ class SplitCNN(object):
         # call the epoch callback
         if epoch % (self._EPOCHS / 5) == 0:
           self._EPOCH_CALLBACK(self, layers, epoch)
+
+
+        temp_min_val_loss = val_err / val_batches
+
+        if temp_min_val_loss < min_val_loss:
+          min_val_loss = temp_min_val_loss
+          # cache W, b
+          good_layers = copy.deepcopy(layers)
+          patience_counter = 0
+        else:
+          patience_counter += 1
+
+        if patience_counter >= 30:
+          # save W, b
+          # store no. epochs
+          # reset W, b on network
+          self._CONV_CALLBACK(self, good_layers, epoch)
+          layers = good_layers
+          break
 
     # one final callback
     self._EPOCH_CALLBACK(self, layers, epoch)
@@ -453,6 +478,8 @@ class SplitCNN(object):
           yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary1'][excerpt], inputs['binary2'][excerpt], inputs['overlap'][excerpt], targets[excerpt]
 
   def visualize_filters(self, layer):
+
+    # print layer
 
     W = layer.W.get_value()
     # print W

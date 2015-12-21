@@ -53,10 +53,10 @@ exit 0;
 """)
 
 
-epochs = [100,500]
+epochs = [500]
 batchsize = [100,1000,5000]#[100, 500, 1000]
 learning_rate = [0.000001, 0.00001, 0.0001, 0.001, 0.01]
-momentum = [0.9, 1.0]
+momentum = [0.9, 0.95, 1.0]
 thirdconvlayer = [False, True]
 no_filters = [16, 32, 64]
 filter_size = [5, 9, 13]

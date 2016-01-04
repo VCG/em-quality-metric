@@ -420,7 +420,7 @@ class SplitCNN(object):
     # And, finally, the 10-unit output layer with 50% dropout on its inputs:
     dense_layer2 = lasagne.layers.DenseLayer(
             lasagne.layers.dropout(dense_layer1, p=.5),
-            num_units=10,
+            num_units=2,
             nonlinearity=lasagne.nonlinearities.softmax)
 
     layers['dense']['dense_layer2'] = dense_layer2

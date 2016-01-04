@@ -140,7 +140,7 @@ class TestCNN(object):
     # train_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], loss, updates=updates)
 
     # Compile a second function computing the validation loss and accuracy:
-    val_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], [test_loss, test_acc])
+    val_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], [test_prediction, test_loss, test_acc])
 
 
     # After training, we compute and print the test error:
@@ -151,7 +151,8 @@ class TestCNN(object):
         # inputs, targets = batch
         # err, acc = val_fn(inputs, inputs, inputs, inputs, inputs, targets)
         images, probs, binary1s, binary2s, overlaps, targets = batch
-        err, acc = val_fn(images, probs, binary1s, binary2s, overlaps, targets)        
+        pred, err, acc = val_fn(images, probs, binary1s, binary2s, overlaps, targets)        
+        print pred
         test_err += err
         test_acc += acc
         test_batches += 1

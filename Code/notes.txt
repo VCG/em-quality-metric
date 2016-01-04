@@ -1,0 +1,21 @@
+export CUDA_HOME=/usr/local/cuda-7.5
+export CUDA_LIB=/usr/local/cuda-7.5/lib64")
+export CUDA_INCLUDE=/usr/local/cuda-7.5/include")
+export PATH=/usr/local/cuda-7.5/bin:$PATH
+export CPATH=/usr/local/cuda-7.5/include:$CPATH
+export FPATH=/usr/local/cuda-7.5/include:$FPATH
+export LD_LIBRARY_PATH=/usr/local/cuda-7.5/lib:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/cuda-7.5/lib:$LIBRARY_PATH
+export LD_LIBRARY_PATH=/usr/local/cuda-7.5/lib64:$LD_LIBRARY_PATH
+export LIBRARY_PATH=/usr/local/cuda-7.5/lib64:$LIBRARY_PATH
+
+
+export PATH=/Developer/NVIDIA/CUDA-7.5/bin:.:/Users/d/arch/local64/bin:/Users/d/arch/Darwin64/bin:/Users/d/arch/scripts:/opt/arch/Darwin64/bin:/opt/arch/scripts:/Users/d/arch/java64/bin:/bin:/bin:/usr/bin:/bin:/usr/local/bin:/sbin:/usr/sbin:/usr/local/sbin:/usr/games:/etc:/usr/etc:/usr/bin/X11:/usr/man:/usr/X11R6/bin:/opt/gnome/bin:/opt/local/bin:/sw/bin
+export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.5/lib:
+
+
+
+
+python find_best.py -p patches_medium -s acc -v True -n 1
+
+

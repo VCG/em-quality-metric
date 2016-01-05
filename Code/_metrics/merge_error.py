@@ -107,7 +107,9 @@ class MergeError(Error):
         '''
         '''
         m = MergeError()
+        # return segmentation, label1, label2
         m._meta = m.analyze_border(image, prob, segmentation, label1, label1, label2)
+        
         if thumb:
             m._has_thumb = True
             m._thumb = m.create_thumb(image, m._meta)
@@ -188,7 +190,7 @@ class MergeError(Error):
 
 
     @staticmethod
-    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True, randomize_slice=False, randomize_label=False, max_per_slice=-1):
+    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True, randomize_slice=False, randomize_label=False, max_per_slice=-1, fill_labels=True):
         '''
         '''
 
@@ -202,10 +204,16 @@ class MergeError(Error):
 
         for z in z_s:
 
-            # fill segmentation
-            label_zeros = Util.threshold(label[z], 0)
-            label_filled = Util.fill(label[z], label_zeros.astype(np.bool))
-            label_filled_relabeled = skimage.measure.label(label_filled).astype(np.uint64)
+            if fill_labels:
+                # fill segmentation
+                print 'Filling segmentation'
+                label_zeros = Util.threshold(label[z], 0)
+                label_filled = Util.fill(label[z], label_zeros.astype(np.bool))
+                label_filled_relabeled = skimage.measure.label(label_filled).astype(np.uint64)
+            else:
+                print 'Skip filling'
+                label_filled_relabeled = label
+                print label_filled_relabeled.shape
 
             print 'Working on z', z
 
@@ -215,7 +223,9 @@ class MergeError(Error):
                 labels = np.arange(len(Util.get_histogram(label_filled_relabeled)))
                 np.random.shuffle(labels)
             else:
-                labels = range(len(Util.get_histogram(label_filled_relabeled)))    
+                labels = range(1,len(Util.get_histogram(label_filled_relabeled))) # we ignore background 0 which should not exist anyways
+
+
 
             for l in labels:
 
@@ -231,7 +241,7 @@ class MergeError(Error):
                     while not s:
 
                         if upper_limit == 0:
-                          #print "Upper limit reached."
+                          # print "Upper limit reached."
                           break 
 
                         s = MergeError.create(image[z], prob[z], label_filled_relabeled, l, n, thumb)

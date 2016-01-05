@@ -146,6 +146,7 @@ class Error(object):
 
         bbox_y1y2x1x2 = mh.bbox(merged_array)
         bbox = bbox_y1y2x1x2        
+
         
         # dilate for overlap
         dilated_array1 = np.array(array1)
@@ -164,6 +165,7 @@ class Error(object):
 
         # fault check if no border is found
         if len(border_yx) < 2:
+            # print 'no border'
             return None
 
         #
@@ -176,6 +178,7 @@ class Error(object):
             
         empty_labeled = skimage.measure.label(empty)
         if empty_labeled.max() > 1:
+            # print 'more than 1 border'
             return None
         #
         #
@@ -188,6 +191,7 @@ class Error(object):
         array2_no_holes = np.all(mh.close_holes(array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool)) == array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool))        
         if (not array1_no_holes or not array2_no_holes):
             # this is no good
+            # print 'enclosing'
             return None
         
         
@@ -209,15 +213,19 @@ class Error(object):
         new_border_center = [border_center[0], border_center[1]]
         if border_center[0] < patch_size[0]/2:
             new_border_center[0] = patch_size[0]/2
+            # print 'too close'
             return None
         if border_center[0]+patch_size[0]/2 >= merged_array.shape[0]:
             new_border_center[0] = merged_array.shape[0] - patch_size[0]/2 - 1
+            # print 'too close'
             return None
         if border_center[1] < patch_size[1]/2:
             new_border_center[1] = patch_size[1]/2
+            # print 'too close'
             return None
         if border_center[1]+patch_size[1]/2 >= merged_array.shape[1]:
             new_border_center[1] = merged_array.shape[1] - patch_size[1]/2 - 1
+            # print 'too close'
             return None
 
         
@@ -229,6 +237,7 @@ class Error(object):
 
         ### workaround to not sample white border of probability map
         if bbox[0] <= 33:
+            # print 'prob'
             return None
         if bbox[1] >= merged_array.shape[0]-33:
             return None

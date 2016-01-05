@@ -15,25 +15,28 @@ import lasagne
 class TestCNN(object):
 
 
-  def __init__(self, network_id):
+  def __init__(self, network_id, patches='patches_large2_vis'):
     '''
     '''
     #self.initialize()
     self._dbg = None
 
     self._DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
-    self._PATCH = 'patches_large2_vis'
+    self._PATCH = patches
     self._PATCH_PATH = os.path.join(self._DATA_PATH,self._PATCH+'/')
     self._NETWORK_ID = network_id
     self._OUTPUT_PATH = '/Volumes/DATA1/split_cnn'
     self._RESULTS_PATH = os.path.join(self._OUTPUT_PATH, self._PATCH, self._NETWORK_ID)
     self._BATCH_SIZE = -1
 
-  def load_dataset(self):
+  def load_dataset(self, path=None, testfile='vis.npz', targetfile='vis_targets.npz'):
 
 
-      test = np.load(self._PATCH_PATH+'vis.npz')
-      test_targets = np.load(self._PATCH_PATH+'vis_targets.npz')
+      if path == None:
+        path = self._PATCH_PATH
+
+      test = np.load(path+os.sep+testfile)
+      test_targets = np.load(path+os.sep+targetfile)
 
       #
       # we also normalize all binary images as uint8

@@ -21,7 +21,7 @@ DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
 GOLD_PATH = os.path.join(DATA_PATH,'gold/')
 IMAGE_PATH = os.path.join(DATA_PATH,'input/')
 PROB_PATH = os.path.join(DATA_PATH,'prob/')
-PATCH_PATH = os.path.join(DATA_PATH,'patches_large2/')
+PATCH_PATH = os.path.join(DATA_PATH,'patches_large2new/')
 
 
 gold = _metrics.Util.read(GOLD_PATH+'*.tif')

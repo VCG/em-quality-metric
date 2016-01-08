@@ -1,4 +1,5 @@
 import glob
+import h5py
 import mahotas as mh
 import numpy as np
 import tifffile as tif
@@ -80,3 +81,19 @@ class Util(object):
                                       return_distances=False, 
                                       return_indices=True)
       return data[tuple(ind)]
+
+  @staticmethod
+  def load_colormap(f):
+    '''
+    '''
+    hdf5_file = h5py.File(f, 'r')
+    list_of_names = []
+    hdf5_file.visit(list_of_names.append) 
+    return hdf5_file[list_of_names[0]].value    
+
+  @staticmethod
+  def colorize(segmentation, colormap):
+    '''
+    '''
+    pass
+    

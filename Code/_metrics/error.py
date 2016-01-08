@@ -39,6 +39,11 @@ class Error(object):
         label = large_label[label_bbox[0]:label_bbox[1], label_bbox[2]:label_bbox[3]]
         image = image[label_bbox[0]:label_bbox[1], label_bbox[2]:label_bbox[3]]
 
+        #
+        # smooth the image
+        #
+        image = mh.gaussian_filter(image, 3.5)
+
         grad_x = np.gradient(image)[0]
         grad_y = np.gradient(image)[1]
         grad = np.add(np.abs(grad_x), np.abs(grad_y))

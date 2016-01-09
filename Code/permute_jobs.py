@@ -6,7 +6,7 @@
 import sys
 from string import Template
 
-PATCH_PATH = 'patches_large2'
+PATCH_PATH = 'patches_large2new'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
 
 slurm_header = """#!/bin/bash

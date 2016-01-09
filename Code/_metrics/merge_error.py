@@ -235,7 +235,7 @@ class MergeError(Error):
                 neighbors = MergeError.grab_neighbors(label_filled_relabeled, l)
                 for n in neighbors:
 
-                    upper_limit = 3
+                    upper_limit = 10
 
                     s = MergeError.create(image[z], prob[z], label_filled_relabeled, l, n, thumb)
                     while not s:

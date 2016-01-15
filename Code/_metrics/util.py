@@ -25,9 +25,12 @@ class Util(object):
     return mh.fullhistogram(array)
 
   @staticmethod
-  def get_largest_label(array):
+  def get_largest_label(array, ignore_zero=False):
     '''
     '''
+
+    if ignore_zero:
+      return np.argmax(Util.get_histogram(array)[1:])  
     return np.argmax(Util.get_histogram(array))
 
   @staticmethod

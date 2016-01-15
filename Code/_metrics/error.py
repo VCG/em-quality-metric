@@ -182,8 +182,10 @@ class Error(object):
             empty[c[0]-bbox[0],c[1]-bbox[2]] = 1
             
         empty_labeled = skimage.measure.label(empty)
+        #mh.imsave('/Volumes/DATA1/test.tif', empty_labeled.astype(np.uint8)*255)
         if empty_labeled.max() > 1:
-            # print 'more than 1 border'
+            # print 'more than 1 border', empty_labeled.max()
+            print Util.get_largest_label(empty_labeled.astype(np.uint8), True)
             return None
         #
         #
@@ -245,10 +247,13 @@ class Error(object):
             # print 'prob'
             return None
         if bbox[1] >= merged_array.shape[0]-33:
+            # print 'prob'
             return None
         if bbox[2] <= 33:
+            # print 'prob'
             return None
         if bbox[3] >= merged_array.shape[1]-33:
+            # print 'prob'
             return None
 
 

@@ -21,7 +21,7 @@ DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
 GOLD_PATH = os.path.join(DATA_PATH,'gold/')
 IMAGE_PATH = os.path.join(DATA_PATH,'input/')
 PROB_PATH = os.path.join(DATA_PATH,'prob/')
-PATCH_PATH = os.path.join(DATA_PATH,'patches_large_sr/')
+PATCH_PATH = os.path.join(DATA_PATH,'patches_large_sr2/')
 
 
 gold = _metrics.Util.read(GOLD_PATH+'*.tif')
@@ -37,10 +37,10 @@ def generate_patches(_type, start_slice, end_slice, count, filename):
     NO_PATCHES = count
     
     if _type == 'split':
-        _type = _metrics.SplitError
+        _type = _metrics.PG.generate_split_error
         p_target = np.ones(NO_PATCHES)
     elif _type == 'correct':
-        _type = _metrics.MergeError
+        _type = _metrics.PG.generate_correct
         p_target = np.zeros(NO_PATCHES)        
 
     t0 = time.time()
@@ -57,47 +57,53 @@ def generate_patches(_type, start_slice, end_slice, count, filename):
     max_per_slice = int(count / (end_slice - start_slice)) + 1
     print 'Max per slice', max_per_slice
 
-    for s in _type.generate(images[start_slice:end_slice], probs[start_slice:end_slice], gold[start_slice:end_slice], n=10, thumb=False, rotate=True, flip=True, randomize_slice=True, randomize_label=True, max_per_slice=max_per_slice):
-    #for s in _metrics.SplitError.generate(images, gold, 10, thumb=False, rotate=True):    
+    for z in range(start_slice, end_slice):
 
-        #data.append(s)
+        print 'working on slice', z
 
-    #     if s._meta['label1'].astype(np.uint8).max() == 0:
-    #         print 'wrong egg'
-    #         continue
-
-        # now we have a correct patch
-    #     cv2.imwrite(TRAINING_PATH+str(splits)+'_image.tif', s._meta['image'])
-    #     cv2.imwrite(TRAINING_PATH+str(splits)+'_prob.tif', s._meta['prob'])
-    #     cv2.imwrite(TRAINING_PATH+str(splits)+'_label1.tif', img_as_ubyte(s._meta['label1']))
-    #     cv2.imwrite(TRAINING_PATH+str(splits)+'_label2.tif', img_as_ubyte(s._meta['label2']))
-    #     cv2.imwrite(TRAINING_PATH+str(splits)+'_overlap.tif', img_as_ubyte(s._meta['overlap']))
-
-        # p_image[patches] = s._meta['image'].ravel()
-        # p_prob[patches] = s._meta['prob'].ravel()
-        # p_label1[patches] = s._meta['label1'].ravel()
-        # p_label2[patches] = s._meta['label2'].ravel()
-        # p_overlap[patches] = s._meta['overlap'].ravel()
-        p_image[patches] = s['image'].ravel()
-        p_prob[patches] = s['prob'].ravel()
-        p_label1[patches] = s['label1'].ravel()
-        p_label2[patches] = s['label2'].ravel()
-        p_overlap[patches] = s['overlap'].ravel()
-
-        t1 = time.time()
-        total = t1-t0
-
-        patches += 1
+        # fill and normalize gold
+        gold_zeros = _metrics.Util.threshold(gold[z], 0)
+        gold_filled = _metrics.Util.fill(gold[z], gold_zeros.astype(np.bool))
+        gold_filled_relabeled = skimage.measure.label(gold_filled).astype(np.uint64)
+        gold_normalized = _metrics.Util.normalize_labels(gold_filled_relabeled)[0].astype(np.uint64)
 
 
-        if patches % 1000 == 0:
-            print 'Another 1000 generated after',total,'seconds'    
+        slice_counter = 0
+
+        for s in _type(images[z], probs[z], gold_normalized):
+
+            slice_counter += 1
+
+            patches += 1
+
+            if patches >= NO_PATCHES:
+                break            
+
+            if slice_counter >= max_per_slice:
+                break
+
+            p_image[patches] = s['image'].ravel()
+            p_prob[patches] = s['prob'].ravel()
+            p_label1[patches] = s['binary1'].ravel()
+            p_label2[patches] = s['binary2'].ravel()
+            p_overlap[patches] = s['overlap'].ravel()
+
+
+
+            t1 = time.time()
+            total = t1-t0
+
+
+            if patches % 1000 == 0:
+                print 'Another 1000 generated after',total,'seconds'    
+
+        if patches >= NO_PATCHES:
+            break         
 
     #     if total > 100:
     #         break
 
-        if patches >= NO_PATCHES:
-            break
+
 
 
             
@@ -139,6 +145,6 @@ def run(start_slice, end_slice, count, filename):
 #
 #
 #
-run(0, 65, 100000, 'train')
-run(65, 70, 10000, 'val')
-run(70, 75, 10000, 'test')
+run(0, 65, 150000, 'train')
+run(65, 70, 7500, 'val')
+run(70, 75, 7500, 'test')

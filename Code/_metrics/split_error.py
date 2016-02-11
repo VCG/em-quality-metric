@@ -82,12 +82,12 @@ class SplitError(Error):
         return m        
         
     @staticmethod
-    def create(image, prob, segmentation, label, thumb=True):
+    def create(image, prob, segmentation, label, sample_rate=10, thumb=True):
         '''
         '''
         m = SplitError()
         ws = m.split(image, segmentation, label)
-        m._meta = m.analyze_border(image, prob, ws, label, ws.max()-1, ws.max())
+        m._meta = m.analyze_border(image, prob, ws, ws.max()-1, ws.max(), sample_rate=sample_rate)
         if thumb:
             m._has_thumb = True
             m._thumb = m.create_thumb(image, m._meta)
@@ -108,7 +108,7 @@ class SplitError(Error):
             s.store(os.path.join(training_path,'split'))
         
     @staticmethod
-    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True, randomize_slice=False, randomize_label=False, max_per_slice=-1):
+    def generate(image, prob, label, n=10, thumb=False, rotate=True, flip=True, randomize_slice=False, randomize_label=False, max_per_slice=-1, sample_rate=10):
         '''
         '''
 
@@ -144,68 +144,87 @@ class SplitError(Error):
 
                 for i in range(n):
 
-                    upper_limit = 3
 
-                    s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb)
-                    while not s:
+                    upper_limit = 10
 
-                        if upper_limit == 0:
-                          #print "Upper limit reached."
-                          break 
+                    # m = MergeError()
+                    ws = SplitError.split(image, label_filled_relabeled, l)
+                    # m._meta = m.analyze_border(image, prob, ws, ws.max()-1, ws.max(), sample_rate=sample_rate)                    
+                    patches = MergeError.analyze_border(image, prob, ws, ws.max()-1, ws.max(), sample_rate=sample_rate)
 
-                        s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb)
-                        upper_limit -= 1
+                    for s in patches:
 
-                    if not s:
-                      continue
+                        yield s
 
-                    yield s
-                    slice_counter += 1
-                    if slice_counter >= max_per_slice:
-                        continue                    
+                    # for s in MergeError.create(image[z], prob[z], label_filled_relabeled, l, n, thumb=thumb):
 
-                    if flip:
-                        yield s.fliplr()
+                        # yield s
+
+                        # yield s
                         slice_counter += 1
-                        if slice_counter >= max_per_slice:
-                            continue
 
-                        yield s.flipud()
-                        slice_counter += 1
-                        if slice_counter >= max_per_slice:
-                            continue                        
+                    # upper_limit = 3
 
-                    if rotate:
-                        yield s.rotate(90)
-                        slice_counter += 1
-                        if slice_counter >= max_per_slice:
-                            continue
+                    # s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb=thumb)
+                    # while not s:
+
+                    #     if upper_limit == 0:
+                    #       #print "Upper limit reached."
+                    #       break 
+
+                    #     s = SplitError.create(image[z], prob[z], label_filled_relabeled, l, thumb=thumb)
+                    #     upper_limit -= 1
+
+                    # if not s:
+                    #   continue
+
+                    # yield s
+                    # slice_counter += 1
+                    # if slice_counter >= max_per_slice:
+                    #     continue                    
+
+                    # if flip:
+                    #     yield s.fliplr()
+                    #     slice_counter += 1
+                    #     if slice_counter >= max_per_slice:
+                    #         continue
+
+                    #     yield s.flipud()
+                    #     slice_counter += 1
+                    #     if slice_counter >= max_per_slice:
+                    #         continue                        
+
+                    # if rotate:
+                    #     yield s.rotate(90)
+                    #     slice_counter += 1
+                    #     if slice_counter >= max_per_slice:
+                    #         continue
 
 
-                        yield s.rotate(180)
-                        slice_counter += 1
-                        if slice_counter >= max_per_slice:
-                            continue
+                    #     yield s.rotate(180)
+                    #     slice_counter += 1
+                    #     if slice_counter >= max_per_slice:
+                    #         continue
 
 
-                        m270 = s.rotate(270)
-                        yield m270
-                        slice_counter += 1
-                        if slice_counter >= max_per_slice:
-                            continue
+                    #     m270 = s.rotate(270)
+                    #     yield m270
+                    #     slice_counter += 1
+                    #     if slice_counter >= max_per_slice:
+                    #         continue
 
 
-                        if flip:
-                            yield m270.fliplr()
-                            slice_counter += 1
-                            if slice_counter >= max_per_slice:
-                                continue
+                    #     if flip:
+                    #         yield m270.fliplr()
+                    #         slice_counter += 1
+                    #         if slice_counter >= max_per_slice:
+                    #             continue
 
 
-                            yield m270.flipud()
-                            slice_counter += 1
-                            if slice_counter >= max_per_slice:
-                                continue                            
+                    #         yield m270.flipud()
+                    #         slice_counter += 1
+                    #         if slice_counter >= max_per_slice:
+                    #             continue                            
 
 
 

@@ -6,7 +6,7 @@
 import sys
 from string import Template
 
-PATCH_PATH = 'patches_large2new'
+PATCH_PATH = 'patches_large_sr2'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
 
 slurm_header = """#!/bin/bash
@@ -54,12 +54,12 @@ exit 0;
 
 
 epochs = [500]
-batchsize = [100,1000,5000]#[100, 500, 1000]
-learning_rate = [0.000001, 0.00001, 0.0001, 0.001, 0.01]
-momentum = [0.9, 0.95, 1.0]
-thirdconvlayer = [False, True]
-no_filters = [16, 32, 64]
-filter_size = [5, 9, 13]
+batchsize = [100,1000]#,5000]#[100, 500, 1000]
+learning_rate = [0.0001, 0.001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
+momentum = [0.9, 0.95]
+thirdconvlayer = [True]
+no_filters = [16, 32]
+filter_size = [9, 13]
 
 no_jobs = 0
 

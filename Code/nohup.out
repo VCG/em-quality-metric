@@ -1,0 +1,509 @@
+/Users/d/Projects/em-quality-metric/Code/_metrics/tifffile.py:1995: UserWarning: failed to import _tifffile.decodepackbits
+  warnings.warn("failed to import %s" % module_function)
+/Users/d/Projects/em-quality-metric/Code/_metrics/tifffile.py:1995: UserWarning: failed to import _tifffile.decodelzw
+  warnings.warn("failed to import %s" % module_function)
+/Users/d/Projects/em-quality-metric/Code/_metrics/tifffile.py:1995: UserWarning: failed to import _tifffile.unpackints
+  warnings.warn("failed to import %s" % module_function)
+/Users/d/Projects/em-quality-metric/Code/tifffile.py:1995: UserWarning: failed to import _tifffile.decodepackbits
+  warnings.warn("failed to import %s" % module_function)
+/Users/d/Projects/em-quality-metric/Code/tifffile.py:1995: UserWarning: failed to import _tifffile.decodelzw
+  warnings.warn("failed to import %s" % module_function)
+/Users/d/Projects/em-quality-metric/Code/tifffile.py:1995: UserWarning: failed to import _tifffile.unpackints
+  warnings.warn("failed to import %s" % module_function)
+Loaded 75 images.
+Loaded 75 images.
+Loaded 75 images.
+Max per slice 2308
+working on slice 0
+Another 1000 generated after 63.1054549217 seconds
+Another 1000 generated after 121.903836966 seconds
+working on slice 1
+Another 1000 generated after 186.136126041 seconds
+Another 1000 generated after 241.784585953 seconds
+working on slice 2
+Another 1000 generated after 307.183006048 seconds
+Another 1000 generated after 364.836835861 seconds
+working on slice 3
+Another 1000 generated after 428.932990074 seconds
+Another 1000 generated after 488.912638903 seconds
+Another 1000 generated after 550.529130936 seconds
+working on slice 4
+Another 1000 generated after 609.917862892 seconds
+Another 1000 generated after 671.793040037 seconds
+working on slice 5
+Another 1000 generated after 731.92001009 seconds
+Another 1000 generated after 791.373293877 seconds
+working on slice 6
+Another 1000 generated after 853.822436094 seconds
+Another 1000 generated after 908.54166007 seconds
+Another 1000 generated after 966.730704069 seconds
+working on slice 7
+Another 1000 generated after 1027.80036998 seconds
+Another 1000 generated after 1088.20279908 seconds
+working on slice 8
+Another 1000 generated after 1149.27937889 seconds
+Another 1000 generated after 1207.63447499 seconds
+working on slice 9
+Another 1000 generated after 1273.89748907 seconds
+Another 1000 generated after 1330.799119 seconds
+Another 1000 generated after 1391.98832297 seconds
+working on slice 10
+Another 1000 generated after 1453.51992989 seconds
+Another 1000 generated after 1512.97618008 seconds
+working on slice 11
+Another 1000 generated after 1574.89816093 seconds
+Another 1000 generated after 1629.86169195 seconds
+working on slice 12
+Another 1000 generated after 1689.57634306 seconds
+Another 1000 generated after 1749.31504488 seconds
+Another 1000 generated after 1808.78591609 seconds
+working on slice 13
+Another 1000 generated after 1870.10620594 seconds
+Another 1000 generated after 1929.82080698 seconds
+working on slice 14
+Another 1000 generated after 1995.78412199 seconds
+Another 1000 generated after 2055.59898591 seconds
+working on slice 15
+Another 1000 generated after 2111.3460691 seconds
+Another 1000 generated after 2171.21156597 seconds
+working on slice 16
+Another 1000 generated after 2231.93241 seconds
+Another 1000 generated after 2292.52539992 seconds
+Another 1000 generated after 2354.08262205 seconds
+working on slice 17
+Another 1000 generated after 2415.24292207 seconds
+Another 1000 generated after 2475.605196 seconds
+working on slice 18
+Another 1000 generated after 2538.06273293 seconds
+Another 1000 generated after 2595.8839829 seconds
+working on slice 19
+Another 1000 generated after 2659.10892391 seconds
+Another 1000 generated after 2716.63411093 seconds
+Another 1000 generated after 2778.08360004 seconds
+working on slice 20
+Another 1000 generated after 2838.83318591 seconds
+Another 1000 generated after 2898.51137805 seconds
+working on slice 21
+Another 1000 generated after 2962.87305498 seconds
+Another 1000 generated after 3024.43727994 seconds
+working on slice 22
+Another 1000 generated after 3092.39237499 seconds
+Another 1000 generated after 3148.86672688 seconds
+Another 1000 generated after 3208.71385002 seconds
+working on slice 23
+Another 1000 generated after 3269.19925094 seconds
+Another 1000 generated after 3330.6297071 seconds
+working on slice 24
+Another 1000 generated after 3393.72264791 seconds
+Another 1000 generated after 3450.39760804 seconds
+working on slice 25
+Another 1000 generated after 3512.569839 seconds
+Another 1000 generated after 3573.93815088 seconds
+Another 1000 generated after 3631.36511993 seconds
+working on slice 26
+Another 1000 generated after 3693.83011889 seconds
+Another 1000 generated after 3752.467489 seconds
+working on slice 27
+Another 1000 generated after 3813.17208099 seconds
+Another 1000 generated after 3872.28912902 seconds
+working on slice 28
+Another 1000 generated after 3936.19856286 seconds
+Another 1000 generated after 3993.29620099 seconds
+working on slice 29
+Another 1000 generated after 4060.50353694 seconds
+Another 1000 generated after 4114.97165704 seconds
+Another 1000 generated after 4175.85457897 seconds
+working on slice 30
+Another 1000 generated after 4237.66036606 seconds
+Another 1000 generated after 4299.40337801 seconds
+working on slice 31
+Another 1000 generated after 4359.93464804 seconds
+Another 1000 generated after 4417.85960793 seconds
+working on slice 32
+Another 1000 generated after 4481.55435991 seconds
+Another 1000 generated after 4542.44035292 seconds
+Another 1000 generated after 4602.83301687 seconds
+working on slice 33
+Another 1000 generated after 4668.0207119 seconds
+Another 1000 generated after 4724.37598801 seconds
+working on slice 34
+Another 1000 generated after 4784.74743199 seconds
+Another 1000 generated after 4844.98383307 seconds
+working on slice 35
+Another 1000 generated after 4904.50083804 seconds
+Another 1000 generated after 4965.87519693 seconds
+Another 1000 generated after 5023.43897605 seconds
+working on slice 36
+Another 1000 generated after 5085.32340288 seconds
+Another 1000 generated after 5145.49179292 seconds
+working on slice 37
+Another 1000 generated after 5209.01314306 seconds
+Another 1000 generated after 5265.01876807 seconds
+working on slice 38
+Another 1000 generated after 5330.82616186 seconds
+Another 1000 generated after 5389.115556 seconds
+Another 1000 generated after 5447.47108793 seconds
+working on slice 39
+Another 1000 generated after 5507.62081099 seconds
+Another 1000 generated after 5566.02442908 seconds
+working on slice 40
+Another 1000 generated after 5631.14293504 seconds
+Another 1000 generated after 5690.03688002 seconds
+working on slice 41
+Another 1000 generated after 5753.47486496 seconds
+Another 1000 generated after 5814.14593697 seconds
+working on slice 42
+Another 1000 generated after 5872.40772605 seconds
+Another 1000 generated after 5930.10175896 seconds
+Another 1000 generated after 5991.44233608 seconds
+working on slice 43
+Another 1000 generated after 6051.7999289 seconds
+Another 1000 generated after 6112.10006094 seconds
+working on slice 44
+Another 1000 generated after 6172.79461098 seconds
+Another 1000 generated after 6231.20933104 seconds
+working on slice 45
+Another 1000 generated after 6293.18579698 seconds
+Another 1000 generated after 6351.42519188 seconds
+Another 1000 generated after 6409.30602288 seconds
+working on slice 46
+Another 1000 generated after 6473.13727307 seconds
+Another 1000 generated after 6531.94167709 seconds
+working on slice 47
+Another 1000 generated after 6595.96608496 seconds
+Another 1000 generated after 6651.85542202 seconds
+working on slice 48
+Another 1000 generated after 6713.92621589 seconds
+Another 1000 generated after 6776.67418408 seconds
+Another 1000 generated after 6833.0574739 seconds
+working on slice 49
+Another 1000 generated after 6891.70244908 seconds
+Another 1000 generated after 6950.88041186 seconds
+working on slice 50
+Another 1000 generated after 7013.21991301 seconds
+Another 1000 generated after 7075.48139787 seconds
+working on slice 51
+Another 1000 generated after 7135.03742194 seconds
+Another 1000 generated after 7196.56649089 seconds
+Another 1000 generated after 7250.99861407 seconds
+working on slice 52
+Another 1000 generated after 7316.75883389 seconds
+Another 1000 generated after 7376.818995 seconds
+working on slice 53
+Another 1000 generated after 7441.30767488 seconds
+Another 1000 generated after 7499.85290408 seconds
+working on slice 54
+Another 1000 generated after 7561.01557994 seconds
+Another 1000 generated after 7622.79977393 seconds
+working on slice 55
+Another 1000 generated after 7683.49846601 seconds
+Another 1000 generated after 7742.20947194 seconds
+Another 1000 generated after 7798.7140379 seconds
+working on slice 56
+Another 1000 generated after 7858.62665796 seconds
+Another 1000 generated after 7915.93178201 seconds
+working on slice 57
+Another 1000 generated after 7981.60309005 seconds
+Another 1000 generated after 8037.58770609 seconds
+working on slice 58
+Another 1000 generated after 8095.78289604 seconds
+Another 1000 generated after 8156.60151291 seconds
+Another 1000 generated after 8212.26479101 seconds
+working on slice 59
+Another 1000 generated after 8276.52686191 seconds
+Another 1000 generated after 8340.45848799 seconds
+working on slice 60
+Another 1000 generated after 8403.3720479 seconds
+Another 1000 generated after 8460.98892903 seconds
+working on slice 61
+Another 1000 generated after 8524.05221701 seconds
+Another 1000 generated after 8582.75729394 seconds
+Another 1000 generated after 8639.82860303 seconds
+working on slice 62
+Another 1000 generated after 8703.37578893 seconds
+Another 1000 generated after 8762.45195007 seconds
+working on slice 63
+Another 1000 generated after 8827.11604095 seconds
+Another 1000 generated after 8887.61276507 seconds
+working on slice 64
+Another 1000 generated after 8952.77803493 seconds
+Another 1000 generated after 9012.12094688 seconds
+9072.17058802 seconds for 150000 <function generate_correct at 0x10cdf5b90> patches
+Max per slice 2308
+working on slice 0
+Another 1000 generated after 61.3112118244 seconds
+Another 1000 generated after 118.180006981 seconds
+working on slice 1
+Another 1000 generated after 183.597605944 seconds
+Another 1000 generated after 240.412894011 seconds
+working on slice 2
+Another 1000 generated after 303.677044868 seconds
+Another 1000 generated after 363.303154945 seconds
+working on slice 3
+Another 1000 generated after 428.018030882 seconds
+Another 1000 generated after 483.863287926 seconds
+Another 1000 generated after 544.465217829 seconds
+working on slice 4
+Another 1000 generated after 606.700507879 seconds
+Another 1000 generated after 667.455168009 seconds
+working on slice 5
+Another 1000 generated after 725.382810831 seconds
+Another 1000 generated after 787.499239922 seconds
+working on slice 6
+Another 1000 generated after 849.317516804 seconds
+Another 1000 generated after 908.929526806 seconds
+Another 1000 generated after 968.063066006 seconds
+working on slice 7
+Another 1000 generated after 1028.80681801 seconds
+Another 1000 generated after 1086.41452503 seconds
+working on slice 8
+Another 1000 generated after 1149.76825285 seconds
+Another 1000 generated after 1206.94344687 seconds
+working on slice 9
+Another 1000 generated after 1268.67155099 seconds
+Another 1000 generated after 1332.26792383 seconds
+Another 1000 generated after 1388.51558495 seconds
+working on slice 10
+Another 1000 generated after 1450.29064393 seconds
+Another 1000 generated after 1510.30158401 seconds
+working on slice 11
+Another 1000 generated after 1570.96310997 seconds
+Another 1000 generated after 1627.76716685 seconds
+working on slice 12
+Another 1000 generated after 1693.38336492 seconds
+Another 1000 generated after 1750.44339395 seconds
+Another 1000 generated after 1813.42380381 seconds
+working on slice 13
+Another 1000 generated after 1875.16671991 seconds
+Another 1000 generated after 1935.02245998 seconds
+working on slice 14
+Another 1000 generated after 1997.46399689 seconds
+Another 1000 generated after 2059.3102119 seconds
+working on slice 15
+Another 1000 generated after 2119.3865459 seconds
+Another 1000 generated after 2178.27675986 seconds
+working on slice 16
+Another 1000 generated after 2240.17484403 seconds
+Another 1000 generated after 2301.58011293 seconds
+Another 1000 generated after 2364.40180397 seconds
+working on slice 17
+Another 1000 generated after 2426.90056801 seconds
+Another 1000 generated after 2491.55859995 seconds
+working on slice 18
+Another 1000 generated after 2560.04626894 seconds
+Another 1000 generated after 2619.18534684 seconds
+working on slice 19
+Another 1000 generated after 2683.02188182 seconds
+Another 1000 generated after 2739.28970098 seconds
+Another 1000 generated after 2801.68020797 seconds
+working on slice 20
+Another 1000 generated after 2864.34163785 seconds
+Another 1000 generated after 2924.6102829 seconds
+working on slice 21
+Another 1000 generated after 2987.40372801 seconds
+Another 1000 generated after 3047.04197192 seconds
+working on slice 22
+Another 1000 generated after 3112.21102095 seconds
+Another 1000 generated after 3170.65223694 seconds
+Another 1000 generated after 3231.05548286 seconds
+working on slice 23
+Another 1000 generated after 3293.5754559 seconds
+Another 1000 generated after 3351.93859196 seconds
+working on slice 24
+Another 1000 generated after 3419.59580994 seconds
+Another 1000 generated after 3475.67767882 seconds
+working on slice 25
+Another 1000 generated after 3539.99121284 seconds
+Another 1000 generated after 3598.67230988 seconds
+Another 1000 generated after 3662.62540483 seconds
+working on slice 26
+Another 1000 generated after 3724.46247101 seconds
+Another 1000 generated after 3786.31665397 seconds
+working on slice 27
+Another 1000 generated after 3845.07732081 seconds
+Another 1000 generated after 3907.62135196 seconds
+working on slice 28
+Another 1000 generated after 3970.62465787 seconds
+Another 1000 generated after 4032.74435282 seconds
+working on slice 29
+Another 1000 generated after 4094.55346298 seconds
+Another 1000 generated after 4156.850389 seconds
+Another 1000 generated after 4216.98303699 seconds
+working on slice 30
+Another 1000 generated after 4278.51163197 seconds
+Another 1000 generated after 4335.45925093 seconds
+working on slice 31
+Another 1000 generated after 4399.67995286 seconds
+Another 1000 generated after 4462.13649082 seconds
+working on slice 32
+Another 1000 generated after 4525.4838829 seconds
+Another 1000 generated after 4586.52821994 seconds
+Another 1000 generated after 4644.72879601 seconds
+working on slice 33
+Another 1000 generated after 4706.14737892 seconds
+Another 1000 generated after 4766.48227 seconds
+working on slice 34
+Another 1000 generated after 4830.87423682 seconds
+Another 1000 generated after 4889.53034592 seconds
+working on slice 35
+Another 1000 generated after 4950.78365898 seconds
+Another 1000 generated after 5009.21590781 seconds
+Another 1000 generated after 5068.40969086 seconds
+working on slice 36
+Another 1000 generated after 5132.95794702 seconds
+Another 1000 generated after 5193.06385398 seconds
+working on slice 37
+Another 1000 generated after 5254.86338282 seconds
+Another 1000 generated after 5313.53621602 seconds
+working on slice 38
+Another 1000 generated after 5374.91686702 seconds
+Another 1000 generated after 5436.27066398 seconds
+Another 1000 generated after 5495.85780382 seconds
+working on slice 39
+Another 1000 generated after 5556.24221587 seconds
+Another 1000 generated after 5622.265136 seconds
+working on slice 40
+Another 1000 generated after 5684.38238096 seconds
+Another 1000 generated after 5741.49853897 seconds
+working on slice 41
+Another 1000 generated after 5806.50533199 seconds
+Another 1000 generated after 5865.81388998 seconds
+working on slice 42
+Another 1000 generated after 5925.88132501 seconds
+Another 1000 generated after 5985.19119287 seconds
+Another 1000 generated after 6047.16726589 seconds
+working on slice 43
+Another 1000 generated after 6106.62415981 seconds
+Another 1000 generated after 6167.54124594 seconds
+working on slice 44
+Another 1000 generated after 6230.81053901 seconds
+Another 1000 generated after 6288.752985 seconds
+working on slice 45
+Another 1000 generated after 6348.56426597 seconds
+Another 1000 generated after 6410.72528887 seconds
+Another 1000 generated after 6471.31173682 seconds
+working on slice 46
+Another 1000 generated after 6534.16752291 seconds
+Another 1000 generated after 6593.61039996 seconds
+working on slice 47
+Another 1000 generated after 6654.99624395 seconds
+Another 1000 generated after 6712.89937901 seconds
+working on slice 48
+Another 1000 generated after 6774.55887198 seconds
+Another 1000 generated after 6834.99939895 seconds
+Another 1000 generated after 6895.196141 seconds
+working on slice 49
+Another 1000 generated after 6954.00392103 seconds
+Another 1000 generated after 7015.71115685 seconds
+working on slice 50
+Another 1000 generated after 7075.774616 seconds
+Another 1000 generated after 7133.77334595 seconds
+working on slice 51
+Another 1000 generated after 7198.1429739 seconds
+Another 1000 generated after 7256.99880886 seconds
+Another 1000 generated after 7317.1544888 seconds
+working on slice 52
+Another 1000 generated after 7378.96191382 seconds
+Another 1000 generated after 7439.42725587 seconds
+working on slice 53
+Another 1000 generated after 7499.98926091 seconds
+Another 1000 generated after 7556.48732781 seconds
+working on slice 54
+Another 1000 generated after 7618.61075401 seconds
+Another 1000 generated after 7679.33677292 seconds
+working on slice 55
+Another 1000 generated after 7743.43549585 seconds
+Another 1000 generated after 7802.94580793 seconds
+Another 1000 generated after 7863.84846497 seconds
+working on slice 56
+Another 1000 generated after 7925.96448803 seconds
+Another 1000 generated after 7987.52705383 seconds
+working on slice 57
+Another 1000 generated after 8050.86951399 seconds
+Another 1000 generated after 8111.89776993 seconds
+working on slice 58
+Another 1000 generated after 8176.40931702 seconds
+Another 1000 generated after 8235.52367091 seconds
+Another 1000 generated after 8295.97406101 seconds
+working on slice 59
+Another 1000 generated after 8354.44470286 seconds
+Another 1000 generated after 8414.69386387 seconds
+working on slice 60
+Another 1000 generated after 8480.62887788 seconds
+Another 1000 generated after 8540.05569887 seconds
+working on slice 61
+Another 1000 generated after 8607.62000084 seconds
+Another 1000 generated after 8664.39843702 seconds
+Another 1000 generated after 8724.55936289 seconds
+working on slice 62
+Another 1000 generated after 8788.23386383 seconds
+Another 1000 generated after 8851.81648588 seconds
+working on slice 63
+Another 1000 generated after 8913.52018499 seconds
+Another 1000 generated after 8973.26266599 seconds
+working on slice 64
+Another 1000 generated after 9038.948874 seconds
+Another 1000 generated after 9095.6027379 seconds
+9156.92273402 seconds for 150000 <function generate_split_error at 0x10cdf5c08> patches
+saving..
+Done!
+Max per slice 1501
+working on slice 65
+Another 1000 generated after 64.070130825 seconds
+working on slice 66
+Another 1000 generated after 126.893229961 seconds
+Another 1000 generated after 186.966101885 seconds
+working on slice 67
+Another 1000 generated after 250.354851961 seconds
+working on slice 68
+Another 1000 generated after 314.25637579 seconds
+Another 1000 generated after 377.241510868 seconds
+working on slice 69
+Another 1000 generated after 438.558830976 seconds
+470.050401926 seconds for 7500 <function generate_correct at 0x10cdf5b90> patches
+Max per slice 1501
+working on slice 65
+Another 1000 generated after 63.099957943 seconds
+working on slice 66
+Another 1000 generated after 123.855728865 seconds
+Another 1000 generated after 183.283083916 seconds
+working on slice 67
+Another 1000 generated after 250.227144957 seconds
+working on slice 68
+Another 1000 generated after 313.700696945 seconds
+Another 1000 generated after 369.808031797 seconds
+working on slice 69
+Another 1000 generated after 432.174304962 seconds
+461.090430975 seconds for 7500 <function generate_split_error at 0x10cdf5c08> patches
+saving..
+Done!
+Max per slice 1501
+working on slice 70
+Another 1000 generated after 66.3044950962 seconds
+working on slice 71
+Another 1000 generated after 129.559907198 seconds
+Another 1000 generated after 194.357164145 seconds
+working on slice 72
+Another 1000 generated after 260.562425137 seconds
+working on slice 73
+Another 1000 generated after 326.238705158 seconds
+Another 1000 generated after 384.73985815 seconds
+working on slice 74
+Another 1000 generated after 446.300192118 seconds
+476.829901218 seconds for 7500 <function generate_correct at 0x10cdf5b90> patches
+Max per slice 1501
+working on slice 70
+Another 1000 generated after 63.3854389191 seconds
+working on slice 71
+Another 1000 generated after 124.995193005 seconds
+Another 1000 generated after 191.498296976 seconds
+working on slice 72
+Another 1000 generated after 256.842354774 seconds
+working on slice 73
+Another 1000 generated after 316.826568842 seconds
+Another 1000 generated after 381.513011932 seconds
+working on slice 74
+Another 1000 generated after 442.670192003 seconds
+475.380023956 seconds for 7500 <function generate_split_error at 0x10cdf5c08> patches
+saving..
+Done!

@@ -28,8 +28,9 @@ class Error(object):
         cv2.imwrite(f+'.tif', self._thumb)
         
         return self._meta['id']
-        
-    def split(self, image, array, label):
+    
+    @staticmethod
+    def split(image, array, label):
         '''
         '''
 
@@ -138,139 +139,298 @@ class Error(object):
 
         
 
-        
-    def analyze_border(self, image, prob, array, original_label, label1, label2, overlap=10, patch_size=(75,75)):
-        
-        # threshold for label1
-        array1 = Util.threshold(array, label1).astype(np.uint8)
-        # threshold for label2
-        array2 = Util.threshold(array, label2).astype(np.uint8)
+    @staticmethod
+    def analyze_border(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundaries=False, sample_rate=1,debug=False):
+        #self, image, prob, array, original_label, label1, label2, overlap=10, patch_size=(75,75)):
 
-        # add them
-        merged_array = array1 + array2
-
-        bbox_y1y2x1x2 = mh.bbox(merged_array)
-        bbox = bbox_y1y2x1x2        
-
-        
-        # dilate for overlap
-        dilated_array1 = np.array(array1)
-        dilated_array2 = np.array(array2)
-        for o in range(overlap):
-            dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
-            dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
-
-        #dilated_sum = np.zeros(merged_array.shape)
-        overlap = np.logical_and(dilated_array1, dilated_array2)
-        overlap[merged_array == 0] = 0
-
-        border = mh.labeled.border(array, int(label1), int(label2))
-        
-        border_yx = indices = zip(*np.where(border==True))
-
-        # fault check if no border is found
-        if len(border_yx) < 2:
-            # print 'no border'
-            return None
+        borders = mh.labeled.border(segmentation, l, n)
 
         #
+        # treat interrupted borders separately
         #
-        # check if there is more than one border
-        empty = np.zeros((bbox[1]-bbox[0], bbox[3]-bbox[2]))
+        borders_labeled = skimage.measure.label(borders)
 
-        for c in border_yx:
-            empty[c[0]-bbox[0],c[1]-bbox[2]] = 1
+        # print borders_labeled.max()
+        # for b in range(1,borders_labeled.max()+1):
+            # borders = _metrics.Util.threshold(borders_labeled, b)
+
+
+
+        border_bbox = mh.bbox(borders)
+
+
+        patch_centers = []
+        border_yx = indices = zip(*np.where(borders==1))
+
+        # always sample the middle point
+        border_center = (border_yx[len(border_yx)/(2)][0], border_yx[len(border_yx)/(2)][1])
+        patch_centers.append(border_center)
+
+
+        if sample_rate > 1 or sample_rate == -1:
+            if sample_rate > len(border_yx) or sample_rate==-1:
+                samples = 1
+            else:
+                samples = len(border_yx) / sample_rate
+
+            for i,s in enumerate(border_yx):
+                
+                if i % samples == 0:
+
+                    sample_point = s
             
-        empty_labeled = skimage.measure.label(empty)
-        #mh.imsave('/Volumes/DATA1/test.tif', empty_labeled.astype(np.uint8)*255)
-        if empty_labeled.max() > 1:
-            # print 'more than 1 border', empty_labeled.max()
-            print Util.get_largest_label(empty_labeled.astype(np.uint8), True)
-            return None
-        #
-        #
-        #
+                    patch_centers.append(sample_point)
+            
+        borders_w_center = np.array(borders.astype(np.uint8))
+
+        for i,c in enumerate(patch_centers):
+            
+
+
+            borders_w_center[c[0],c[1]] = 10*(i+1)
+            # print 'marking', c, borders_w_center.shape
+
+        if debug:
+            fig = plt.figure(figsize=(5,5))
+            fig.text(0,1,'\n\n\n\n\nAll borders '+str(l)+','+str(n))#+'\n\n'+str(np.round(_matrices[u], 2)))
+            plt.imshow(borders_labeled[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]], interpolation='nearest')
+            fig = plt.figure(figsize=(5,5))
+            fig.text(0,1,'\n\n\n\n\nWith center(s) '+str(l)+','+str(n))#+'\n\n'+str(np.round(_matrices[u], 2)))
+            plt.imshow(borders_w_center[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]], interpolation='nearest')#, cmap='ocean')
         
-        #
-        # check if there the labels are enclosing each other
-        #
-        array1_no_holes = np.all(mh.close_holes(array1[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool)) == array1[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool))
-        array2_no_holes = np.all(mh.close_holes(array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool)) == array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool))        
-        if (not array1_no_holes or not array2_no_holes):
-            # this is no good
-            # print 'enclosing'
-            return None
+        
+        patches = []
+            
+            
+        for i,c in enumerate(patch_centers):
+
+            
+    #         for border_center in patch_centers:
+
+            # check if border_center is too close to the 4 edges
+            new_border_center = [c[0], c[1]]
+
+            if new_border_center[0] < patch_size[0]/2:
+                # print 'oob1', new_border_center
+                # return None
+                continue
+            if new_border_center[0]+patch_size[0]/2 >= segmentation.shape[0]:
+                # print 'oob2', new_border_center
+                # return None
+                continue
+            if new_border_center[1] < patch_size[1]/2:
+                # print 'oob3', new_border_center
+                # return None
+                continue
+            if new_border_center[1]+patch_size[1]/2 >= segmentation.shape[1]:
+                # print 'oob4', new_border_center
+                # return None
+                continue
+            # print new_border_center, patch_size[0]/2, border_center[0] < patch_size[0]/2
+
+            # continue
+
+
+            bbox = [new_border_center[0]-patch_size[0]/2, 
+                    new_border_center[0]+patch_size[0]/2,
+                    new_border_center[1]-patch_size[1]/2, 
+                    new_border_center[1]+patch_size[1]/2]
+
+            ### workaround to not sample white border of probability map
+            if skip_boundaries:
+                if bbox[0] <= 33:
+                    # return None
+                    # print 'ppb'
+                    continue
+                if bbox[1] >= segmentation.shape[0]-33:
+                    # return None
+                    # print 'ppb'
+                    continue
+                if bbox[2] <= 33:
+                    # return None
+                    # print 'ppb'
+                    continue
+                if bbox[3] >= segmentation.shape[1]-33:
+                    # return None
+                    # print 'ppb'
+                    continue
+
+            
+
+            # threshold for label1
+            array1 = Util.threshold(segmentation, l).astype(np.uint8)
+            # threshold for label2
+            array2 = Util.threshold(segmentation, n).astype(np.uint8)
+            merged_array = array1 + array2
+
+
+            
+
+            # dilate for overlap
+            dilated_array1 = np.array(array1)
+            dilated_array2 = np.array(array2)
+            for o in range(10):
+                dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
+                dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
+            overlap = np.logical_and(dilated_array1, dilated_array2)
+            overlap[merged_array == 0] = 0
+
+            
+
+            output = {}
+            output['id'] = str(uuid.uuid4())
+            output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+            
+            output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+            
+            output['l'] = l
+            output['n'] = n
+            output['bbox'] = bbox
+            output['border'] = border_yx
+            output['border_center'] = new_border_center
+            output['binary1'] = array1[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+            output['binary2'] = array2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+            output['overlap'] = overlap[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+            output['borders_labeled'] = borders_labeled[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]]
+            output['borders_w_center'] = borders_w_center[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]]
+
+            patches.append(output)
+            
+
+        return patches
+
+
+        
+        # # threshold for label1
+        # array1 = Util.threshold(array, label1).astype(np.uint8)
+        # # threshold for label2
+        # array2 = Util.threshold(array, label2).astype(np.uint8)
+
+        # # add them
+        # merged_array = array1 + array2
+
+        # bbox_y1y2x1x2 = mh.bbox(merged_array)
+        # bbox = bbox_y1y2x1x2        
+
+        
+        # # dilate for overlap
+        # dilated_array1 = np.array(array1)
+        # dilated_array2 = np.array(array2)
+        # for o in range(overlap):
+        #     dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
+        #     dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
+
+        # #dilated_sum = np.zeros(merged_array.shape)
+        # overlap = np.logical_and(dilated_array1, dilated_array2)
+        # overlap[merged_array == 0] = 0
+
+        # border = mh.labeled.border(array, int(label1), int(label2))
+        
+        # border_yx = indices = zip(*np.where(border==True))
+
+        # # fault check if no border is found
+        # if len(border_yx) < 2:
+        #     # print 'no border'
+        #     return None
+
+        # #
+        # #
+        # # check if there is more than one border
+        # empty = np.zeros((bbox[1]-bbox[0], bbox[3]-bbox[2]))
+
+        # for c in border_yx:
+        #     empty[c[0]-bbox[0],c[1]-bbox[2]] = 1
+            
+        # empty_labeled = skimage.measure.label(empty)
+        # #mh.imsave('/Volumes/DATA1/test.tif', empty_labeled.astype(np.uint8)*255)
+        # if empty_labeled.max() > 1:
+        #     # print 'more than 1 border', empty_labeled.max()
+        #     print Util.get_largest_label(empty_labeled.astype(np.uint8), True)
+        #     return None
+        # #
+        # #
+        # #
+        
+        # #
+        # # check if there the labels are enclosing each other
+        # #
+        # array1_no_holes = np.all(mh.close_holes(array1[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool)) == array1[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool))
+        # array2_no_holes = np.all(mh.close_holes(array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool)) == array2[bbox[0]:bbox[1], bbox[2]:bbox[3]].astype(np.bool))        
+        # if (not array1_no_holes or not array2_no_holes):
+        #     # this is no good
+        #     # print 'enclosing'
+        #     return None
         
         
-        #
-        # calculate border center properly
-        #
-        border_normalized = border_yx#[(u-bbox[0],v-bbox[2]) for u,v in border_yx]
-        empty = np.zeros(merged_array.shape,dtype=np.bool)
-        for c in border_normalized:
-            empty[c[0],c[1]] = 1
-        node = mh.center_of_mass(empty)
-        nodes = border_normalized
-        nodes = np.asarray(nodes)
-        deltas = nodes - node
-        dist_2 = np.einsum('ij,ij->i', deltas, deltas)
-        border_center = border_normalized[np.argmin(dist_2)]
+        # #
+        # # calculate border center properly
+        # #
+        # border_normalized = border_yx#[(u-bbox[0],v-bbox[2]) for u,v in border_yx]
+        # empty = np.zeros(merged_array.shape,dtype=np.bool)
+        # for c in border_normalized:
+        #     empty[c[0],c[1]] = 1
+        # node = mh.center_of_mass(empty)
+        # nodes = border_normalized
+        # nodes = np.asarray(nodes)
+        # deltas = nodes - node
+        # dist_2 = np.einsum('ij,ij->i', deltas, deltas)
+        # border_center = border_normalized[np.argmin(dist_2)]
         
-        # check if border_center is too close to the 4 edges
-        new_border_center = [border_center[0], border_center[1]]
-        if border_center[0] < patch_size[0]/2:
-            new_border_center[0] = patch_size[0]/2
-            # print 'too close'
-            return None
-        if border_center[0]+patch_size[0]/2 >= merged_array.shape[0]:
-            new_border_center[0] = merged_array.shape[0] - patch_size[0]/2 - 1
-            # print 'too close'
-            return None
-        if border_center[1] < patch_size[1]/2:
-            new_border_center[1] = patch_size[1]/2
-            # print 'too close'
-            return None
-        if border_center[1]+patch_size[1]/2 >= merged_array.shape[1]:
-            new_border_center[1] = merged_array.shape[1] - patch_size[1]/2 - 1
-            # print 'too close'
-            return None
+        # # check if border_center is too close to the 4 edges
+        # new_border_center = [border_center[0], border_center[1]]
+        # if border_center[0] < patch_size[0]/2:
+        #     new_border_center[0] = patch_size[0]/2
+        #     # print 'too close'
+        #     return None
+        # if border_center[0]+patch_size[0]/2 >= merged_array.shape[0]:
+        #     new_border_center[0] = merged_array.shape[0] - patch_size[0]/2 - 1
+        #     # print 'too close'
+        #     return None
+        # if border_center[1] < patch_size[1]/2:
+        #     new_border_center[1] = patch_size[1]/2
+        #     # print 'too close'
+        #     return None
+        # if border_center[1]+patch_size[1]/2 >= merged_array.shape[1]:
+        #     new_border_center[1] = merged_array.shape[1] - patch_size[1]/2 - 1
+        #     # print 'too close'
+        #     return None
 
         
-        bbox = [new_border_center[0]-patch_size[0]/2, 
-                new_border_center[0]+patch_size[0]/2,
-                new_border_center[1]-patch_size[1]/2, 
-                new_border_center[1]+patch_size[1]/2]
+        # bbox = [new_border_center[0]-patch_size[0]/2, 
+        #         new_border_center[0]+patch_size[0]/2,
+        #         new_border_center[1]-patch_size[1]/2, 
+        #         new_border_center[1]+patch_size[1]/2]
 
 
-        ### workaround to not sample white border of probability map
-        if bbox[0] <= 33:
-            # print 'prob'
-            return None
-        if bbox[1] >= merged_array.shape[0]-33:
-            # print 'prob'
-            return None
-        if bbox[2] <= 33:
-            # print 'prob'
-            return None
-        if bbox[3] >= merged_array.shape[1]-33:
-            # print 'prob'
-            return None
+        # ### workaround to not sample white border of probability map
+        # if bbox[0] <= 33:
+        #     # print 'prob'
+        #     return None
+        # if bbox[1] >= merged_array.shape[0]-33:
+        #     # print 'prob'
+        #     return None
+        # if bbox[2] <= 33:
+        #     # print 'prob'
+        #     return None
+        # if bbox[3] >= merged_array.shape[1]-33:
+        #     # print 'prob'
+        #     return None
 
 
 
-        output = {}
-        output['id'] = str(uuid.uuid4())
-        output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
-        output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
-        output['label'] = original_label
-        output['bbox'] = bbox
-        output['border'] = border_yx
-        output['border_center'] = new_border_center
-        output['merge'] = merged_array[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
-        output['label1'] = array1[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
-        output['label2'] = array2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
-        output['overlap'] = overlap[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        # output = {}
+        # output['id'] = str(uuid.uuid4())
+        # output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+        # output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+        # output['label'] = original_label
+        # output['bbox'] = bbox
+        # output['border'] = border_yx
+        # output['border_center'] = new_border_center
+        # output['merge'] = merged_array[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        # output['label1'] = array1[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        # output['label2'] = array2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        # output['overlap'] = overlap[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
 
-        return output        
+        # return output        
         
         

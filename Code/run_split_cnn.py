@@ -35,7 +35,7 @@ if __name__ == '__main__':
   parser.add_argument("-tcl", "--thirdconvlayer", type=bool, help="use a third conv layer", default=False)
   parser.add_argument("-f3", "--filters3", type=int, help="the number of filters 2", default=32)
   parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=5)  
-
+  parser.add_argument("-u", "--uuid", type=str, help='the uuid', default=str(uuid.uuid4()))
 
   args = parser.parse_args()
 
@@ -57,7 +57,7 @@ if __name__ == '__main__':
   #
   #
   #
-  UID = str(uuid.uuid4())
+  UID = args.uuid
   OUTPUT_PATH = args.outputpath+UID
   os.makedirs(OUTPUT_PATH)
 

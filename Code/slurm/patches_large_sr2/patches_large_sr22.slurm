@@ -7,12 +7,13 @@
 #SBATCH -n 1 # Number of cores
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH --gres=gpu
-#SBATCH --mem=16000
+#SBATCH --mem=24000
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/slurm/out.txt
-#SBATCH -e /n/home05/haehn/slurm/err.txt
+#SBATCH -o /n/home05/haehn/slurm/out-1e07cf2b-e219-4d97-9a31-5e1f7c4c050c.txt
+#SBATCH -e /n/home05/haehn/slurm/err-1e07cf2b-e219-4d97-9a31-5e1f7c4c050c.txt
+#SBATCH -x holyseasgpu[01-06]
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -33,7 +34,7 @@ export LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LIBRARY_PATH
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/em-quality-metric/Code/
-python run_split_cnn.py -r cluster --patchpath patches_large_sr2 --epochs 500 --batchsize 100 --learning_rate 0.0001 --momentum 0.9 --filters1 16 --filters2 16 --filters3 16 --filtersize1 13 --filtersize2 13 --filtersize3 13 --thirdconvlayer True
+python run_split_cnn.py -r cluster --patchpath patches_large_sr2 --epochs 500 --batchsize 100 --learning_rate 0.0001 --momentum 0.9 --filters1 16 --filters2 16 --filters3 16 --filtersize1 13 --filtersize2 13 --filtersize3 13 --thirdconvlayer True --uuid 1e07cf2b-e219-4d97-9a31-5e1f7c4c050c
 
 # end of program
 exit 0;

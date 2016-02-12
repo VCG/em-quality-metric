@@ -5,6 +5,7 @@
 
 import sys
 from string import Template
+import uuid
 
 PATCH_PATH = 'patches_large_sr2'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
@@ -18,12 +19,13 @@ slurm_header = """#!/bin/bash
 #SBATCH -n 1 # Number of cores
 #SBATCH -N 1 # Ensure that all cores are on one machine
 #SBATCH --gres=gpu
-#SBATCH --mem=16000
+#SBATCH --mem=24000
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/slurm/out.txt
-#SBATCH -e /n/home05/haehn/slurm/err.txt
+#SBATCH -o /n/home05/haehn/slurm/out-$uuid.txt
+#SBATCH -e /n/home05/haehn/slurm/err-$uuid.txt
+#SBATCH -x holyseasgpu[01-06]
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -46,7 +48,7 @@ export LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LIBRARY_PATH
 slurm_body = Template("""
 # add commands for analyses here
 cd /n/home05/haehn/Projects/em-quality-metric/Code/
-python run_split_cnn.py -r cluster --patchpath $patchpath --epochs $epochs --batchsize $batchsize --learning_rate $learning_rate --momentum $momentum --filters1 $no_filters --filters2 $no_filters --filters3 $no_filters --filtersize1 $filter_size --filtersize2 $filter_size --filtersize3 $filter_size --thirdconvlayer $thirdconvlayer
+python run_split_cnn.py -r cluster --patchpath $patchpath --epochs $epochs --batchsize $batchsize --learning_rate $learning_rate --momentum $momentum --filters1 $no_filters --filters2 $no_filters --filters3 $no_filters --filtersize1 $filter_size --filtersize2 $filter_size --filtersize3 $filter_size --thirdconvlayer $thirdconvlayer --uuid $uuid
 
 # end of program
 exit 0;
@@ -71,8 +73,10 @@ for e in epochs:
           for n in no_filters:
             for s in filter_size:
               no_jobs += 1
-              new_slurm_body = slurm_body.substitute(patchpath=PATCH_PATH, epochs=e, batchsize=b, learning_rate=l, momentum=m, thirdconvlayer=c, no_filters=n, filter_size=s)
-              slurm = slurm_header + new_slurm_body
+              uniqueid = str(uuid.uuid4())
+
+              new_slurm_body = slurm_body.substitute(patchpath=PATCH_PATH, epochs=e, batchsize=b, learning_rate=l, momentum=m, thirdconvlayer=c, no_filters=n, filter_size=s, uuid=uniqueid)
+              slurm = slurm_header.replace('$uuid', uniqueid) + new_slurm_body
 
               with open(OUTPUT_PATH+PATCH_PATH+str(no_jobs)+'.slurm', 'w') as f:
                 f.write(slurm)

@@ -25,7 +25,7 @@ slurm_header = """#!/bin/bash
 #SBATCH --mail-user=haehn@seas.harvard.edu
 #SBATCH -o /n/home05/haehn/slurm/out-$uuid.txt
 #SBATCH -e /n/home05/haehn/slurm/err-$uuid.txt
-#SBATCH -x holyseasgpu[01-06]
+#SBATCH -x holyseasgpu[01-03]
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh
@@ -56,8 +56,8 @@ exit 0;
 
 
 epochs = [500]
-batchsize = [100,1000]#,5000]#[100, 500, 1000]
-learning_rate = [0.0001, 0.001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
+batchsize = [100]#,1000]#,5000]#[100, 500, 1000]
+learning_rate = [0.00001, 0.0001, 0.001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
 momentum = [0.9, 0.95]
 thirdconvlayer = [True]
 no_filters = [16, 32]

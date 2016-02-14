@@ -32,7 +32,7 @@ if __name__ == '__main__':
   parser.add_argument("-fs1", "--filtersize1", type=int, help="the filtersize 1", default=5)
   parser.add_argument("-f2", "--filters2", type=int, help="the number of filters 2", default=32)
   parser.add_argument("-fs2", "--filtersize2", type=int, help="the filtersize 2", default=5)
-  parser.add_argument("-tcl", "--thirdconvlayer", type=bool, help="use a third conv layer", default=False)
+  parser.add_argument("-tcl", "--thirdconvlayer", type=str, help="use a third conv layer", default='False')
   parser.add_argument("-f3", "--filters3", type=int, help="the number of filters 2", default=32)
   parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=5)  
   parser.add_argument("-u", "--uuid", type=str, help='the uuid', default=str(uuid.uuid4()))
@@ -48,8 +48,12 @@ if __name__ == '__main__':
 
   args_as_text = vars(args)
 
+  if args.thirdconvlayer == 'False':
+    args.thirdconvlayer = False
+  else:
+    args.thirdconvlayer = True
+
   print args_as_text
-  
 
 
 
@@ -134,12 +138,12 @@ if __name__ == '__main__':
   s._CONV_CALLBACK = store_network
 
   print 'Network configured.. running now!'
-  old_stdout = sys.stdout
-  old_stderr = sys.stderr
-  stdout_buffer = StringIO()
-  stderr_buffer = StringIO()
-  sys.stdout = stdout_buffer
-  sys.stderr = stderr_buffer
+  # old_stdout = sys.stdout
+  # old_stderr = sys.stderr
+  # stdout_buffer = StringIO()
+  # stderr_buffer = StringIO()
+  # sys.stdout = stdout_buffer
+  # sys.stderr = stderr_buffer
 
 
   t0 = time.time()
@@ -163,17 +167,17 @@ if __name__ == '__main__':
   with open(OUTPUT_PATH+os.sep+'final_test_loss_'+str(test_loss)+'___test_acc_'+str(test_acc)+'.txt', 'w') as f:
     f.write('pretty good?')
 
-  with open(OUTPUT_PATH+os.sep+'out.log', 'w') as f:
-    f.write(stdout_buffer.getvalue())
+  # with open(OUTPUT_PATH+os.sep+'out.log', 'w') as f:
+  #   f.write(stdout_buffer.getvalue())
 
-  with open(OUTPUT_PATH+os.sep+'err.log', 'w') as f:
-    f.write(stderr_buffer.getvalue())
+  # with open(OUTPUT_PATH+os.sep+'err.log', 'w') as f:
+  #   f.write(stderr_buffer.getvalue())
 
   with open(OUTPUT_PATH+os.sep+'time.log', 'w') as f:
     f.write(str(total_time))
 
-  sys.stdout = old_stdout
-  sys.stderr = old_stderr
+  # sys.stdout = old_stdout
+  # sys.stderr = old_stderr
 
   print 'Stored in', OUTPUT_PATH
   print 'All done. Ciao!'

@@ -281,10 +281,30 @@ class SplitCNN(object):
           # reset W, b on network
           self._CONV_CALLBACK(self, good_layers, epoch)
           layers = good_layers
+
           break
 
     # one final callback
     self._EPOCH_CALLBACK(self, layers, epoch)
+
+    # reset network
+    network = layers['dense']['network']
+
+    # Create a loss expression for validation/testing. The crucial difference
+    # here is that we do a deterministic forward pass through the network,
+    # disabling dropout layers.
+    test_prediction = lasagne.layers.get_output(network, deterministic=True)
+    test_loss = lasagne.objectives.categorical_crossentropy(test_prediction,
+                                                            target_var)
+    test_loss = test_loss.mean()
+    # As a bonus, also create an expression for the classification accuracy:
+    test_acc = T.mean(T.eq(T.argmax(test_prediction, axis=1), target_var),
+                      dtype=theano.config.floatX)
+
+
+    # Compile a second function computing the validation loss and accuracy:
+    val_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], [test_loss, test_acc])
+
 
     # After training, we compute and print the test error:
     test_err = 0

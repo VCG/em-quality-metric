@@ -63,7 +63,8 @@ if __name__ == '__main__':
   #
   UID = args.uuid
   OUTPUT_PATH = args.outputpath+UID
-  os.makedirs(OUTPUT_PATH)
+  if not os.path.exists(OUTPUT_PATH):
+    os.makedirs(OUTPUT_PATH)
 
   with open(OUTPUT_PATH+os.sep+'configuration.txt', 'w') as f:
     f.write(str(args_as_text))

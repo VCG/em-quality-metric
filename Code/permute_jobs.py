@@ -57,11 +57,11 @@ exit 0;
 
 epochs = [500]
 batchsize = [100]#,1000]#,5000]#[100, 500, 1000]
-learning_rate = [0.00001, 0.0001, 0.001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
+learning_rate = [0.00001, 0.0001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
 momentum = [0.9, 0.95]
 thirdconvlayer = [True]
 no_filters = [16, 32]
-filter_size = [9, 13]
+filter_size = [9, 13, 17]
 
 no_jobs = 0
 

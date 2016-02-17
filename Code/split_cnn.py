@@ -236,6 +236,11 @@ class SplitCNN(object):
             train_err += train_fn(images, probs, binary1s, binary2s, overlaps, targets)
             train_batches += 1
 
+        if str(train_err) == 'nan':
+          # wrong parameters
+          print 'WRONG PARAMETERS'
+          sys.exit(1)
+
         # And a full pass over the validation data:
         val_err = 0
         val_acc = 0
@@ -288,7 +293,12 @@ class SplitCNN(object):
     self._EPOCH_CALLBACK(self, layers, epoch)
 
     # reset network
-    network = layers['dense']['network']
+    image_var = layers['image']['input_layer'].input_var
+    prob_var = layers['prob']['input_layer'].input_var
+    binary1_var = layers['binary1']['input_layer'].input_var
+    binary2_var = layers['binary2']['input_layer'].input_var
+    overlap_var = layers['overlap']['input_layer'].input_var
+    network = layers['dense']['network']    
 
     # Create a loss expression for validation/testing. The crucial difference
     # here is that we do a deterministic forward pass through the network,

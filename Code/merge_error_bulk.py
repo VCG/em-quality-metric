@@ -21,7 +21,7 @@ import random
 import cPickle as pickle
 import time
 import partition_comparison
-
+import sys
 import cPickle as pickle
 
 DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
@@ -264,7 +264,7 @@ def create_merge_error(seg, l):
     good_n = -1
 
     for n in neighbors:
-      if len(new_seg[new_seg == n]) > 1000:
+      if len(new_seg[new_seg == n]) > 3000:
         continue
       else:
         found_good = True
@@ -295,19 +295,21 @@ val_fn = setup_n()
 
 hist = _metrics.Util.get_histogram(gold_normalized.astype(np.uint64))
 
-small_labels = np.where(hist < 1000)[0]
+small_labels = np.where(hist < 3000)[0]
 
 # no_labels = len(_metrics.Util.get_histogram(gold_normalized.astype(np.uint64)))
 # labels = np.arange(no_labels)
 # shuffle them
 # np.random.shuffle(labels)
 
+print len(small_labels)
+
+
 results = []
 
-for count,l in enumerate(small_labels[0:50]):
+for count,l in enumerate(small_labels):
 
-  print '-'*80
-  print 'Working on', l
+
 
   labelA, labelB, merged, new_seg = create_merge_error(gold_normalized, l)
 
@@ -319,6 +321,8 @@ for count,l in enumerate(small_labels[0:50]):
 
   patches = create_patches_from_label_id(image, prob, new_seg, l)
 
+  print '-'*80
+  print 'Working on', l
   print 'Generated', len(patches), 'patches'
   print 'Testing them now...'
 
@@ -368,6 +372,7 @@ for count,l in enumerate(small_labels[0:50]):
 
   # store the stuff
   result_dict = {}
+  result_dict['BBOX'] = BBOX
   result_dict['labelA'] = labelA[BBOX[0]:BBOX[1], BBOX[2]:BBOX[3]]
   result_dict['labelB'] = labelB[BBOX[0]:BBOX[1], BBOX[2]:BBOX[3]]
   result_dict['merged'] = merged[BBOX[0]:BBOX[1], BBOX[2]:BBOX[3]]
@@ -377,14 +382,14 @@ for count,l in enumerate(small_labels[0:50]):
   results.append(result_dict)
 
 
-  if count % 10 == 0:
-    # store every 10
+# if count % 10 == 0:
+  # store every 10
 
-    pickle.dump(results, open("/Volumes/DATA1/EMQM_DATA/ac3x75/merge_errors/results"+str(count)+".p", 'wb'))
+pickle.dump(results, open("/Volumes/DATA1/EMQM_DATA/ac3x75/merge_errors/results"+str(count)+".p", 'wb'))
 
-    results = []
+# results = []
 
-    print 'Stored and flushed.'
+print 'Stored and flushed.'
 
-  pickle.dump(results, open("/Volumes/DATA1/EMQM_DATA/ac3x75/merge_errors/results"+str(count+1)+".p", 'wb'))
-  print 'All done!'
+  # pickle.dump(results, open("/Volumes/DATA1/EMQM_DATA/ac3x75/merge_errors/results"+str(count+1)+".p", 'wb'))
+  # print 'All done!'

@@ -11,8 +11,8 @@
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/slurm/out-7e2867cc-85f1-4d0a-9020-1eb381db75d5.txt
-#SBATCH -e /n/home05/haehn/slurm/err-7e2867cc-85f1-4d0a-9020-1eb381db75d5.txt
+#SBATCH -o /n/home05/haehn/slurm/out-595ef814-428b-40ee-a8b0-569a54162f87.txt
+#SBATCH -e /n/home05/haehn/slurm/err-595ef814-428b-40ee-a8b0-569a54162f87.txt
 #SBATCH -x holyseasgpu[01-03]
 
 # add additional commands needed for Lmod and module loads here
@@ -34,7 +34,7 @@ export LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LIBRARY_PATH
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/em-quality-metric/Code/
-python run_split_cnn.py -r cluster --patchpath patches_large_sr2 --epochs 500 --batchsize 100 --learning_rate 1e-06 --momentum 0.9 --filters1 32 --filters2 32 --filters3 32 --filtersize1 17 --filtersize2 17 --filtersize3 17 --thirdconvlayer True --uuid 7e2867cc-85f1-4d0a-9020-1eb381db75d5
+python run_split_cnn.py -r cluster --patchpath patches_large_sr2 --epochs 500 --batchsize 1000 --learning_rate 1e-06 --momentum 0.9 --filters1 32 --filters2 32 --filters3 32 --filtersize1 17 --filtersize2 17 --filtersize3 17 --thirdconvlayer True --uuid 595ef814-428b-40ee-a8b0-569a54162f87
 
 # end of program
 exit 0;

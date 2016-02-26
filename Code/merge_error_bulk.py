@@ -32,22 +32,27 @@ PROB_PATH = os.path.join(DATA_PATH,'prob/')
 PATCH_PATH = os.path.join(DATA_PATH,'test_rhoana/')
 
 
-gold = _metrics.Util.read(GOLD_PATH+'*.tif')
-rhoana = _metrics.Util.read(RHOANA_PATH+'*.tif')
-images = _metrics.Util.read(IMAGE_PATH+'*.tif')
-probs = _metrics.Util.read(PROB_PATH+'*.tif')
+# gold = _metrics.Util.read(GOLD_PATH+'*.tif')
+# rhoana = _metrics.Util.read(RHOANA_PATH+'*.tif')
+# images = _metrics.Util.read(IMAGE_PATH+'*.tif')
+# probs = _metrics.Util.read(PROB_PATH+'*.tif')
+
+
 
 
 
 
 SLICE=70
-image = images[SLICE]
-prob = probs[SLICE]
-seg = _metrics.Util.normalize_labels(rhoana[SLICE])[0]
+image, prob, gold, rhoana = _metrics.Util.read_section(SLICE)
+
+
+# image = images[SLICE]
+# prob = probs[SLICE]
+seg = _metrics.Util.normalize_labels(rhoana)[0]#[SLICE])[0]
 
 # fill and normalize gold
-gold_zeros = _metrics.Util.threshold(gold[SLICE], 0)
-gold_filled = _metrics.Util.fill(gold[SLICE], gold_zeros.astype(np.bool))
+gold_zeros = _metrics.Util.threshold(gold,0)#[SLICE], 0)
+gold_filled = _metrics.Util.fill(gold, gold_zeros.astype(np.bool))
 gold_filled_relabeled = skimage.measure.label(gold_filled).astype(np.uint64)
 gold_normalized = _metrics.Util.normalize_labels(gold_filled_relabeled)[0]
 
@@ -57,6 +62,112 @@ colored_rhoana_normalized = cm[seg % len(cm)]
 colored_gold_normalized = cm[gold_normalized % len(cm)]
 
 
+def get_real_border(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundaries=True):
+
+    # image = i_patch['image']
+    # prob = i_patch['prob']
+    # segmentation = i_patch['seg']
+
+    borders = mh.labeled.border(segmentation, l, n)
+    border_yx = indices = zip(*np.where(borders==1))
+
+    patch_centers = []
+
+    if len(border_yx) < 2:
+
+      return None
+
+    border_center = (border_yx[len(border_yx)/(2)][0], border_yx[len(border_yx)/(2)][1])
+    patch_centers.append(border_center)
+
+        
+    for i,c in enumerate(patch_centers):
+
+        
+#         for border_center in patch_centers:
+
+        # check if border_center is too close to the 4 edges
+        new_border_center = [c[0], c[1]]
+
+        if new_border_center[0] < patch_size[0]/2:
+            # print 'oob1', new_border_center
+            # return None
+            continue
+        if new_border_center[0]+patch_size[0]/2 >= segmentation.shape[0]:
+            # print 'oob2', new_border_center
+            # return None
+            continue
+        if new_border_center[1] < patch_size[1]/2:
+            # print 'oob3', new_border_center
+            # return None
+            continue
+        if new_border_center[1]+patch_size[1]/2 >= segmentation.shape[1]:
+            # print 'oob4', new_border_center
+            # return None
+            continue
+        # print new_border_center, patch_size[0]/2, border_center[0] < patch_size[0]/2
+
+        # continue
+
+
+        bbox = [new_border_center[0]-patch_size[0]/2, 
+                new_border_center[0]+patch_size[0]/2,
+                new_border_center[1]-patch_size[1]/2, 
+                new_border_center[1]+patch_size[1]/2]
+
+        ### workaround to not sample white border of probability map
+        if skip_boundaries:
+            if bbox[0] <= 33:
+                # return None
+                # print 'ppb'
+                continue
+            if bbox[1] >= segmentation.shape[0]-33:
+                # return None
+                # print 'ppb'
+                continue
+            if bbox[2] <= 33:
+                # return None
+                # print 'ppb'
+                continue
+            if bbox[3] >= segmentation.shape[1]-33:
+                # return None
+                # print 'ppb'
+                continue
+
+        
+
+        # threshold for label1
+        array1 = _metrics.Util.threshold(segmentation, l).astype(np.uint8)
+        # threshold for label2
+        array2 = _metrics.Util.threshold(segmentation, n).astype(np.uint8)
+        merged_array = array1 + array2
+
+
+        
+
+        # dilate for overlap
+        dilated_array1 = np.array(array1)
+        dilated_array2 = np.array(array2)
+        for o in range(10):
+            dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
+            dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
+        overlap = np.logical_and(dilated_array1, dilated_array2)
+        overlap[merged_array == 0] = 0
+
+
+
+
+        patch = {}
+        patch['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+        patch['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+        patch['binary1'] = array1[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        patch['binary2'] = array2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        patch['overlap'] = overlap[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+        patch['border'] = border_yx
+        patch['bbox'] = bbox
+        patch['border_center'] = new_border_center
+
+        return patch
 
 
 def create_merge_splits(i_patch):
@@ -192,7 +303,7 @@ def create_patches_from_label_id(image, prob, seg, label_id):
         eroded_isolated_label = mh.erode(eroded_isolated_label.astype(np.bool))
 
     potential_center_points = zip(*np.where(eroded_isolated_label == 1))
-    for p in potential_center_points:
+    for p in potential_center_points:                         
 
         # check if patch is possible
         if p[0] <= 37 or p[0] >= eroded_isolated_label.shape[0]-37:
@@ -202,7 +313,30 @@ def create_patches_from_label_id(image, prob, seg, label_id):
             # also not possible
             continue
 
+        ### workaround to not sample white border of probability map
+
+
         bbox = [p[0]-37, p[0]+37+1, p[1]-37, p[1]+37+1]
+
+
+        if bbox[0] <= 33:
+            # return None
+            # print 'ppb'
+            continue
+        if bbox[1] >= seg.shape[0]-33:
+            # return None
+            # print 'ppb'
+            continue
+        if bbox[2] <= 33:
+            # return None
+            # print 'ppb'
+            continue
+        if bbox[3] >= seg.shape[1]-33:
+            # return None
+            # print 'ppb'
+            continue
+
+
         
         patch = {}
         patch['image'] = image[bbox[0]:bbox[1], bbox[2]:bbox[3]]
@@ -224,7 +358,6 @@ def setup_n():
     return val_fn
 
 def test_patch(val_fn, p):
-    # print p['image'].shape
     # print p['prob'].shape
     # print p['overlap'].shape
     images = p['image'].reshape(-1, 1, 75, 75).astype(np.uint8)
@@ -272,7 +405,7 @@ def create_merge_error(seg, l):
         break
 
     if not found_good:
-      return None, None, None, None
+      return None, None, None, None, None
     else:
       neighbor = good_n
 
@@ -283,7 +416,7 @@ def create_merge_error(seg, l):
     
     new_seg[merged == 1] = l
     
-    return labelA, labelB, merged, new_seg
+    return labelA, labelB, merged, new_seg, neighbor
 
 
 #
@@ -307,15 +440,17 @@ print len(small_labels)
 
 results = []
 
-for count,l in enumerate(small_labels):
+for count,l in enumerate(small_labels[0:30]):
 
 
 
-  labelA, labelB, merged, new_seg = create_merge_error(gold_normalized, l)
+  labelA, labelB, merged, new_seg, n = create_merge_error(gold_normalized, l)
 
   if labelA == None:
     # didnt find a small pair of label neighbors
     continue
+
+  print 'Introduced error between', l, n
 
   BBOX = mh.bbox(_metrics.Util.threshold(new_seg, l))
 
@@ -331,8 +466,12 @@ for count,l in enumerate(small_labels):
 
   for i,p in enumerate(patches):
       split_patches = create_merge_splits(p)
-      for p in split_patches:
+
+
+      for j,p in enumerate(split_patches):
       
+          # print j,p,len(split_patches)
+
           prediction = test_patch(val_fn, p)
           smallest_prediction = min(smallest_prediction, prediction)
           if prediction <= 0.5:
@@ -341,6 +480,16 @@ for count,l in enumerate(small_labels):
               
       if i % 300 == 0:
           print '  Another 300 input patches done..'
+
+
+  # add also the real boundary
+  p_real = get_real_border(image, prob, gold_normalized, l, n)
+  if p_real:
+    print 'adding real border for', l, n
+    prediction = test_patch(val_fn, p_real)
+    print 'tested as', prediction
+    detected.append((p_real, prediction))
+
 
 
   #
@@ -378,6 +527,7 @@ for count,l in enumerate(small_labels):
   result_dict['merged'] = merged[BBOX[0]:BBOX[1], BBOX[2]:BBOX[3]]
   result_dict['painted'] = painted_borders[BBOX[0]:BBOX[1], BBOX[2]:BBOX[3]]
   result_dict['detected_sorted'] = detected_sorted
+  result_dict['real_border'] = p_real
 
   results.append(result_dict)
 

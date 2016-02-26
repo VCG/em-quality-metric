@@ -7,7 +7,7 @@ import sys
 from string import Template
 import uuid
 
-PATCH_PATH = 'patches_large_sr2'
+PATCH_PATH = 'patches_3rd_50k'
 OUTPUT_PATH = 'slurm/'+PATCH_PATH+'/'
 
 slurm_header = """#!/bin/bash
@@ -48,7 +48,7 @@ export LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LIBRARY_PATH
 slurm_body = Template("""
 # add commands for analyses here
 cd /n/home05/haehn/Projects/em-quality-metric/Code/
-python run_split_cnn.py -r cluster --patchpath $patchpath --epochs $epochs --batchsize $batchsize --learning_rate $learning_rate --momentum $momentum --filters1 $no_filters --filters2 $no_filters --filters3 $no_filters --filtersize1 $filter_size --filtersize2 $filter_size --filtersize3 $filter_size --thirdconvlayer $thirdconvlayer --uuid $uuid
+python run_split_cnn_new.py -r cluster --patchpath $patchpath --epochs $epochs --batchsize $batchsize --learning_rate $learning_rate --momentum $momentum --filters1 $no_filters --filters2 $no_filters --filters3 $no_filters --filtersize1 $filter_size --filtersize2 $filter_size --filtersize3 $filter_size --thirdconvlayer $thirdconvlayer --uuid $uuid
 
 # end of program
 exit 0;
@@ -56,12 +56,12 @@ exit 0;
 
 
 epochs = [500]
-batchsize = [1000]#,1000]#,5000]#[100, 500, 1000]
-learning_rate = [0.000001, 0.00001, 0.0001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
-momentum = [0.9, 0.95]
+batchsize = [100,1000]#,1000]#,5000]#[100, 500, 1000]
+learning_rate = [0.0001]#, 0.01]#[0.000001, 0.00001, 0.0001, 0.001, 0.01]
+momentum = [0.9]
 thirdconvlayer = [True]
-no_filters = [16, 32]
-filter_size = [9, 13, 17]
+no_filters = [16]
+filter_size = [5,9]
 
 no_jobs = 0
 

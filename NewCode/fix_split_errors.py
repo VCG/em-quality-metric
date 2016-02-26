@@ -65,6 +65,9 @@ def grab_patch(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundar
     patch_centers = []
     border_yx = indices = zip(*np.where(borders==1))
 
+    if len(border_yx) < 2:
+      return []
+
     # always sample the middle point
     border_center = (border_yx[len(border_yx)/(2)][0], border_yx[len(border_yx)/(2)][1])
     patch_centers.append(border_center)
@@ -261,7 +264,9 @@ def fill_matrix(val_fn, m, patches):
             
 def setup_n():
     from test_cnn_vis import TestCNN
-    t = TestCNN('7b76867e-c76a-416f-910a-7065e93c616a', 'patches_large2new')
+    # t = TestCNN('7b76867e-c76a-416f-910a-7065e93c616a', 'patches_large2new')
+    t = TestCNN('b04a0cd5-0774-4769-98c2-d9ce3cdfb9bc', 'patches_large_sr2')
+    # t = TestCNN('a6d1924e-059c-4987-8512-da16a8d1aaee', 'patches_3rd_small')
     val_fn = t.run()
     
     return val_fn
@@ -273,7 +278,7 @@ def test_patch(val_fn, p):
     images = p['image'].reshape(-1, 1, 75, 75).astype(np.uint8)
     probs = p['prob'].reshape(-1, 1, 75, 75).astype(np.uint8)
     binary1s = p['binary1'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
-    binary2s = p['binary2'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
+    # binary2s = p['binary2'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
     overlaps = p['overlap'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
     targets = np.array([0], dtype=np.uint8)
     
@@ -440,8 +445,13 @@ def create_spliterrors(image, seg, n = 1):
     
         for r in range(n):
         
+
+
             split_label = split(np.array(image), out, l)
             
+            if split_label.max() == 0:
+              continue
+
             firstlabel = split_label.max()
             secondlabel = firstlabel - 1
             
@@ -462,9 +472,14 @@ def split(image, array, label):
 
     large_label = _metrics.Util.threshold(array, label)
 
+    if large_label.max() != 1.:
+      return large_label
+
     label_bbox = mh.bbox(large_label)
     label = large_label[label_bbox[0]:label_bbox[1], label_bbox[2]:label_bbox[3]]
     image = image[label_bbox[0]:label_bbox[1], label_bbox[2]:label_bbox[3]]
+
+
 
     #
     # smooth the image

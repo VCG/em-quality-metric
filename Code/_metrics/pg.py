@@ -17,6 +17,8 @@ import matplotlib.pyplot as plt
 
 from util import Util
 
+from scipy.spatial import distance
+
 
 class PG(object):
 
@@ -113,6 +115,11 @@ class PG(object):
 
                   sample_point = s
           
+                  if distance.euclidean(patch_centers[-1],sample_point) < patch_size[0]:
+                    # sample to close
+                    # print 'sample to close', patch_centers[-1], sample_point
+                    continue
+
                   patch_centers.append(sample_point)
           
       borders_w_center = np.array(borders.astype(np.uint8))
@@ -124,10 +131,12 @@ class PG(object):
           borders_w_center[c[0],c[1]] = 10*(i+1)
           # print 'marking', c, borders_w_center.shape
 
-          
+      # if len(patch_centers) > 1:
+      #   print 'PC', patch_centers
           
       for i,c in enumerate(patch_centers):
 
+          # print 'pc',c
           
   #         for border_center in patch_centers:
 

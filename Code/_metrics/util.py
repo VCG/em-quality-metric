@@ -2,6 +2,7 @@ import glob
 import h5py
 import mahotas as mh
 import numpy as np
+import os
 import tifffile as tif
 from scipy import ndimage as nd
 
@@ -100,3 +101,20 @@ class Util(object):
     '''
     pass
     
+
+  @staticmethod
+  def read_section(num):
+
+    DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
+    GOLD_PATH = os.path.join(DATA_PATH,'gold/')
+    RHOANA_PATH = os.path.join(DATA_PATH,'rhoana/')
+    IMAGE_PATH = os.path.join(DATA_PATH,'input/')
+    PROB_PATH = os.path.join(DATA_PATH,'prob/')    
+        
+    gold = mh.imread(GOLD_PATH+'ac3_labels_00'+str(num)+'.tif')
+    rhoana = mh.imread(RHOANA_PATH+os.sep+"z=000000"+str(num)+".tif")
+    image = mh.imread(IMAGE_PATH+'ac3_input_00'+str(num)+'.tif')
+    prob = mh.imread(PROB_PATH+'ac3_input_00'+str(num)+'_syn.tif')
+
+    return image, prob, gold, rhoana
+

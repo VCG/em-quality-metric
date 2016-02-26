@@ -6,3 +6,4 @@ from util import Util
 from split_error import SplitError
 from merge_error import MergeError
 from pg import PG
+from pgnew import PGNew

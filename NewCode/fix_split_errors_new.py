@@ -19,7 +19,7 @@ import copy
 import matplotlib.pyplot as plt
 from matplotlib.pyplot import imshow
 
-
+from scipy.spatial import distance
 
 
 def grab_neighbors(array, label):
@@ -42,6 +42,8 @@ def loop(image, prob, segmentation, sample_rate=10):
         neighbors = grab_neighbors(segmentation, l)
 
         for n in neighbors:
+            if n == 0:
+                continue
             p = grab_patch(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundaries=False, sample_rate=sample_rate)
             if not p:
                 continue
@@ -52,8 +54,8 @@ def loop(image, prob, segmentation, sample_rate=10):
 
 # def grab_patch(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundaries=False, sample_rate=1):
 
-    
-    
+
+
 
 def grab_patch(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundaries=False, sample_rate=1):
 
@@ -89,6 +91,12 @@ def grab_patch(image, prob, segmentation, l, n, patch_size=(75,75), skip_boundar
             if i % samples == 0:
 
                 sample_point = s
+
+                if distance.euclidean(patch_centers[-1],sample_point) < patch_size[0]:
+                    # sample to close
+                    # print 'sample to close', patch_centers[-1], sample_point
+                    continue
+
                 patch_centers.append(sample_point)
 
     borders_w_center = np.array(borders.astype(np.uint8))
@@ -271,7 +279,9 @@ def setup_n():
     from test_cnn_vis_new import TestCNN
     # t = TestCNN('7b76867e-c76a-416f-910a-7065e93c616a', 'patches_large2new')
     # t = TestCNN('b04a0cd5-0774-4769-98c2-d9ce3cdfb9bc', 'patches_large_sr2')
-    t = TestCNN('a6d1924e-059c-4987-8512-da16a8d1aaee', 'patches_3rd_small')
+    # t = TestCNN('a6d1924e-059c-4987-8512-da16a8d1aaee', 'patches_3rd_small')
+    # t = TestCNN('a18d1322-6a10-4bc7-b683-ef00977ba612', 'patches_3rd_50k')
+    t = TestCNN('0cff077b-9ac2-443b-85fb-f87fbd35cbd8', 'patches_3rd_10k')
     val_fn = t.run()
     
     return val_fn
@@ -378,11 +388,14 @@ def perform_merge(val_fn, image, seg, prob, m_old, l, n, sample_rate):
     new_neighbors = grab_neighbors(out, n)
     for k in new_neighbors:
 
-      p = grab_patch(image, prob, out, n, k, patch_size=(75,75), skip_boundaries=False, sample_rate=sample_rate)
-      if not p:
+        if k == 0:
+            continue
+
+        p = grab_patch(image, prob, out, n, k, patch_size=(75,75), skip_boundaries=False, sample_rate=sample_rate)
+        if not p:
           continue
 
-      patches += p
+        patches += p
 
 
 

@@ -22,7 +22,7 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("-r", "--runmode", type=str, help='local or cluster', default='local')
   #parser.add_argument("-d", "--datapath", type=str, help="the datapath", default='/Volumes/DATA1/EMQM_DATA/ac3x75/')
-  parser.add_argument("-p", "--patchpath", type=str, help="the patch folder in the datapath", default='patches_3rd_small')
+  parser.add_argument("-p", "--patchpath", type=str, help="the patch folder in the datapath", default='patches_3rd_10k')
   #parser.add_argument("-o", "--outputpath", type=str, help="the outputpath", default='/Volumes/DATA1/split_cnn/')
   parser.add_argument("-e", "--epochs", type=int, help="the number of epochs", default=5)
   parser.add_argument("-b", "--batchsize", type=int, help="the batchsize", default=5)

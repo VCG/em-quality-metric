@@ -308,6 +308,8 @@ class PGNew(object):
     # sub_binary = mh.erode(sub_binary)    
     
 
+    if sub_image.shape[0] < 2 or sub_image.shape[1] < 2:
+      return np.zeros(binary.shape, dtype=np.bool), np.zeros(binary.shape, dtype=np.bool)
 
     #
     # smooth the image
@@ -398,7 +400,7 @@ class PGNew(object):
         labeled_borders[borders==0] = 0
         relabeled_borders, no_relabeled_borders = mh.labeled.relabel(labeled_borders.astype(np.uint16))
 
-        for border in range(1,no_relabeled_borders):
+        for border in range(1,no_relabeled_borders+1):
         
             isolated_border = Util.threshold(relabeled_borders, border)
 
@@ -424,9 +426,6 @@ class PGNew(object):
 
       for l in labels:
 
-          for i in range(n):
-
-
             binary_mask = Util.threshold(label, l)
             labeled_parts = skimage.measure.label(binary_mask)
             labeled_parts += 1 # avoid the 0
@@ -434,21 +433,23 @@ class PGNew(object):
             labeled_parts, no_labeled_parts = mh.labeled.relabel(labeled_parts)
 
 
-            for part in range(1,no_labeled_parts):
+            for i in range(n):
 
-                binary_part = Util.threshold(labeled_parts, part)
-                split_binary_mask, split_isolated_border = PGNew.split_new(image, binary_part)
+              for part in range(1,no_labeled_parts+1):
 
-                patches = PGNew.analyze_border(image, prob, split_binary_mask, split_isolated_border)
+                  binary_part = Util.threshold(labeled_parts, part)
+                  split_binary_mask, split_isolated_border = PGNew.split_new(image, binary_part)
 
-                for s in patches:
+                  patches = PGNew.analyze_border(image, prob, split_binary_mask, split_isolated_border)
 
-                    yield s
-                    yield PGNew.fliplr(s)
-                    yield PGNew.flipud(s)
-                    yield PGNew.rotate(s, 90)
-                    yield PGNew.rotate(s, 180)
-                    yield PGNew.rotate(s, 270)  
+                  for s in patches:
+
+                      yield s
+                      yield PGNew.fliplr(s)
+                      yield PGNew.flipud(s)
+                      yield PGNew.rotate(s, 90)
+                      yield PGNew.rotate(s, 180)
+                      yield PGNew.rotate(s, 270)  
 
 
 

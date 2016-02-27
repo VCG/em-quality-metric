@@ -21,7 +21,7 @@ DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
 GOLD_PATH = os.path.join(DATA_PATH,'gold/')
 IMAGE_PATH = os.path.join(DATA_PATH,'input/')
 PROB_PATH = os.path.join(DATA_PATH,'prob/')
-PATCH_PATH = os.path.join(DATA_PATH,'patches_3rd_50k/')
+PATCH_PATH = os.path.join(DATA_PATH,'patches_3rd_150k/')
 
 
 gold = _metrics.Util.read(GOLD_PATH+'*.tif')
@@ -149,6 +149,6 @@ def run(start_slice, end_slice, count, filename):
 #
 #
 #
-run(0, 65, 50000, 'train')
-run(65, 70, 5000, 'val')
-run(70, 75, 5000, 'test')
+run(0, 65, 150000, 'train')
+run(65, 70, 15000, 'val')
+run(70, 75, 15000, 'test')

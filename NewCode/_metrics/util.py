@@ -5,7 +5,8 @@ import numpy as np
 import os
 import tifffile as tif
 from scipy import ndimage as nd
-
+import partition_comparison
+import matplotlib.pyplot as plt
 
 class Util(object):
 
@@ -116,4 +117,70 @@ class Util(object):
     prob = mh.imread(PROB_PATH+'ac3_input_00'+str(num)+'_syn.tif')
 
     return image, prob, gold, rhoana
+
+  @staticmethod
+  def frame_image(image, shape=(75,75)):
+    framed = np.array(image)
+    framed[:shape[0]/2+1] = 0
+    framed[-shape[0]/2+1:] = 0
+    framed[:,0:shape[0]/2+1] = 0
+    framed[:,-shape[0]/2+1:] = 0
+
+    return framed
+
+  @staticmethod
+  def propagate_max_overlap(rhoana, gold):
+
+      out = np.array(rhoana)
+      
+      rhoana_labels = Util.get_histogram(rhoana.astype(np.uint64))
+      
+      for l,k in enumerate(rhoana_labels):
+          if l == 0 or k==0:
+              # ignore 0 since rhoana does not have it
+              continue
+          values = gold[rhoana == l]
+          largest_label = Util.get_largest_label(values.astype(np.uint64))
+      
+          out[rhoana == l] = largest_label # set the largest label from gold here
+      
+      return out
+
+  @staticmethod
+  def create_vi_plot(initial_segmentation, new_segmentation, vi_s, filepath=None):
+
+    # create plot
+    new_segmentation_target = Util.propagate_max_overlap(new_segmentation, initial_segmentation)
+    before_vi = partition_comparison.variation_of_information(new_segmentation.ravel(), initial_segmentation.ravel())
+    target_vi = partition_comparison.variation_of_information(new_segmentation_target.ravel(), initial_segmentation.ravel())
+
+    bins = np.arange(0, len(vi_s))
+
+    before_vi = [before_vi]*len(vi_s)
+    target_vi = [target_vi]*len(vi_s)
+
+    fig, ax = plt.subplots()
+
+    ax.plot(bins, target_vi, 'k--', label='Target VI')
+    ax.plot(bins, vi_s_, 'k', label='Variation of Information')
+    ax.plot(bins, before_vi, 'k:', label='VI before')
+    # ax.set_yscale('log')
+
+    # Now add the legend with some customizations.
+    legend = ax.legend(loc='upper center', shadow=True)
+    ax.set_ylim([-0.5,1.5])
+
+    # The frame is matplotlib.patches.Rectangle instance surrounding the legend.
+    frame = legend.get_frame()
+    frame.set_facecolor('0.90')
+
+    # Set the fontsize
+    for label in legend.get_texts():
+        label.set_fontsize('large')
+
+    for label in legend.get_lines():
+        label.set_linewidth(1.5)  # the legend line width
+
+    if filepath:
+      plt.savefig(filepath)    
 

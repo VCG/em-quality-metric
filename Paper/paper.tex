@@ -1,0 +1,60 @@
+% This is LLNCS.DEM the demonstration file of
+% the LaTeX macro package from Springer-Verlag
+% for Lecture Notes in Computer Science,
+% version 2.4 for LaTeX2e as of 16. April 2010
+%
+\documentclass{llncs}
+%
+\usepackage{makeidx}  % allows for indexgeneration
+%
+\begin{document}
+%
+\title{Learning Split and Merge Errors in Electron Microscopy Cell Segmentations to Assist Connectomics Proofreading}
+%
+\titlerunning{Learning Split and Merge Errors}  % abbreviated title (for running head)
+%                                     also used for the TOC unless
+%                                     \toctitle is used
+%
+\author{Daniel Haehn\inst{1,2} \and Verena Kaynig-Fittkau\inst{1,2}
+\and James Tompkin\inst{1} \and Hanspeter Pfister\inst{1,2}}
+%
+\authorrunning{Daniel Haehn et al.} % abbreviated author list (for running head)
+%
+%%%% list of authors for the TOC (use if author list has to be modified)
+\tocauthor{Daniel Haehn, Verena Kaynig-Fittkau, James Tompkin, and Hanspeter Pfister}
+%
+\institute{Harvard Paulson School of Engineering and Applied Science, and\\
+\and
+Harvard Center for Brain Science, Cambridge MA 02138, USA}
+
+\maketitle              % typeset the title of the contribution
+
+\begin{abstract}
+Automatic image segmentation methods for cells can lead to \emph{split errors}, where one cell is accidentally labeled as two or more, and to \emph{merge errors}, where two or more cells are accidentally labeled as one. We develop two classifiers which, given an input image and a candidate set of cell labelings, are able to identify split and merge errors in the segmentation. These classifiers are informed by supervised training of a convolutional neural network: from expert-labelled ground truth segmentations, and their corresponding input images and edge probabilities, we synthetically generate plausible split and merge errors as training. We design a new network architecture which is able to determine a true edge with high accuracy by considering a  wider uncertainty region around an edge as an additional input to the network. We demonstrate the application of this approach to proofreading of electron microsopy image segmentations for connectomics, where our system is able to automatically correct many errors, and otherwise prioritize a list of edges to which a human should direct their attention for manual correction.
+\keywords{Segmentation, convolutional neural networks, connectomics.}
+\end{abstract}
+%
+
+\section{Introduction}
+%
+
+\section{Related Work}
+People tried this for 3D! \cite{BogovicHJ13}.
+
+\section{Method}
+
+\section{Evaluation}
+
+\section{Application}
+
+\section{Discussion}
+
+\section{Conclusion}
+
+%
+% ---- Bibliography ----
+%
+\bibliographystyle{splncs03}
+\bibliography{references}
+
+\end{document}

@@ -11,8 +11,8 @@
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/slurm/out-mine.txt
-#SBATCH -e /n/home05/haehn/slurm/err-mine.txt
+#SBATCH -o /n/home05/haehn/slurm/out-mine_200.txt
+#SBATCH -e /n/home05/haehn/slurm/err-mine_200.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh

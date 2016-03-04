@@ -11,8 +11,8 @@
 #SBATCH -t 7-12:00
 #SBATCH --mail-type=ALL
 #SBATCH --mail-user=haehn@seas.harvard.edu
-#SBATCH -o /n/home05/haehn/slurm/out-viren_overlap.txt
-#SBATCH -e /n/home05/haehn/slurm/err-viren_overlap.txt
+#SBATCH -o /n/home05/haehn/slurm/out-viren_overlap_200.txt
+#SBATCH -e /n/home05/haehn/slurm/err-viren_overlap_200.txt
 
 # add additional commands needed for Lmod and module loads here
 source new-modules.sh

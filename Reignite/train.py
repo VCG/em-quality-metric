@@ -37,7 +37,7 @@ if __name__ == '__main__':
   parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=13)  
   parser.add_argument("-u", "--uuid", type=str, help='the uuid', default=str(uuid.uuid4()))
   parser.add_argument("-i", "--inputs", nargs='+', help='the list of input patches', default=['image', 'prob', 'binary', 'border_overlap'])
-  parser.add_argument("-rp", "--rotate_patches", type=str, help="rotate patches after each epoch", default="False")
+  parser.add_argument("-rp", "--rotate_patches", type=str, help="rotate patches after each epoch", default="True")
 
   args = parser.parse_args()
 

@@ -8,9 +8,6 @@ from patch import Patch
 
 class Generator(object):
 
-
-
-
   @staticmethod
   def generate_split_error(image, prob, segmentation, n=3):
     
@@ -40,7 +37,7 @@ class Generator(object):
                 print 'Caught empty..'
                 continue
 
-              patches = Patch.analyze_border(image, prob, split_binary_mask, split_isolated_border)
+              patches = Patch.analyze_border(image, prob, split_binary_mask, binary_mask.invert(), split_isolated_border)
 
               for s in patches:
 
@@ -73,7 +70,7 @@ class Generator(object):
         
             isolated_border = Util.threshold(relabeled_borders, border)
 
-            patches = Patch.analyze_border(image, prob, binary_mask, isolated_border)
+            patches = Patch.analyze_border(image, prob, binary_mask, binary_mask.invert(), isolated_border)
 
             for s in patches:
 

@@ -3,6 +3,7 @@ import h5py
 import mahotas as mh
 import numpy as np
 import os
+import random
 # import tifffile as tif
 from scipy import ndimage as nd
 import partition_comparison
@@ -26,7 +27,7 @@ class Util(object):
   def get_histogram(array):
     '''
     '''
-    return mh.fullhistogram(array)
+    return mh.fullhistogram(array.astype(np.uint64))
 
   @staticmethod
   def get_largest_label(array, ignore_zero=False):
@@ -155,11 +156,12 @@ class Util(object):
     gold = Util.normalize_labels(skimage.measure.label(gold).astype(np.uint64))[0]
     gold[gold == 0] = gold.max()+1
 
+    rhoana = Util.normalize_labels(skimage.measure.label(rhoana).astype(np.uint64))[0]
+
     # do we want to subtract the zeros?
     if keep_zeros:
       gold[gold_original == 0] = 0
-
-    rhoana = Util.normalize_labels(skimage.measure.label(rhoana).astype(np.uint64))[0]
+      # rhoana[gold_original == 0] = 0
 
 
     return image, prob, gold, rhoana
@@ -175,7 +177,7 @@ class Util(object):
     return framed
 
   @staticmethod
-  def view(array,color=True,large=False,crop=False):
+  def view(array,color=True,large=False,crop=False, text=None):
     
     if large:
       figsize = (10,10)
@@ -186,6 +188,10 @@ class Util(object):
 
     if crop:
       array = mh.croptobbox(array)
+
+    if text:
+      text = '\n\n\n'+str(text)
+      fig.text(0,1,text)      
 
 
     if color:
@@ -265,6 +271,135 @@ class Util(object):
       copy_hist[0] = 0 # ignore zeros
       # copy_hist[label] = 0 # ignore ourselves
       return np.where(copy_hist>0)[0]
+
+  @staticmethod
+  def vi(array1, array2):
+    '''
+    '''
+    return partition_comparison.variation_of_information(array1.ravel(), array2.ravel())
+
+  @staticmethod
+  def merge_steps(array, merge_pairs, best=-1, snapshot_interval=50):
+    '''
+    '''
+    state_array = np.array(array)
+
+    for i,m in enumerate(merge_pairs):
+        
+        l,n = m
+        
+        state_array[state_array == n] = l
+        
+        
+        if best != -1 and i == best:
+          Util.view(state_array, large=True)
+
+        elif best == -1 and i % snapshot_interval == 0:
+          Util.view(state_array, large=False)
+
+
+  @staticmethod
+  def dice(array, window=(300,300)):
+    '''
+    Return a list of diced windows of an array.
+    '''
+    windows = []
+
+    for y in range(0,array.shape[0],window[0])[:-1]:
+      for x in range(0,array.shape[1],window[1])[:-1]:
+
+        bbox = [y,y+window[0],x,x+window[1]]
+        subarray = array[bbox[0]:bbox[1], bbox[2]:bbox[3]]
+        windows.append(subarray)
+
+    return windows
+
+
+  @staticmethod
+  def stats(results):
+    print '  N: ', len(results)
+    print '  Min: ', np.min(results)
+    print '  Max: ', np.max(results)
+    print '  Mean: ', np.mean(results)
+    print '  Median: ', np.median(results)
+    print '  Std: ', np.std(results)
+    print '  Var: ', np.var(results)
+
+
+  @staticmethod
+  def crop_by_bbox(array, bbox):
+
+    return array[bbox[0]:bbox[1], bbox[2]:bbox[3]]
+
+  @staticmethod
+  def gradient(array, sigma=2.5):
+    '''
+    '''
+
+    grad = mh.gaussian_filter(array, sigma)
+
+    grad_x = np.gradient(grad)[0]
+    grad_y = np.gradient(grad)[1]
+    grad = np.sqrt(np.add(grad_x*grad_x, grad_y*grad_y))
+
+    grad -= grad.min()
+    grad /= (grad.max() - grad.min())
+    grad *= 255
+
+    return grad
+
+  @staticmethod
+  def invert(array):
+    
+    return (255-array)
+
+  @staticmethod
+  def random_watershed(array, speed_image, border_seeds=False, erode=False):
+    '''
+    '''
+    copy_array = np.array(array, dtype=np.bool)
+
+    if erode:
+      
+      for i in range(10):
+        copy_array = mh.erode(copy_array)
+
+
+    seed_array = np.array(copy_array)
+    if border_seeds:
+      seed_array = mh.labeled.border(copy_array, 1, 0)
+
+    coords = zip(*np.where(seed_array==1))
+
+
+    seed1 = random.choice(coords)
+    seed2 = random.choice(coords)
+
+    seeds = np.zeros(array.shape, dtype=np.uint8)
+    seeds[seed1[0], seed1[1]] = 1
+    seeds[seed2[0], seed2[1]] = 2
+
+    for i in range(8):
+      seeds = mh.dilate(seeds)
+
+    ws = mh.cwatershed(speed_image, seeds)
+    ws[array == 0] = 0
+
+    return ws
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

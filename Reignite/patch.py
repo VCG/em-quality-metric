@@ -11,7 +11,7 @@ import random
 class Patch(object):
 
   @staticmethod
-  def grab(image, prob, segmentation, l, n, sample_rate=10):
+  def grab(image, prob, segmentation, l, n, sample_rate=10, mode='', oversampling=False, patch_size=(75,75)):
 
 
 
@@ -24,18 +24,20 @@ class Patch(object):
     binary_n = Util.threshold(segmentation, n)
 
     # analyze both borders
-    patches_l = Patch.analyze_border(image, prob, binary_l, border, sample_rate=sample_rate)
-    patches_n = Patch.analyze_border(image, prob, binary_n, border, sample_rate=sample_rate)
+    patches_l = Patch.analyze_border(image, prob, binary_l, binary_n, border, l, n, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
+    patches_n = Patch.analyze_border(image, prob, binary_n, binary_l, border, n, l, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
 
     return patches_l, patches_n
 
   @staticmethod
-  def patchify(image, prob, segmentation, sample_rate=10, min_pixels=100):
+  def patchify(image, prob, segmentation, sample_rate=10, min_pixels=100, max=1000, oversampling=False, ignore_zero_neighbor=True):
     '''
     '''
     patches = []
     hist = Util.get_histogram(segmentation.astype(np.uint64))
     labels = len(hist)
+
+    batch_count = 0
     
 
     for l in range(labels):
@@ -50,25 +52,58 @@ class Patch(object):
 
       for n in neighbors:
 
-        if n == 0:
+        if ignore_zero_neighbor and n == 0:
           continue
 
         if hist[n] < min_pixels:
           continue
 
         # print 'grabbing', l, n
-        p_l, p_n = Patch.grab(image, prob, segmentation, l, n, sample_rate)
+        p_l, p_n = Patch.grab(image, prob, segmentation, l, n, sample_rate, oversampling=oversampling)
 
         patches += p_l
         patches += p_n
 
+        if len(patches) >= max:
+
+          return patches[0:max]        
+
+
     return patches
 
 
+  @staticmethod
+  def grab_group_test_and_unify(cnn, image, prob, segmentation, l, n, sample_rate=10, oversampling=False):
+    '''
+    '''
+    patches = []
+    patches_l, patches_n = Patch.grab(image, prob, segmentation, l, n, oversampling=oversampling)
+    patches += patches_l
+    patches += patches_n
+
+    grouped_patches = Patch.group(patches)
+
+    if len(grouped_patches.keys()) != 1:
+      # out of bound condition due to probability map
+      return -1
+
+    prediction = Patch.test_and_unify(grouped_patches.items()[0][1], cnn)
+
+    return prediction
 
 
   @staticmethod
-  def analyze_border(image, prob, binary_mask, border, patch_size=(75,75), sample_rate=10):
+  def analyze_border(image,
+                     prob,
+                     binary_mask,
+                     binary_mask2,
+                     border,
+                     l=1,
+                     n=0,
+                     mode='',
+                     patch_size=(75,75),
+                     sample_rate=10,
+                     oversampling=False):
 
       patches = []
 
@@ -77,7 +112,6 @@ class Patch(object):
 
       if len(border_yx) < 2:
         # somehow border detection did not work
-
         return patches
 
       # always sample the middle point
@@ -96,11 +130,13 @@ class Patch(object):
               if i % samples == 0:
 
                   sample_point = s
-          
-                  if distance.euclidean(patch_centers[-1],sample_point) < patch_size[0]:
-                    # sample to close
-                    # print 'sample to close', patch_centers[-1], sample_point
-                    continue
+
+                  if not oversampling:
+            
+                    if distance.euclidean(patch_centers[-1],sample_point) < patch_size[0]:
+                      # sample to close
+                      # print 'sample to close', patch_centers[-1], sample_point
+                      continue
 
                   patch_centers.append(sample_point)
           
@@ -126,19 +162,15 @@ class Patch(object):
           new_border_center = [c[0], c[1]]
 
           if new_border_center[0] < patch_size[0]/2:
-              # print 'oob1', new_border_center
               # return None
               continue
           if new_border_center[0]+patch_size[0]/2 >= border.shape[0]:
-              # print 'oob2', new_border_center
               # return None
               continue
           if new_border_center[1] < patch_size[1]/2:
-              # print 'oob3', new_border_center
               # return None
               continue
           if new_border_center[1]+patch_size[1]/2 >= border.shape[1]:
-              # print 'oob4', new_border_center
               # return None
               continue
           # print new_border_center, patch_size[0]/2, border_center[0] < patch_size[0]/2
@@ -155,44 +187,59 @@ class Patch(object):
           # if skip_boundaries:
           if bbox[0] <= 33:
               # return None
-              # print 'ppb'
               continue
           if bbox[1] >= border.shape[0]-33:
               # return None
-              # print 'ppb'
               continue
           if bbox[2] <= 33:
               # return None
-              # print 'ppb'
               continue
           if bbox[3] >= border.shape[1]-33:
               # return None
-              # print 'ppb'
               continue
 
           
-          cutout_border = mh.labeled.border(binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1], 1, 0)
+          relabeled_cutout_binary_mask = skimage.measure.label(binary_mask[bbox[0]:bbox[1] + 1,
+                                                                           bbox[2]:bbox[3] + 1])
+          relabeled_cutout_binary_mask += 1
+          center_cutout = relabeled_cutout_binary_mask[patch_size[0]/2,patch_size[1]/2]
+          relabeled_cutout_binary_mask[relabeled_cutout_binary_mask != center_cutout] = 0
+
+          relabeled_cutout_binary_mask = relabeled_cutout_binary_mask.astype(np.bool)
+
+          cutout_border = mh.labeled.border(relabeled_cutout_binary_mask, 1, 0)
+
+          merged_array = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1] + binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+          merged_array_border = mh.labeled.border(merged_array, 1, 0)
 
 
           # cutout_border = np.array(border[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool))
           for d in range(1):
             cutout_border = mh.dilate(cutout_border)
 
-          relabeled_cutout_border = skimage.measure.label(cutout_border)
-          relabeled_cutout_border += 1 # avoid 0
-          center_cutout = relabeled_cutout_border[37,37]
-          relabeled_cutout_border[relabeled_cutout_border != center_cutout] = 0
+          for d in range(1):
+            merged_array_border = mh.dilate(merged_array_border)
 
 
-          relabeled_cutout_binary_mask = skimage.measure.label(binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1])
-          relabeled_cutout_binary_mask += 1
-          center_cutout = relabeled_cutout_binary_mask[37,37]
-          relabeled_cutout_binary_mask[relabeled_cutout_binary_mask != center_cutout] = 0
+
+          isolated_border = cutout_border - merged_array_border
+          isolated_border[cutout_border==0] = 0          
+
+          larger_isolated_border = np.array(isolated_border)  
+          for d in range(5):
+            larger_isolated_border = mh.dilate(larger_isolated_border)
+
+          # relabeled_cutout_border = cutout_border
+
+          # relabeled_cutout_border = skimage.measure.label(cutout_border)
+          # relabeled_cutout_border += 1 # avoid 0
+          # center_cutout = relabeled_cutout_border[patch_size[0]/2,patch_size[1]/2]
+          # relabeled_cutout_border[relabeled_cutout_border != center_cutout] = 0
 
 
           # # threshold for label1
           # array1 = Util.threshold(segmentation, l).astype(np.uint8)
-          # # threshold for label2
+          # threshold for label2
           # array2 = Util.threshold(segmentation, n).astype(np.uint8)
           # merged_array = array1 + array2
 
@@ -200,13 +247,13 @@ class Patch(object):
           
 
           # # dilate for overlap
-          # dilated_array1 = np.array(array1)
-          # dilated_array2 = np.array(array2)
-          # for o in range(10):
-          #     dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
-          #     dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
-          # overlap = np.logical_and(dilated_array1, dilated_array2)
-          # overlap[merged_array == 0] = 0
+          dilated_array1 = np.array(binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1])
+          dilated_array2 = np.array(binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1])
+          for o in range(patch_size[0]/2):
+              dilated_array1 = mh.dilate(dilated_array1.astype(np.uint64))
+              dilated_array2 = mh.dilate(dilated_array2.astype(np.uint64))
+          overlap = np.logical_and(dilated_array1, dilated_array2)
+          overlap[merged_array == 0] = 0
 
           # overlap_labeled = skimage.measure.label(overlap)
           # overlap_value = overlap_labeled[37,37]
@@ -215,7 +262,17 @@ class Patch(object):
           # overlap_thresholded[overlap_labeled == overlap_value] = 1
           # overlap = overlap_thresholded
 
-          
+          dyn_obj = np.zeros(merged_array.shape)
+          r = 4
+          midpoint = [patch_size[0]/2, patch_size[1]/2]
+          dyn_obj[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = merged_array[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+
+          dyn_bnd = np.zeros(overlap.shape)
+          r = 10
+          midpoint = [patch_size[0]/2, patch_size[1]/2]
+          dyn_bnd[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = overlap[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+
+
 
           output = {}
           output['id'] = str(uuid.uuid4())
@@ -223,11 +280,19 @@ class Patch(object):
           
           output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           # output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
-          output['binary1'] = relabeled_cutout_binary_mask.astype(np.bool)
+          output['binary'] = relabeled_cutout_binary_mask.astype(np.bool)
+          output['input_binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['input_binary2'] = binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['merged_array'] = merged_array.astype(np.bool)
+          output['dyn_obj'] = dyn_obj
+          output['dyn_bnd'] = overlap.astype(np.bool)
           output['bbox'] = bbox
           output['border'] = border_yx
           output['border_center'] = new_border_center
-          output['overlap'] = relabeled_cutout_border.astype(np.bool)
+          output['border_overlap'] = isolated_border.astype(np.bool)
+          output['larger_border_overlap'] = larger_isolated_border.astype(np.bool)
+          output['l'] = l
+          output['n'] = n
           # output['overlap'] = overlap[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
 
           # output['borders_labeled'] = borders_labeled[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]]
@@ -344,19 +409,41 @@ class Patch(object):
 
       text = '\n\n\nPatch '+str(i) + ': ' + str(pred)
       text += '\n'+str(patch['bbox'])
+      text += '\nimage'
 
       fig.text(0,1,text)
       plt.imshow(patch['image'], cmap='gray')
-      plt.figure(figsize=(2,2))
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'prob')
       plt.imshow(patch['prob'], cmap='gray')
-      plt.figure(figsize=(2,2))
-      plt.imshow(patch['binary1'], cmap='gray')
-      plt.figure(figsize=(2,2))
-      plt.imshow(patch['overlap'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'binary')
+      plt.imshow(patch['binary'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'input_binary1')
+      plt.imshow(patch['input_binary1'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'input_binary2')
+      plt.imshow(patch['input_binary2'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'merged_array')
+      plt.imshow(patch['merged_array'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'dyn_obj')
+      plt.imshow(patch['dyn_obj'], cmap='gray')         
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'dyn_bnd')
+      plt.imshow(patch['dyn_bnd'], cmap='gray')      
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'border_overlap')
+      plt.imshow(patch['border_overlap'], cmap='gray')
+      fig = plt.figure(figsize=(2,2))
+      fig.text(0,1,'larger_border_overlap')
+      plt.imshow(patch['larger_border_overlap'], cmap='gray')
 
 
   @staticmethod
-  def test(patches, cnn):
+  def test(patches, cnn, stats=True):
     if type(patches) != type(list()):
       patches = [patches]
 
@@ -367,16 +454,81 @@ class Patch(object):
       pred = cnn.test_patch(patch)
       results.append(pred)
 
-    print 'N: ', len(results)
-    print 'Min: ', np.min(results)
-    print 'Max: ', np.max(results)
-    print 'Mean: ', np.mean(results)
-    print 'Std: ', np.std(results)
-    print 'Var: ', np.var(results)
+    if stats:
+      print 'N: ', len(results)
+      print 'Min: ', np.min(results)
+      print 'Max: ', np.max(results)
+      print 'Mean: ', np.mean(results)
+      print 'Std: ', np.std(results)
+      print 'Var: ', np.var(results)
 
     return results
 
 
+
+  @staticmethod
+  def group(patches):
+    '''
+    groups patches by label pair
+    '''
+
+    patch_grouper = {}
+    for p in patches:
+        # create key
+        minlabel = min(p['l'], p['n'])
+        maxlabel = max(p['l'], p['n'])
+        key = str(minlabel)+'-'+str(maxlabel)
+
+        if not key in patch_grouper:
+            patch_grouper[key] = []
+
+        patch_grouper[key] += [p]
+
+    return patch_grouper
+
+
+  @staticmethod
+  def test_and_unify(patches, cnn, method='weighted_arithmetic_mean'):
+    '''
+    '''
+
+    if method != 'weighted_arithmetic_mean':
+
+      # just the standard mean
+      return np.mean(Patch.test(patches, cnn, stats=False))
+
+    else:
+
+      # weighted arithmetic mean based on border length
+
+      weights = []
+      predictions = []
+
+      for p in patches:
+
+          # calculate the border length based on the patch size
+          bbox = p['bbox']
+          valid_border_points = 0
+          for c in p['border']:
+              if c[0] >= bbox[0] and c[0] <= bbox[1]:
+                  if c[1] >= bbox[2] and c[1] <= bbox[3]:
+                      # valid border point
+                      valid_border_points += 1
+
+          pred = cnn.test_patch(p)
+          weights.append(valid_border_points)
+          predictions.append(pred)
+
+      p_sum = 0
+      w_sum = 0
+      for i,w in enumerate(weights):
+          # weighted arithmetic mean
+          p_sum += w*predictions[i]
+          w_sum += w
+
+      p_sum /= w_sum
+
+      return p_sum
 
 
 
@@ -388,9 +540,13 @@ class Patch(object):
       s = {}
       s['image'] = scipy.misc.imrotate(patch['image'], degrees, interp='nearest')
       s['prob'] = scipy.misc.imrotate(patch['prob'], degrees, interp='nearest')
-      s['binary1'] = scipy.misc.imrotate(patch['binary1'], degrees, interp='nearest')
-      # s['binary2'] = scipy.misc.imrotate(patch['binary2'], degrees, interp='nearest')
-      s['overlap'] = scipy.misc.imrotate(patch['overlap'], degrees, interp='nearest')
+      s['binary'] = scipy.misc.imrotate(patch['binary'], degrees, interp='nearest')
+      s['input_binary1'] = scipy.misc.imrotate(patch['input_binary1'], degrees, interp='nearest')
+      s['input_binary2'] = scipy.misc.imrotate(patch['input_binary2'], degrees, interp='nearest')
+      s['merged_array'] = scipy.misc.imrotate(patch['merged_array'], degrees, interp='nearest')
+      s['dyn-obj'] = scipy.misc.imrotate(patch['dyn-obj'], degrees, interp='nearest')
+      s['dyn-bnd'] = scipy.misc.imrotate(patch['dyn-bnd'], degrees, interp='nearest')
+      s['border-overlap'] = scipy.misc.imrotate(patch['border-overlap'], degrees, interp='nearest')
       s['bbox'] = patch['bbox']
 
       return s
@@ -403,9 +559,13 @@ class Patch(object):
       s = {}
       s['image'] = np.fliplr(patch['image'])#cv2.flip(self._meta['image'], how)
       s['prob'] = np.fliplr(patch['prob'])#cv2.flip(self._meta['prob'], how)
-      s['binary1'] = np.fliplr(patch['binary1'])#cv2.flip(self._meta['label1'], how)
-      # s['binary2'] = np.fliplr(patch['binary2'])#cv2.flip(self._meta['label2'], how)
-      s['overlap'] = np.fliplr(patch['overlap'])#cv2.flip(self._meta['overlap'], how)
+      s['binary'] = np.fliplr(patch['binary'])#cv2.flip(self._meta['label1'], how)
+      s['input_binary1'] = np.fliplr(patch['input_binary1'])
+      s['input_binary2'] = np.fliplr(patch['input_binary2'])
+      s['merged_array'] = np.fliplr(patch['merged_array'])
+      s['dyn-obj'] = np.fliplr(patch['dyn-obj'])
+      s['dyn-bnd'] = np.fliplr(patch['dyn-bnd'])
+      s['border-overlap'] = np.fliplr(patch['border-overlap'])
       s['bbox'] = patch['bbox']
 
       return s
@@ -418,9 +578,13 @@ class Patch(object):
       s = {}
       s['image'] = np.flipud(patch['image'])#cv2.flip(self._meta['image'], how)
       s['prob'] = np.flipud(patch['prob'])#cv2.flip(self._meta['prob'], how)
-      s['binary1'] = np.flipud(patch['binary1'])#cv2.flip(self._meta['label1'], how)
-      # s['binary2'] = np.flipud(patch['binary2'])#cv2.flip(self._meta['label2'], how)
-      s['overlap'] = np.flipud(patch['overlap'])#cv2.flip(self._meta['overlap'], how)
+      s['binary'] = np.flipud(patch['binary'])#cv2.flip(self._meta['label1'], how)
+      s['input_binary1'] = np.flipud(patch['input_binary1'])
+      s['input_binary2'] = np.flipud(patch['input_binary2'])
+      s['merged_array'] = np.flipud(patch['merged_array'])
+      s['dyn-obj'] = np.flipud(patch['dyn-obj'])
+      s['dyn-bnd'] = np.flipud(patch['dyn-bnd'])
+      s['border-overlap'] = np.flipud(patch['border-overlap'])
       s['bbox'] = patch['bbox']
 
       return s

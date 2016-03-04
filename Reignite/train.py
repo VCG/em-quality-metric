@@ -22,22 +22,26 @@ if __name__ == '__main__':
   parser = argparse.ArgumentParser()
   parser.add_argument("-r", "--runmode", type=str, help='local or cluster', default='local')
   #parser.add_argument("-d", "--datapath", type=str, help="the datapath", default='/Volumes/DATA1/EMQM_DATA/ac3x75/')
-  parser.add_argument("-p", "--patchpath", type=str, help="the patch folder in the datapath", default='patches_4th_10k')
+  parser.add_argument("-p", "--patchpath", type=str, help="the patch folder in the datapath", default='patches_4th_small')
   #parser.add_argument("-o", "--outputpath", type=str, help="the outputpath", default='/Volumes/DATA1/split_cnn/')
   parser.add_argument("-e", "--epochs", type=int, help="the number of epochs", default=5)
-  parser.add_argument("-b", "--batchsize", type=int, help="the batchsize", default=5)
-  parser.add_argument("-l", "--learning_rate", type=float, help="the learning rate", default=0.0001)
+  parser.add_argument("-b", "--batchsize", type=int, help="the batchsize", default=200)
+  parser.add_argument("-l", "--learning_rate", type=float, help="the learning rate", default=0.00001)
   parser.add_argument("-m", "--momentum", type=float, help="the momentum", default=0.9)
   parser.add_argument("-f1", "--filters1", type=int, help="the number of filters 1", default=32)
-  parser.add_argument("-fs1", "--filtersize1", type=int, help="the filtersize 1", default=5)
+  parser.add_argument("-fs1", "--filtersize1", type=int, help="the filtersize 1", default=13)
   parser.add_argument("-f2", "--filters2", type=int, help="the number of filters 2", default=32)
-  parser.add_argument("-fs2", "--filtersize2", type=int, help="the filtersize 2", default=5)
+  parser.add_argument("-fs2", "--filtersize2", type=int, help="the filtersize 2", default=13)
   parser.add_argument("-tcl", "--thirdconvlayer", type=str, help="use a third conv layer", default='False')
   parser.add_argument("-f3", "--filters3", type=int, help="the number of filters 2", default=32)
-  parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=5)  
+  parser.add_argument("-fs3", "--filtersize3", type=int, help="the filtersize 2", default=13)  
   parser.add_argument("-u", "--uuid", type=str, help='the uuid', default=str(uuid.uuid4()))
+  parser.add_argument("-i", "--inputs", nargs='+', help='the list of input patches', default=['image', 'prob', 'binary', 'border_overlap'])
+  parser.add_argument("-rp", "--rotate_patches", type=str, help="rotate patches after each epoch", default="False")
 
   args = parser.parse_args()
+
+
 
   if args.runmode == 'local':
     args.datapath = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
@@ -52,6 +56,11 @@ if __name__ == '__main__':
     args.thirdconvlayer = False
   else:
     args.thirdconvlayer = True
+
+  if args.rotate_patches == 'False':
+    args.rotate_patches = False
+  else:
+    args.rotate_patches = True
 
   print args_as_text
 
@@ -82,16 +91,9 @@ if __name__ == '__main__':
   def store_filters(s, layers, epoch):
 
     # grab learning pics
-    image_filters = Image.fromarray(s.visualize_filters(layers['image']['c2d_layer']))
-    image_filters.save(OUTPUT_PATH+os.sep+'image_filters_'+str(epoch)+'.png')
-    prob_filters = Image.fromarray(s.visualize_filters(layers['prob']['c2d_layer']))
-    prob_filters.save(OUTPUT_PATH+os.sep+'prob_filters_'+str(epoch)+'.png')
-    binary1_filters = Image.fromarray(s.visualize_filters(layers['binary1']['c2d_layer']))
-    binary1_filters.save(OUTPUT_PATH+os.sep+'binary1_filters_'+str(epoch)+'.png')
-    # binary2_filters = Image.fromarray(s.visualize_filters(layers['binary2']['c2d_layer']))
-    # binary2_filters.save(OUTPUT_PATH+os.sep+'binary2_filters_'+str(epoch)+'.png')
-    overlap_filters = Image.fromarray(s.visualize_filters(layers['overlap']['c2d_layer']))
-    overlap_filters.save(OUTPUT_PATH+os.sep+'overlap_filters_'+str(epoch)+'.png')  
+    for i in s._inputs:
+      filters = Image.fromarray(s.visualize_filters(layers[i]['c2d_layer']))
+      filters.save(OUTPUT_PATH+os.sep+i+'_filters_'+str(epoch)+'.png')  
 
     epochs = np.arange(0, len(s._training_loss))
     training_loss = s._training_loss
@@ -139,7 +141,10 @@ if __name__ == '__main__':
   s._FILTER_SIZE3 = (args.filtersize3,args.filtersize3)
   s._EPOCH_CALLBACK = store_filters
   s._CONV_CALLBACK = store_network
+  s._inputs = args.inputs
+  s._rotate_patches = args.rotate_patches
 
+  print 'Using the following inputs:', s._inputs
   print 'Network configured.. running now!'
   # old_stdout = sys.stdout
   # old_stderr = sys.stderr

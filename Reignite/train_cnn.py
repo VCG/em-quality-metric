@@ -19,7 +19,7 @@ class TrainCNN(object):
     self._dbg = None
 
     self._DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
-    self._PATCH_PATH = os.path.join(self._DATA_PATH,'patches_3rd_small/')
+    self._PATCH_PATH = os.path.join(self._DATA_PATH,'patches_4th_small/')
 
     self._EPOCHS = 5
     self._BATCH_SIZE = 5#00
@@ -41,6 +41,10 @@ class TrainCNN(object):
     self._validation_acc = []
     self._test_loss = []
     self._test_acc = []
+
+    self._rotate_patches = True
+
+    self._inputs = ['image', 'prob', 'binary', 'border_overlap']
 
 
   # ################## Download and prepare the MNIST dataset ##################
@@ -114,9 +118,12 @@ class TrainCNN(object):
       training = {
         'image': training['image'].reshape(-1, 1, 75, 75),
         'prob': training['prob'].reshape(-1, 1, 75, 75),
-        'binary1': training['binary1'].reshape(-1, 1, 75, 75)*255,
-        # 'binary2': training['binary2'].reshape(-1, 1, 75, 75)*255,
-        'overlap': training['overlap'].reshape(-1, 1, 75, 75)*255, 
+        'binary': training['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'merged_array': training['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'larger_border_overlap': training['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
       }
 
       training_targets = training_targets['targets'].astype(np.uint8)
@@ -132,9 +139,12 @@ class TrainCNN(object):
       val = {
         'image': val['image'].reshape(-1, 1, 75, 75),
         'prob': val['prob'].reshape(-1, 1, 75, 75),
-        'binary1': val['binary1'].reshape(-1, 1, 75, 75)*255,
-        # 'binary2': val['binary2'].reshape(-1, 1, 75, 75)*255,
-        'overlap': val['overlap'].reshape(-1, 1, 75, 75)*255, 
+        'binary': val['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'merged_array': val['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'larger_border_overlap': val['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
       }
 
       val_targets = val_targets['targets'].astype(np.uint8)
@@ -150,9 +160,12 @@ class TrainCNN(object):
       test = {
         'image': test['image'].reshape(-1, 1, 75, 75),
         'prob': test['prob'].reshape(-1, 1, 75, 75),
-        'binary1': test['binary1'].reshape(-1, 1, 75, 75)*255,
-        # 'binary2': test['binary2'].reshape(-1, 1, 75, 75)*255,
-        'overlap': test['overlap'].reshape(-1, 1, 75, 75)*255, 
+        'binary': test['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
+        'larger_border_overlap': test['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
       }
 
       test_targets = test_targets['targets'].astype(np.uint8)
@@ -161,6 +174,7 @@ class TrainCNN(object):
       #val_targets = np.load(PATCH_PATH+'val_targets.npz')
 
       return training, training_targets, val, val_targets, test, test_targets
+
 
 
 
@@ -175,15 +189,16 @@ class TrainCNN(object):
     # y_val = y_test = y_train
 
     # Prepare Theano variables for inputs and targets
-    image_var = T.tensor4('image')
-    prob_var = T.tensor4('prob')
-    binary1_var = T.tensor4('binary1')
-    # binary2_var = T.tensor4('binary2')
-    overlap_var = T.tensor4('overlap')
+
+    theano_vars = []
+    for i in self._inputs:
+      theano_vars.append(T.tensor4(i))
     target_var = T.ivector('targets')
 
+    theano_function_vars = theano_vars + [target_var]
+
     # layers = self.build(image_var, prob_var, binary1_var, binary2_var, overlap_var, self._THIRD_CONV_LAYER)
-    layers = self.build(image_var, prob_var, binary1_var, overlap_var, self._THIRD_CONV_LAYER)
+    layers = self.build(theano_vars, self._THIRD_CONV_LAYER)
     network = layers['dense']['network']
 
     # Create a loss expression for training, i.e., a scalar objective we want
@@ -214,10 +229,10 @@ class TrainCNN(object):
     # Compile a function performing a training step on a mini-batch (by giving
     # the updates dictionary) and returning the corresponding training loss:
     # train_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], loss, updates=updates)
-    train_fn = theano.function([image_var, prob_var, binary1_var, overlap_var, target_var], loss, updates=updates)
+    train_fn = theano.function(theano_function_vars, loss, updates=updates)
 
     # Compile a second function computing the validation loss and accuracy:
-    val_fn = theano.function([image_var, prob_var, binary1_var, overlap_var, target_var], [test_loss, test_acc])
+    val_fn = theano.function(theano_function_vars, [test_loss, test_acc])
     # val_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], [test_loss, test_acc])
 
     # Finally, launch the training loop.
@@ -236,9 +251,7 @@ class TrainCNN(object):
         train_batches = 0
         start_time = time.time()
         for batch in self.iterate_minibatches(X_train, y_train, self._BATCH_SIZE, shuffle=False):
-            images, probs, binary1s, overlaps, targets = batch
-            self._dbg = images, probs, binary1s
-            train_err += train_fn(images, probs, binary1s, overlaps, targets)
+            train_err += train_fn(*batch)
             train_batches += 1
 
         if str(train_err) == 'nan':
@@ -246,14 +259,41 @@ class TrainCNN(object):
           print 'WRONG PARAMETERS'
           sys.exit(1)
 
+        #
+        #
+        # also, now rotate (k=1,2,3)
+        #
+        #
+        #
+        if self._rotate_patches:
+          for k in range(1,4):
+
+            X_train_rotated = {}
+            for key in X_train.keys():
+                patches = X_train[key]
+                X_train_rotated[key] = np.array(patches)
+                for i,p in enumerate(patches):
+                    array = p[0]
+                    rotated_array = np.rot90(array, k)
+                    X_train_rotated[key][i] = rotated_array
+
+            print 'Training on rotated set by', 90*k, 'degrees'
+            for batch in self.iterate_minibatches(X_train_rotated, y_train, self._BATCH_SIZE, shuffle=False):
+                train_err += train_fn(*batch)
+                train_batches += 1
+
+
+
+
         # And a full pass over the validation data:
         val_err = 0
         val_acc = 0
         val_batches = 0
         for batch in self.iterate_minibatches(X_val, y_val, self._BATCH_SIZE, shuffle=False):
             #inputs, targets = batch
-            images, probs, binary1s, overlaps, targets = batch
-            err, acc = val_fn(images, probs, binary1s, overlaps, targets)
+            # images, probs, binarys, overlaps, targets = batch
+            # err, acc = val_fn(images, probs, binarys, overlaps, targets)
+            err, acc = val_fn(*batch)
             val_err += err
             val_acc += acc
             val_batches += 1
@@ -299,12 +339,14 @@ class TrainCNN(object):
     self._EPOCH_CALLBACK(self, layers, epoch)
 
     # reset network
-    image_var = layers['image']['input_layer'].input_var
-    prob_var = layers['prob']['input_layer'].input_var
-    binary1_var = layers['binary1']['input_layer'].input_var
-    # binary2_var = layers['binary2']['input_layer'].input_var
-    overlap_var = layers['overlap']['input_layer'].input_var
-    network = layers['dense']['network']    
+    network = layers['dense']['network']
+
+    theano_vars = []
+    for i in self._inputs:
+      theano_vars.append(layers[i]['input_layer'].input_var)
+    target_var = T.ivector('targets')
+
+    theano_function_vars = theano_vars + [target_var]
 
     # Create a loss expression for validation/testing. The crucial difference
     # here is that we do a deterministic forward pass through the network,
@@ -319,7 +361,7 @@ class TrainCNN(object):
 
 
     # Compile a second function computing the validation loss and accuracy:
-    val_fn = theano.function([image_var, prob_var, binary1_var, overlap_var, target_var], [test_loss, test_acc])
+    val_fn = theano.function(theano_function_vars, [test_loss, test_acc])
 
 
     # After training, we compute and print the test error:
@@ -329,8 +371,9 @@ class TrainCNN(object):
     for batch in self.iterate_minibatches(X_test, y_test, self._BATCH_SIZE, shuffle=False):
         # inputs, targets = batch
         # err, acc = val_fn(inputs, inputs, inputs, inputs, inputs, targets)
-        images, probs, binary1s, overlaps, targets = batch
-        err, acc = val_fn(images, probs, binary1s, overlaps, targets)        
+        # images, probs, binarys, overlaps, targets = batch
+        # err, acc = val_fn(images, probs, binarys, overlaps, targets)        
+        err, acc = val_fn(*batch)
         test_err += err
         test_acc += acc
         test_batches += 1
@@ -417,7 +460,7 @@ class TrainCNN(object):
 
 
 
-  def build(self, input_image, input_prob, input_binary1, input_overlap, third_conv_layer=False):
+  def build(self, input_vars, third_conv_layer=False):
     '''
     '''
     # As a third model, we'll create a CNN of two convolution + pooling stages
@@ -425,11 +468,8 @@ class TrainCNN(object):
 
     layers = {}
 
-    layers = self.gen_network(layers, 'image', input_image, third_conv_layer)
-    layers = self.gen_network(layers, 'prob', input_prob, third_conv_layer)
-    layers = self.gen_network(layers, 'binary1', input_binary1, third_conv_layer)
-    # layers = self.gen_network(layers, 'binary2', input_binary2, third_conv_layer)
-    layers = self.gen_network(layers, 'overlap', input_overlap, third_conv_layer)
+    for e,i in enumerate(self._inputs):
+      layers = self.gen_network(layers, i, input_vars[e], third_conv_layer)
 
     #
     #
@@ -438,7 +478,11 @@ class TrainCNN(object):
     #
     layers['merged'] = {}
 
-    merged = lasagne.layers.ConcatLayer([layers['image']['network'], layers['prob']['network'], layers['binary1']['network'], layers['overlap']['network']])
+    concat_layers = []
+    for i in self._inputs:
+      concat_layers.append(layers[i]['network'])
+
+    merged = lasagne.layers.ConcatLayer(concat_layers)
 
     layers['merged']['network'] = merged
 
@@ -504,9 +548,9 @@ class TrainCNN(object):
   def iterate_minibatches(self, inputs, targets, batchsize, shuffle=False):
       assert len(inputs['image']) == len(targets)
       assert len(inputs['prob']) == len(targets)
-      assert len(inputs['binary1']) == len(targets)
+      assert len(inputs['binary']) == len(targets)
       # assert len(inputs['binary2']) == len(targets)
-      assert len(inputs['overlap']) == len(targets)
+      assert len(inputs['border_overlap']) == len(targets)
       if shuffle:
           indices = np.arange(len(inputs))
           np.random.shuffle(indices)
@@ -515,7 +559,15 @@ class TrainCNN(object):
               excerpt = indices[start_idx:start_idx + batchsize]
           else:
               excerpt = slice(start_idx, start_idx + batchsize)
-          yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary1'][excerpt], inputs['overlap'][excerpt], targets[excerpt]
+
+          minibatches = []
+          for i in self._inputs:
+            minibatches.append(inputs[i][excerpt])
+          minibatches.append(targets[excerpt])
+
+          yield minibatches
+
+          #yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary'][excerpt], inputs['border_overlap'][excerpt], targets[excerpt]
 
   def visualize_filters(self, layer):
 

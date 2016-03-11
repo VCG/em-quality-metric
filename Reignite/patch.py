@@ -7,8 +7,28 @@ import scipy.misc
 import uuid
 import matplotlib.pyplot as plt
 import random
+import time
+
+# from uglify import Uglify
 
 class Patch(object):
+
+
+  @staticmethod
+  def grab_single(image, prob, segmentation, l, sample_rate=10, mode='', oversampling=False, patch_size=(75,75)):
+    
+    # also grab binary mask for l
+    binary_l = Util.threshold(segmentation, l)
+    binary_n = Util.threshold(binary_l, 0)
+
+    border = mh.labeled.border(binary_l, 1, 0)
+
+    # analyze both borders
+    patches_l = Patch.analyze_border(image, prob, binary_l, binary_n, border, 1, 0, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
+
+
+    return patches_l
+
 
   @staticmethod
   def grab(image, prob, segmentation, l, n, sample_rate=10, mode='', oversampling=False, patch_size=(75,75)):
@@ -70,6 +90,150 @@ class Patch(object):
 
 
     return patches
+
+
+  @staticmethod
+  def split_and_patchify(image, prob, segmentation, max=1000, n=1, min_pixels=100, sample_rate=10, oversampling=False, patch_size=(75,75)):
+    '''
+    '''
+    hist = Util.get_histogram(segmentation.astype(np.uint64))
+    labels = range(len(hist))
+    np.random.shuffle(labels)
+
+    patches = []
+
+    for l in labels:
+
+      if l == 0:
+        continue
+
+      for s in range(n):
+
+        binary_mask = Util.threshold(segmentation, l)
+
+        splitted_label, border = Patch.split_label(image, binary_mask)
+
+        # check if splitted_label is large enough
+        if len(splitted_label[splitted_label == 1]) < min_pixels:
+          continue
+
+        binary_full_mask = np.array(binary_mask)
+        binary_full_mask[splitted_label==1] = 2
+        
+        patches_l, patches_n = Patch.grab(image, prob, binary_full_mask, 1, 2, sample_rate=sample_rate, oversampling=oversampling, patch_size=patch_size)
+
+        patches += patches_l
+        patches += patches_n
+
+        if len(patches) >= max:
+
+          return patches[0:max]
+
+    return patches
+
+
+  @staticmethod
+  def patchify_maxoverlap(image, prob, segmentation, gold, sample_rate=3, min_pixels=10, oversampling=True,
+                      ignore_zero_neighbor=True, patch_size=(31,31)):
+    '''
+    '''
+
+    # fill segmentation using max overlap and relabel it
+    fixed = Util.propagate_max_overlap(segmentation, gold)
+    fixed = Util.relabel(fixed)
+
+    # grab borders of segmentation and fixed
+    segmentation_borders = mh.labeled.borders(segmentation)
+    fixed_borders = mh.labeled.borders(fixed)
+    bad_borders = segmentation_borders-fixed_borders
+
+
+    patches = []
+    error_patches = []
+    hist = Util.get_histogram(segmentation.astype(np.uint64))
+    labels = range(len(hist))
+    np.random.shuffle(labels)
+
+
+    batch_count = 0
+    
+
+    for l in labels:
+
+      if l == 0:
+        continue
+
+      if hist[l] < min_pixels:
+        continue
+
+      neighbors = Util.grab_neighbors(segmentation, l)
+
+      for n in neighbors:
+
+        if ignore_zero_neighbor and n == 0:
+          continue
+
+        if hist[n] < min_pixels:
+          continue
+
+
+        # grab the border between l and n
+        # t0 = time.time()
+        l_n_border = mh.labeled.border(segmentation, l, n)
+        # print t0-time.time()
+
+        # check if the border is a valid split or a split error
+        split_error = False
+        
+
+
+
+        # # print 'grabbing', l, n
+        p_l, p_n = Patch.grab(image, prob, segmentation, l, n, sample_rate, oversampling=oversampling, patch_size=patch_size)
+
+        for p in p_l:
+
+          patch_center = p['border_center']
+          if bad_borders[patch_center[0], patch_center[1]] == 1:
+            error_patches.append(p)
+          else:
+            patches.append(p)
+
+
+        for p in p_n:
+
+          patch_center = p['border_center']
+          if bad_borders[patch_center[0], patch_center[1]] == 1:
+            error_patches.append(p)
+          else:
+            patches.append(p)            
+
+        # patches += p_l
+        # patches += p_n
+
+        # if len(patches) >= max:
+
+        #   return patches[0:max]    
+
+    patches = patches[0:len(error_patches)]
+
+
+    # we will always have less error patches
+
+    # missing_error_patches = len(patches)-len(error_patches)
+
+    # while missing_error_patches > 2000:
+
+    #   new_error_patches = Patch.split_and_patchify(image, prob, fixed, 
+    #                                                 min_pixels=1000,
+    #                                                 max=missing_error_patches,
+    #                                                 n=10, sample_rate=10, oversampling=True,
+    #                                                 patch_size=(31,31))
+
+    #   error_patches += new_error_patches
+    #   missing_error_patches = len(patches)-len(error_patches)
+
+    return error_patches, patches
 
 
   @staticmethod
@@ -314,12 +478,12 @@ class Patch(object):
     sub_binary_border = mh.labeled.borders(sub_binary, Bc=mh.disk(3))    
     
     sub_binary = mh.erode(sub_binary.astype(np.bool))
-    for e in range(5):
+    for e in range(15):
       sub_binary = mh.erode(sub_binary)
     # # sub_binary = mh.erode(sub_binary)    
     
 
-    if sub_image.shape[0] < 2 or sub_image.shape[1] < 2:
+    if sub_binary.shape[0] < 2 or sub_binary.shape[1] < 2:
       return np.zeros(binary.shape, dtype=np.bool), np.zeros(binary.shape, dtype=np.bool)
 
     #

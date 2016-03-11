@@ -38,6 +38,7 @@ if __name__ == '__main__':
   parser.add_argument("-u", "--uuid", type=str, help='the uuid', default=str(uuid.uuid4()))
   parser.add_argument("-i", "--inputs", nargs='+', help='the list of input patches', default=['image', 'prob', 'binary', 'border_overlap'])
   parser.add_argument("-rp", "--rotate_patches", type=str, help="rotate patches after each epoch", default="True")
+  parser.add_argument("-ps", "--patchsize", type=int, help="the patchsize (one dim)", default=75)
 
   args = parser.parse_args()
 
@@ -143,6 +144,9 @@ if __name__ == '__main__':
   s._CONV_CALLBACK = store_network
   s._inputs = args.inputs
   s._rotate_patches = args.rotate_patches
+
+  s._patch_size = (args.patchsize, args.patchsize)
+  s._INPUT_SHAPE = (None, 1, s._patch_size[0], s._patch_size[1])
 
   print 'Using the following inputs:', s._inputs
   print 'Network configured.. running now!'

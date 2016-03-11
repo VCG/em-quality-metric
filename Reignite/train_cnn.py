@@ -18,6 +18,8 @@ class TrainCNN(object):
     #self.initialize()
     self._dbg = None
 
+    self._patch_size = (75,75)
+
     self._DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
     self._PATCH_PATH = os.path.join(self._DATA_PATH,'patches_4th_small/')
 
@@ -25,7 +27,7 @@ class TrainCNN(object):
     self._BATCH_SIZE = 5#00
     self._LEARNING_RATE = 0.0001
     self._MOMENTUM = 0.9
-    self._INPUT_SHAPE = (None, 1, 75, 75)#(None, 75, 75)#(None, 1, 75, 75)
+    self._INPUT_SHAPE = (None, 1, self._patch_size[0], self._patch_size[1])#(None, 75, 75)#(None, 1, 75, 75)
     self._NO_FILTERS = 32
     self._FILTER_SIZE = (5,5)
     self._NO_FILTERS2 = 32
@@ -43,6 +45,7 @@ class TrainCNN(object):
     self._test_acc = []
 
     self._rotate_patches = True
+
 
     self._inputs = ['image', 'prob', 'binary', 'border_overlap']
 
@@ -112,18 +115,23 @@ class TrainCNN(object):
       training = np.load(self._PATCH_PATH+'train.npz')
       training_targets = np.load(self._PATCH_PATH+'train_targets.npz')
 
+      if 'larger_border_overlaps' in training:
+        larger_border_overlap_label = 'larger_border_overlaps'
+      else:
+        larger_border_overlap_label = 'larger_border_overlap'
+
       #
       # we also normalize all binary images as uint8
       #
       training = {
-        'image': training['image'].reshape(-1, 1, 75, 75),
-        'prob': training['prob'].reshape(-1, 1, 75, 75),
-        'binary': training['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'merged_array': training['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'larger_border_overlap': training['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
+        'image': training['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'prob': training['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'binary': training['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'merged_array': training['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'larger_border_overlap': training[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
 
       training_targets = training_targets['targets'].astype(np.uint8)
@@ -137,14 +145,14 @@ class TrainCNN(object):
       # we also normalize all binary images as uint8
       #
       val = {
-        'image': val['image'].reshape(-1, 1, 75, 75),
-        'prob': val['prob'].reshape(-1, 1, 75, 75),
-        'binary': val['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'merged_array': val['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'larger_border_overlap': val['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
+        'image': val['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'prob': val['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'binary': val['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'merged_array': val['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'larger_border_overlap': val[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
 
       val_targets = val_targets['targets'].astype(np.uint8)
@@ -158,14 +166,14 @@ class TrainCNN(object):
       # we also normalize all binary images as uint8
       #
       test = {
-        'image': test['image'].reshape(-1, 1, 75, 75),
-        'prob': test['prob'].reshape(-1, 1, 75, 75),
-        'binary': test['binary'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, 75, 75)*255,
-        'larger_border_overlap': test['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, 75, 75)*255
+        'image': test['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'prob': test['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'binary': test['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'larger_border_overlap': test[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
 
       test_targets = test_targets['targets'].astype(np.uint8)

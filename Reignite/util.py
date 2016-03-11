@@ -24,6 +24,16 @@ class Util(object):
     return output_array
 
   @staticmethod
+  def threshold_larger(array, value):
+    '''
+    '''
+    output_array = np.zeros(array.shape)
+
+    output_array[array >= value] = 1
+
+    return output_array    
+
+  @staticmethod
   def get_histogram(array):
     '''
     '''
@@ -43,7 +53,7 @@ class Util(object):
     return np.argmax(hist)
 
   @staticmethod
-  def view_labels(array, labels, crop=True, large=True):
+  def view_labels(array, labels, crop=True, large=True, return_it=False):
 
     if type(labels) != type(list()):
       labels = [labels]
@@ -63,6 +73,9 @@ class Util(object):
     else:
       figsize = (3,3)
 
+    if return_it:
+      return out
+
     fig = plt.figure(figsize=figsize)      
 
     plt.imshow(out)
@@ -74,6 +87,16 @@ class Util(object):
     '''
     '''
     return mh.labeled.relabel(array)
+
+  @staticmethod
+  def relabel(array):
+
+    relabeled_array = np.array(array)
+  
+    relabeled_array = skimage.measure.label(array)
+    relabeled_array[relabeled_array==0] = relabeled_array.max()
+    
+    return Util.normalize_labels(relabeled_array)[0]
 
   @staticmethod
   def read(path):
@@ -139,7 +162,7 @@ class Util(object):
     return segmentation
 
   @staticmethod
-  def read_section(num, keep_zeros=False):
+  def read_section(num, keep_zeros=False, fill_zeros=False):
 
     DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
     GOLD_PATH = os.path.join(DATA_PATH,'gold/')
@@ -162,6 +185,12 @@ class Util(object):
     if keep_zeros:
       gold[gold_original == 0] = 0
       # rhoana[gold_original == 0] = 0
+
+    if fill_zeros:
+      gold[gold_original == 0] = 0
+      gold_zeros = Util.threshold(gold, 0)
+      gold = Util.fill(gold, gold_zeros.astype(np.bool))
+
 
 
     return image, prob, gold, rhoana
@@ -216,6 +245,27 @@ class Util(object):
       
           out[rhoana == l] = largest_label # set the largest label from gold here
       
+      return out
+
+  @staticmethod 
+  def erode_all(rhoana):
+
+      out = np.zeros(rhoana.shape)
+
+      rhoana_labels = Util.get_histogram(rhoana.astype(np.uint64))
+      
+      for l,k in enumerate(rhoana_labels):
+          if l == 0 or k==0:
+              # ignore 0 since rhoana does not have it
+              continue
+
+          isolated_label = Util.threshold(rhoana, l).astype(np.bool)
+          for i in range(3):
+            isolated_label = mh.erode(isolated_label)
+
+          out[isolated_label == 1] = l
+
+
       return out
 
   @staticmethod
@@ -349,9 +399,11 @@ class Util(object):
     return grad
 
   @staticmethod
-  def invert(array):
+  def invert(array, smooth=False, sigma=2.5):
     
-    return (255-array)
+    grad = mh.gaussian_filter(array, sigma)
+
+    return (255-grad)
 
   @staticmethod
   def random_watershed(array, speed_image, border_seeds=False, erode=False):
@@ -367,7 +419,7 @@ class Util(object):
 
     seed_array = np.array(copy_array)
     if border_seeds:
-      seed_array = mh.labeled.border(copy_array, 1, 0)
+      seed_array = mh.labeled.border(copy_array, 1, 0, Bc=mh.disk(7))
 
     coords = zip(*np.where(seed_array==1))
 
@@ -387,7 +439,24 @@ class Util(object):
 
     return ws
 
+  @staticmethod
+  def dark_watershed(image, seed_image, threshold=50., dilate=True):
+    '''
+    '''
 
+    coords = zip(*np.where(seed_image==threshold))
+    print 'seeds:', len(coords)
+    seeds = np.zeros(seed_image.shape, dtype=np.uint64)
+    for c in coords:
+      seeds[c[0], c[1]] = seeds.max()+1
+
+    if dilate:
+      for i in range(8):
+        seeds = mh.dilate(seeds)
+
+    ws = mh.cwatershed(image, seeds)
+
+    return seeds,ws
 
 
 

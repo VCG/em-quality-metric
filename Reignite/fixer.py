@@ -10,11 +10,11 @@ from util import Util
 class Fixer(object):
 
   @staticmethod
-  def splits(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), smallest_first=False, oversampling=False, verbose=True):
+  def splits(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), smallest_first=False, oversampling=False, verbose=True, max=10000):
     '''
     '''
     t0 = time.time()
-    patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling)
+    patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling, max=max)
     if verbose:
       print len(patches), 'generated in', time.time()-t0, 'seconds.'
 
@@ -149,14 +149,16 @@ class Fixer(object):
 
 
   @staticmethod
-  def fix_single_merge(cnn, cropped_image, cropped_prob, cropped_binary, N=10, invert=True, dilate=True, border_seeds=False, erode=False, debug=False):
+  def fix_single_merge(cnn, cropped_image, cropped_prob, cropped_binary, N=10, invert=True, dilate=True, 
+                       border_seeds=True, erode=False, debug=False, before_merge_error=None,
+                       real_border=np.zeros((1,1))):
     '''
     invert: True/False for invert or gradient image
     '''
 
     speed_image = None
     if invert:
-      speed_image = Util.invert(cropped_image)
+      speed_image = Util.invert(cropped_image, smooth=True, sigma=2.5)
     else:
       speed_image = Util.gradient(cropped_image)
 
@@ -169,7 +171,7 @@ class Fixer(object):
     borders = np.zeros(cropped_binary.shape)
 
     best_border_prediction = np.inf
-    best_border_image = None
+    best_border_image = np.zeros(cropped_binary.shape)
 
     original_border = mh.labeled.border(cropped_binary, 1, 0, Bc=mh.disk(3))
 
@@ -180,14 +182,62 @@ class Fixer(object):
         ws_label2 = ws.max()-1
         border = mh.labeled.border(ws, ws_label1, ws_label2)
 
+        # Util.view(ws, large=False)
+
+
+        # Util.view(border, large=False)
+
         # print i, len(border[border==True])
 
         #
         # remove parts of the border which overlap with the original border
         #
 
+        
+
         ws[cropped_binary == 0] = 0
-        ws[original_border == 1] = 0
+
+        # Util.view(ws, large=False, color=False)        
+
+        ws_label1_array = Util.threshold(ws, ws_label1)
+        ws_label2_array = Util.threshold(ws, ws_label2)
+
+        eroded_ws1 = np.array(ws_label1_array, dtype=np.bool)
+        eroded_ws2 = np.array(ws_label2_array, dtype=np.bool)
+        if erode:
+
+          for i in range(5):
+            eroded_ws1 = mh.erode(eroded_ws1)
+
+          # Util.view(eroded_ws, large=True, color=False)
+
+          dilated_ws1 = np.array(eroded_ws1)
+          for i in range(5):
+            dilated_ws1 = mh.dilate(dilated_ws1)
+
+
+          for i in range(5):
+            eroded_ws2 = mh.erode(eroded_ws2)
+
+          # Util.view(eroded_ws, large=True, color=False)
+
+          dilated_ws2 = np.array(eroded_ws2)
+          for i in range(5):
+            dilated_ws2 = mh.dilate(dilated_ws2)
+
+
+
+
+          new_ws = np.zeros(ws.shape, dtype=np.uint8)
+          new_ws[dilated_ws1 == 1] = ws_label1
+          new_ws[dilated_ws2 == 1] = ws_label2
+
+
+          ws = new_ws
+
+          # Util.view(new_ws, large=False, color=True)
+
+        # ws[original_border == 1] = 0
         
         prediction = Patch.grab_group_test_and_unify(cnn, cropped_image, cropped_prob, ws, ws_label1, ws_label2, oversampling=True)
         
@@ -196,14 +246,38 @@ class Fixer(object):
           continue
 
         if (prediction < best_border_prediction):
-            best_border_prediction = prediction
-            best_border_image = border
-            print 'new best', i, prediction
-        
-        if debug:
-          Util.view(ws, text=str(i) + ' ' + str(prediction))
-        
+          best_border_prediction = prediction
+          best_border_image = border
+          print 'new best', i, prediction
+
         borders += (border*prediction)
+
+
+    # result = np.array(cropped_binary)
+    # best_border_image[result==0] = 0
+    # result[best_border_image==1] = 2
+
+    # result = skimage.measure.label(result)
+
+    # result_no_border = np.array(result)
+    # result_no_border[best_border_image==1] = 0
+    # result_no_border = mh.croptobbox(result_no_border)
+
+    # if before_merge_error == None:
+    #   continue        
+
+    # print result_no_border.shape, before_merge_error.shape
+
+
+    # if before_merge_error.shape[0] != result_no_border.shape[0] or before_merge_error.shape[1] != result_no_border.shape[1]:
+    #   result_no_border = np.resize(result_no_border, before_merge_error.shape)
+
+    # print 'vi', Util.vi(before_merge_error.astype(np.uint8), result_no_border.astype(np.uint8))
+
+        
+    #     if debug:
+    #       Util.view(ws, text=str(i) + ' ' + str(prediction))
+        
 
     result = np.array(cropped_binary)
     best_border_image[result==0] = 0
@@ -211,8 +285,11 @@ class Fixer(object):
 
     result = skimage.measure.label(result)
 
+    result_no_border = np.array(result)
+    result_no_border[best_border_image==1] = 0
 
-    return borders, best_border_image, result
+
+    return borders, best_border_image, result, result_no_border
 
 
 

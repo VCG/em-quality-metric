@@ -16,6 +16,7 @@ class Experiment(object):
                      smallest_first=False,
                      no_splits=2,
                      keep_zeros=True,
+                     fill_zeros=False,
                      verbose=False):
     '''
     data: gt/rhoana
@@ -48,7 +49,7 @@ class Experiment(object):
         print 'Working on slice',s
 
       # load slice
-      input_image, input_prob, input_gold, input_rhoana = Util.read_section(s, keep_zeros=keep_zeros)
+      input_image, input_prob, input_gold, input_rhoana = Util.read_section(s, keep_zeros=keep_zeros, fill_zeros=fill_zeros)
 
       # apply bbox
       input_image = input_image[bbox[0]:bbox[1], bbox[2]:bbox[3]]
@@ -86,7 +87,7 @@ class Experiment(object):
                                                    input_image,
                                                    input_prob,
                                                    ugly_segmentation,
-                                                   framed_gold,
+                                                   segmentation,
                                                    smallest_first=smallest_first,
                                                    oversampling=oversampling,
                                                    verbose=verbose)

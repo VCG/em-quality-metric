@@ -15,7 +15,7 @@ import lasagne
 class CNN(object):
 
 
-  def __init__(self, network_id, patches='patches_large2_vis'):
+  def __init__(self, network_id, patches='patches_large2_vis', inputs=['image', 'prob', 'binary', 'border_overlap'], patch_size=(75,75)):
     '''
     '''
     #self.initialize()
@@ -29,20 +29,41 @@ class CNN(object):
     self._RESULTS_PATH = os.path.join(self._OUTPUT_PATH, self._PATCH, self._NETWORK_ID)
     self._BATCH_SIZE = -1
 
+
+    self._inputs = inputs
+    self._patch_size = patch_size
+
     self._val_fn = self.run()
 
   def test_patch(self, p):
+
+    patch_reshaped = {
+      'image': p['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+      'prob': p['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+      'binary': p['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'merged_array': p['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'dyn_obj': p['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'dyn_bnd': p['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'border_overlap': p['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'larger_border_overlap': p['larger_border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255 
+    }
+
     # print p['image'].shape
     # print p['prob'].shape
     # print p['overlap'].shape
-    images = p['image'].reshape(-1, 1, 75, 75).astype(np.uint8)
-    probs = p['prob'].reshape(-1, 1, 75, 75).astype(np.uint8)
-    binary1s = p['binary1'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
-    # binary2s = p['binary2'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
-    overlaps = p['overlap'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
+    # images = p['image'].reshape(-1, 1, 75, 75).astype(np.uint8)
+    # probs = p['prob'].reshape(-1, 1, 75, 75).astype(np.uint8)
+    # binary1s = p['binary1'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
+    # # binary2s = p['binary2'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
+    # overlaps = p['overlap'].reshape(-1, 1, 75, 75).astype(np.uint8)*255
     targets = np.array([0], dtype=np.uint8)
     
-    pred, err, acc = self._val_fn(images, probs, binary1s, overlaps, targets)
+    test_values = []
+    for i in self._inputs:
+      test_values.append(patch_reshaped[i])
+    test_values.append(targets)
+
+    pred, err, acc = self._val_fn(*test_values)#images, probs, binary1s, overlaps, targets)
             
     return pred[0][1]
 
@@ -53,23 +74,28 @@ class CNN(object):
       if path == None:
         path = self._PATCH_PATH
 
-      test = np.load(path+os.sep+testfile)
-      test_targets = np.load(path+os.sep+targetfile)
+
+      test = np.load(self._PATCH_PATH+'test.npz')
+      test_targets = np.load(self._PATCH_PATH+'test_targets.npz')
 
       #
       # we also normalize all binary images as uint8
       #
       test = {
-        'image': test['image'].reshape(-1, 1, 75, 75),
-        'prob': test['prob'].reshape(-1, 1, 75, 75),
-        'binary1': test['binary1'].reshape(-1, 1, 75, 75)*255,
-        # 'binary2': test['binary2'].reshape(-1, 1, 75, 75)*255,
-        'overlap': test['overlap'].reshape(-1, 1, 75, 75)*255, 
-        'bbox': test['bbox'],
-        'border': test['border']
+        'image': test['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'prob': test['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
+        'binary': test['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'larger_border_overlap': test['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
 
       test_targets = test_targets['targets'].astype(np.uint8)
+
+      #val = np.load(PATCH_PATH+'val.npz')
+      #val_targets = np.load(PATCH_PATH+'val_targets.npz')
 
       return test, test_targets
 
@@ -126,12 +152,23 @@ class CNN(object):
     config = self.load_configuration()
     self._BATCH_SIZE = config['batchsize']
     layers = self.load_network()
-    image_var = layers['image']['input_layer'].input_var
-    prob_var = layers['prob']['input_layer'].input_var
-    binary1_var = layers['binary1']['input_layer'].input_var
-    # binary2_var = layers['binary2']['input_layer'].input_var
-    overlap_var = layers['overlap']['input_layer'].input_var
+    # image_var = layers['image']['input_layer'].input_var
+    # prob_var = layers['prob']['input_layer'].input_var
+    # binary1_var = layers['binary1']['input_layer'].input_var
+    # # binary2_var = layers['binary2']['input_layer'].input_var
+    # overlap_var = layers['overlap']['input_layer'].input_var
+
+
+
+
     network = layers['dense']['network']
+
+    theano_vars = []
+    for i in self._inputs:
+      theano_vars.append(layers[i]['input_layer'].input_var)
+    target_var = T.ivector('targets')
+
+    theano_function_vars = theano_vars + [target_var]    
 
     # # Create a loss expression for training, i.e., a scalar objective we want
     # # to minimize (for our multi-class problem, it is the cross-entropy loss):
@@ -163,7 +200,8 @@ class CNN(object):
     # train_fn = theano.function([image_var, prob_var, binary1_var, binary2_var, overlap_var, target_var], loss, updates=updates)
 
     # Compile a second function computing the validation loss and accuracy:
-    val_fn = theano.function([image_var, prob_var, binary1_var, overlap_var, target_var], [test_prediction, test_loss, test_acc])
+    # val_fn = theano.function([image_var, prob_var, binary1_var, overlap_var, target_var], [test_prediction, test_loss, test_acc])
+    val_fn = theano.function(theano_function_vars, [test_prediction, test_loss, test_acc])
 
     return val_fn
 
@@ -222,9 +260,9 @@ class CNN(object):
   def iterate_minibatches(self, inputs, targets, batchsize, shuffle=False):
       assert len(inputs['image']) == len(targets)
       assert len(inputs['prob']) == len(targets)
-      assert len(inputs['binary1']) == len(targets)
+      assert len(inputs['binary']) == len(targets)
       # assert len(inputs['binary2']) == len(targets)
-      assert len(inputs['overlap']) == len(targets)
+      assert len(inputs['border_overlap']) == len(targets)
       if shuffle:
           indices = np.arange(len(inputs))
           np.random.shuffle(indices)
@@ -233,7 +271,29 @@ class CNN(object):
               excerpt = indices[start_idx:start_idx + batchsize]
           else:
               excerpt = slice(start_idx, start_idx + batchsize)
-          yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary1'][excerpt], inputs['overlap'][excerpt], inputs['bbox'][excerpt], inputs['border'][excerpt], targets[excerpt]
+
+          minibatches = []
+          for i in self._inputs:
+            minibatches.append(inputs[i][excerpt])
+          minibatches.append(targets[excerpt])
+
+          yield minibatches
+
+  # def iterate_minibatches(self, inputs, targets, batchsize, shuffle=False):
+  #     assert len(inputs['image']) == len(targets)
+  #     assert len(inputs['prob']) == len(targets)
+  #     assert len(inputs['binary1']) == len(targets)
+  #     # assert len(inputs['binary2']) == len(targets)
+  #     assert len(inputs['overlap']) == len(targets)
+  #     if shuffle:
+  #         indices = np.arange(len(inputs))
+  #         np.random.shuffle(indices)
+  #     for start_idx in range(0, len(inputs['image']) - batchsize + 1, batchsize):
+  #         if shuffle:
+  #             excerpt = indices[start_idx:start_idx + batchsize]
+  #         else:
+  #             excerpt = slice(start_idx, start_idx + batchsize)
+  #         yield inputs['image'][excerpt], inputs['prob'][excerpt], inputs['binary1'][excerpt], inputs['overlap'][excerpt], inputs['bbox'][excerpt], inputs['border'][excerpt], targets[excerpt]
 
   def visualize_filters(self, layer):
 

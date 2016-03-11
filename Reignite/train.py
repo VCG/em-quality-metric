@@ -124,6 +124,8 @@ if __name__ == '__main__':
 
     plt.savefig(OUTPUT_PATH+os.sep+'graph_'+str(epoch)+'.png')
 
+    store_network(s, layers, epoch)
+
 
   s = TrainCNN()
   s._DATA_PATH = args.datapath

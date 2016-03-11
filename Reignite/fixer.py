@@ -175,6 +175,9 @@ class Fixer(object):
 
     original_border = mh.labeled.border(cropped_binary, 1, 0, Bc=mh.disk(3))
 
+    results_no_border = []
+
+
     for i in range(N):
         ws = Util.random_watershed(dilated_binary, speed_image, border_seeds=border_seeds, erode=erode)
         
@@ -252,6 +255,17 @@ class Fixer(object):
 
         borders += (border*prediction)
 
+        result = np.array(cropped_binary)
+        best_border_image[result==0] = 0
+        result[best_border_image==1] = 2
+
+        result = skimage.measure.label(result)
+
+        result_no_border = np.array(result)
+        result_no_border[best_border_image==1] = 0        
+
+        results_no_border.append(result_no_border)
+
 
     # result = np.array(cropped_binary)
     # best_border_image[result==0] = 0
@@ -289,7 +303,7 @@ class Fixer(object):
     result_no_border[best_border_image==1] = 0
 
 
-    return borders, best_border_image, result, result_no_border
+    return borders, best_border_image, result, result_no_border, results_no_border
 
 
 

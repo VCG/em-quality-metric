@@ -33,7 +33,7 @@ export LIBRARY_PATH=/usr/local/cuda-7.0/lib64:$LIBRARY_PATH
 
 # add commands for analyses here
 cd /n/home05/haehn/Projects/em-quality-metric/Reignite/
-python train.py -r cluster --patchpath patches_6th --epochs 500 --patchsize 75 --batchsize 1000 --learning_rate 0.001 --momentum 0.9 --filters1 16 --filters2 16 --filters3 16 --filtersize1 13 --filtersize2 13 --filtersize3 13 --thirdconvlayer False --inputs image prob binary border_overlap --uuid mine_6_low_lr
+python train.py -r cluster --patchpath patches_6th --epochs 500 --patchsize 75 --batchsize 200 --learning_rate 0.001 --momentum 0.9 --filters1 16 --filters2 16 --filters3 16 --filtersize1 13 --filtersize2 13 --filtersize3 13 --thirdconvlayer False --inputs image prob binary border_overlap --uuid mine_6_low_lr
 
 # end of program
 exit 0;

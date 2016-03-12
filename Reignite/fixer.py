@@ -151,7 +151,7 @@ class Fixer(object):
   @staticmethod
   def fix_single_merge(cnn, cropped_image, cropped_prob, cropped_binary, N=10, invert=True, dilate=True, 
                        border_seeds=True, erode=False, debug=False, before_merge_error=None,
-                       real_border=np.zeros((1,1))):
+                       real_border=np.zeros((1,1)), oversampling=False):
     '''
     invert: True/False for invert or gradient image
     '''
@@ -176,9 +176,9 @@ class Fixer(object):
     original_border = mh.labeled.border(cropped_binary, 1, 0, Bc=mh.disk(3))
 
     results_no_border = []
+    predictions = []
 
-
-    for i in range(N):
+    for n in range(N):
         ws = Util.random_watershed(dilated_binary, speed_image, border_seeds=border_seeds, erode=erode)
         
         ws_label1 = ws.max()
@@ -242,16 +242,18 @@ class Fixer(object):
 
         # ws[original_border == 1] = 0
         
-        prediction = Patch.grab_group_test_and_unify(cnn, cropped_image, cropped_prob, ws, ws_label1, ws_label2, oversampling=True)
+        prediction = Patch.grab_group_test_and_unify(cnn, cropped_image, cropped_prob, ws, ws_label1, ws_label2, oversampling=oversampling)
         
         if prediction == -1:
           # invalid
           continue
 
-        if (prediction < best_border_prediction):
-          best_border_prediction = prediction
-          best_border_image = border
-          print 'new best', i, prediction
+        # if (prediction < best_border_prediction):
+        #   best_border_prediction = prediction
+        #   best_border_image = border
+        #   print 'new best', n, prediction
+
+        best_border_image = border
 
         borders += (border*prediction)
 
@@ -264,6 +266,7 @@ class Fixer(object):
         result_no_border = np.array(result)
         result_no_border[best_border_image==1] = 0        
 
+        predictions.append(prediction)
         results_no_border.append(result_no_border)
 
 
@@ -303,7 +306,7 @@ class Fixer(object):
     result_no_border[best_border_image==1] = 0
 
 
-    return borders, best_border_image, result, result_no_border, results_no_border
+    return borders, best_border_image, result, result_no_border, results_no_border, predictions
 
 
 

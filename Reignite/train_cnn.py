@@ -319,7 +319,7 @@ class TrainCNN(object):
         self._validation_acc.append(val_acc / val_batches * 100)
 
         # call the epoch callback
-        if epoch % (self._EPOCHS / 5) == 0:
+        if epoch % min(10, self._EPOCHS / 5) == 0:
           self._EPOCH_CALLBACK(self, layers, epoch)
 
 

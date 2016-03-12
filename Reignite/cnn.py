@@ -103,9 +103,9 @@ class CNN(object):
   def load_network(self):
     '''
     '''
-    network_file = glob.glob(self._RESULTS_PATH + os.sep + 'network*.p')
-    print 'Loading', network_file
-    with open(network_file[0], 'rb') as f:
+    network_file = sorted(glob.glob(self._RESULTS_PATH + os.sep + 'network*.p'))
+    print 'Loading', network_file[-1]
+    with open(network_file[-1], 'rb') as f:
         n = pickle.load(f)
 
     # print n

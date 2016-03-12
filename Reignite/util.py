@@ -460,7 +460,18 @@ class Util(object):
 
 
 
+  @staticmethod
+  def show_borders(image, segmentation):
 
+    borders = mh.labeled.borders(segmentation)
+
+    b = np.zeros((1024,1024,3), dtype=np.uint8)
+    b[:,:,0] = image[:]
+    b[:,:,1] = image[:]
+    b[:,:,2] = image[:]
+
+    b[borders==1] = (255,0,0)
+    Util.view(b, color=False, large=True)
 
 
 

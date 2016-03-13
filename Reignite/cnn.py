@@ -33,6 +33,11 @@ class CNN(object):
     self._inputs = inputs
     self._patch_size = patch_size
 
+    self._epochs = -1
+    self._test_loss = -1
+    self._test_acc = -1
+    self._configuration = None
+
     self._val_fn = self.run()
 
   def test_patch(self, p):
@@ -109,6 +114,16 @@ class CNN(object):
         n = pickle.load(f)
 
     # print n
+
+    self._epochs = network_file[-1].split('_')[-1].replace('.p','')
+
+    stats_file = glob.glob(self._RESULTS_PATH + os.sep + 'final_test_*.txt')
+    if len(stats_file) > 0:
+      test_loss = os.path.basename(stats_file[0]).split('___')[0].replace('final_test_loss_','')
+      self._test_loss = test_loss
+      test_acc = os.path.basename(stats_file[0]).split('___')[1].replace('test_acc_','').replace('.txt','')
+      self._test_acc = test_acc
+
 
     return n
 

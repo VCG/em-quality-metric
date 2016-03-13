@@ -427,12 +427,12 @@ class Patch(object):
           # overlap = overlap_thresholded
 
           dyn_obj = np.zeros(merged_array.shape)
-          r = 4
+          r = 10
           midpoint = [patch_size[0]/2, patch_size[1]/2]
           dyn_obj[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = merged_array[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
 
           dyn_bnd = np.zeros(overlap.shape)
-          r = 10
+          r = 25
           midpoint = [patch_size[0]/2, patch_size[1]/2]
           dyn_bnd[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = overlap[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
 
@@ -448,8 +448,8 @@ class Patch(object):
           output['input_binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['input_binary2'] = binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['merged_array'] = merged_array.astype(np.bool)
-          output['dyn_obj'] = dyn_obj
-          output['dyn_bnd'] = overlap.astype(np.bool)
+          output['dyn_obj'] = dyn_obj.astype(np.bool)
+          output['dyn_bnd'] = dyn_bnd.astype(np.bool)
           output['bbox'] = bbox
           output['border'] = border_yx
           output['border_center'] = new_border_center
@@ -572,7 +572,8 @@ class Patch(object):
       fig = plt.figure(figsize=(2,2))
 
       text = '\n\n\nPatch '+str(i) + ': ' + str(pred)
-      text += '\n'+str(patch['bbox'])
+      if 'bbox' in patch:
+        text += '\n'+str(patch['bbox'])
       text += '\nimage'
 
       fig.text(0,1,text)
@@ -583,12 +584,14 @@ class Patch(object):
       fig = plt.figure(figsize=(2,2))
       fig.text(0,1,'binary')
       plt.imshow(patch['binary'], cmap='gray')
-      fig = plt.figure(figsize=(2,2))
-      fig.text(0,1,'input_binary1')
-      plt.imshow(patch['input_binary1'], cmap='gray')
-      fig = plt.figure(figsize=(2,2))
-      fig.text(0,1,'input_binary2')
-      plt.imshow(patch['input_binary2'], cmap='gray')
+      if 'input_binary1' in patch:
+        fig = plt.figure(figsize=(2,2))
+        fig.text(0,1,'input_binary1')
+        plt.imshow(patch['input_binary1'], cmap='gray')
+      if 'input_binary2' in patch:
+        fig = plt.figure(figsize=(2,2))
+        fig.text(0,1,'input_binary2')
+        plt.imshow(patch['input_binary2'], cmap='gray')
       fig = plt.figure(figsize=(2,2))
       fig.text(0,1,'merged_array')
       plt.imshow(patch['merged_array'], cmap='gray')
@@ -604,6 +607,70 @@ class Patch(object):
       fig = plt.figure(figsize=(2,2))
       fig.text(0,1,'larger_border_overlap')
       plt.imshow(patch['larger_border_overlap'], cmap='gray')
+
+
+  @staticmethod
+  def save_as_image(patch):
+
+      figsize=(2,2)
+
+      for s in patch.keys():
+          
+          if type(patch[s]) == type(np.zeros((1,1))) and patch[s].ndim == 2:
+            # fig = plt.figure(figsize=figsize)
+            # plt.imshow(patch[s], cmap='gray')                
+            # plt.savefig('/tmp/'+s+'.png')
+            if patch[s].dtype == np.bool or s =='dyn_obj':
+
+              mh.imsave('/tmp/'+s+'.tif', (patch[s]*255).astype(np.uint8))
+
+            else:
+
+              mh.imsave('/tmp/'+s+'.tif', (patch[s]).astype(np.uint8))
+
+
+
+
+  @staticmethod
+  def load_and_show(p, start=0, end=10, cnn=None, pred_threshold=1.):
+
+    patch_size = (75,75)
+
+    reshaped_patches = []
+
+
+
+    patch_reshaped = {
+      'image': p['image'].reshape(-1, 1, patch_size[0], patch_size[1]),
+      'prob': p['prob'].reshape(-1, 1, patch_size[0], patch_size[1]),
+      'binary': p['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255,
+      'merged_array': p['merged_array'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255,
+      'dyn_obj': p['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255,
+      'dyn_bnd': p['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255,
+      'border_overlap': p['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255,
+      'larger_border_overlap': p['larger_border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])*255 
+    }    
+
+    for i in range(start,end):
+
+      patch = {
+        'image': patch_reshaped['image'][i].reshape(patch_size[0], patch_size[1]),
+        'prob': patch_reshaped['prob'][i].reshape(patch_size[0], patch_size[1]),
+        'binary': patch_reshaped['binary'][i].reshape(patch_size[0], patch_size[1]),
+        'merged_array': patch_reshaped['merged_array'][i].reshape(patch_size[0], patch_size[1]),
+        'dyn_obj': patch_reshaped['dyn_obj'][i].reshape(patch_size[0], patch_size[1]),
+        'dyn_bnd': patch_reshaped['dyn_bnd'][i].reshape(patch_size[0], patch_size[1]),
+        'border_overlap': patch_reshaped['border_overlap'][i].reshape(patch_size[0], patch_size[1]),
+        'larger_border_overlap': patch_reshaped['larger_border_overlap'][i].reshape(patch_size[0], patch_size[1])
+      }
+
+      reshaped_patches.append(patch)
+
+    # return reshaped_patches
+
+    Patch.show(reshaped_patches, cnn, pred_threshold)
+
+
 
 
   @staticmethod

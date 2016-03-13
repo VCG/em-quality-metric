@@ -19,3 +19,16 @@ export DYLD_LIBRARY_PATH=/Developer/NVIDIA/CUDA-7.5/lib:
 python find_best.py -p patches_medium -s acc -v True -n 1
 
 
+
+
+
+
+scp -r /n/regal/pfister_lab/haehn/split_cnn/patches_6th/viren_overlap_6_low_lr d@dragon.krash.net:/Volumes/DATA1/split_cnn/patches_6th/
+
+
+scp -r /n/regal/pfister_lab/haehn/split_cnn/patches_6th/viren_6_low_lr d@dragon.krash.net:/Volumes/DATA1/split_cnn/patches_6th/
+
+scp -r /n/regal/pfister_lab/haehn/split_cnn/patches_6th/viren_large_6_low_lr d@dragon.krash.net:/Volumes/DATA1/split_cnn/patches_6th/
+
+
+scp -r /n/regal/pfister_lab/haehn/split_cnn/patches_6th/mine_merged_6_low_lr d@dragon.krash.net:/Volumes/DATA1/split_cnn/patches_6th/

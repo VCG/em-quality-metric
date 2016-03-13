@@ -329,7 +329,7 @@ class Util(object):
     return partition_comparison.variation_of_information(array1.ravel(), array2.ravel())
 
   @staticmethod
-  def merge_steps(array, merge_pairs, best=-1, snapshot_interval=50):
+  def merge_steps(array, merge_pairs, best=-1, snapshot_interval=50, store=False):
     '''
     '''
     state_array = np.array(array)
@@ -342,6 +342,8 @@ class Util(object):
         
         
         if best != -1 and i == best:
+          if store:
+            return state_array
           Util.view(state_array, large=True)
 
         elif best == -1 and i % snapshot_interval == 0:

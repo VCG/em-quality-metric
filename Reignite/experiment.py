@@ -42,6 +42,8 @@ class Experiment(object):
     global_vi_diffs = []
     global_surenesses = []
     global_merge_pairs = []
+    global_ugly_segmentations = []
+    global_best_indices = []
 
     for s in slices:
 
@@ -71,6 +73,8 @@ class Experiment(object):
       else:
         segmentation = framed_gold
         ugly_segmentation = framed_rhoana
+
+      global_ugly_segmentations.append(ugly_segmentation)
 
       before_vi = Util.vi(ugly_segmentation, segmentation)
 
@@ -103,6 +107,7 @@ class Experiment(object):
       global_vi_diffs.append(vi_diff)
       global_surenesses.append(best_sureness)
       global_merge_pairs.append(merge_pairs)
+      global_best_indices.append(best_index)
 
     #
     # now all done
@@ -117,7 +122,7 @@ class Experiment(object):
     print 'Surenesses:'
     Util.stats(global_surenesses)
 
-    return global_vis, global_vi_diffs, global_surenesses, global_merge_pairs
+    return global_vis, global_vi_diffs, global_surenesses, global_merge_pairs, global_best_indices, global_ugly_segmentations
 
 
 
@@ -245,6 +250,10 @@ class Experiment(object):
                      keep_zeros=True,
                      verbose=False):
 
+
+    if data == 'rhoana':
+      print 'not implemented yet'
+      return [],[]
 
     print '-'*80    
     print '-'*80    

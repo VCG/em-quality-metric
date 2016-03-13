@@ -157,7 +157,11 @@ class Util(object):
   def colorize(segmentation):
     '''
     '''
-    cm = Util.load_colormap('/Volumes/DATA1/ac3x75/mojo/ids/colorMap.hdf5')
+    cm_path = '/Volumes/DATA1/ac3x75/mojo/ids/colorMap.hdf5'
+    if not os.path.exists(cm_path):
+      cm_path = '/n/regal/pfister_lab/haehn/ac3x75/mojo/ids/colorMap.hdf5'
+
+    cm = Util.load_colormap(cm_path)
     segmentation = cm[segmentation % len(cm)]
     return segmentation
 
@@ -165,6 +169,8 @@ class Util(object):
   def read_section(num, keep_zeros=False, fill_zeros=False):
 
     DATA_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/'
+    if not os.path.isdir(DATA_PATH):
+      DATA_PATH = '/n/regal/pfister_lab/haehn/ac3x75/'
     GOLD_PATH = os.path.join(DATA_PATH,'gold/')
     RHOANA_PATH = os.path.join(DATA_PATH,'rhoana/')
     IMAGE_PATH = os.path.join(DATA_PATH,'input/')

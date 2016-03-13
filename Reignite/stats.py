@@ -23,6 +23,9 @@ class Stats(object):
 
 
     OUTPUT_PATH = '/Volumes/DATA1/cnn_analysis/'
+    if not os.path.isdir(OUTPUT_PATH):
+      # this is cluster
+      OUTPUT_PATH = '/n/regal/pfister_lab/haehn/cnn_analysis/'
     CNN_NAME = cnn_name
     REAL_OUTPUT_PATH = OUTPUT_PATH+CNN_NAME
     if not os.path.isdir(REAL_OUTPUT_PATH):

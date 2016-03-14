@@ -117,7 +117,8 @@ class Stats(object):
         best_vi_improvement_index = global_vi_diffs.index(max(global_vi_diffs))
         best_merge_pair_index = global_best_indices[best_vi_improvement_index]
         best_merge_pairs = global_merge_pairs[best_vi_improvement_index]
-        best_ugly_segmentation = global_ugly_segmentations[best_vi_improvement_index]
+        # best_ugly_segmentation = global_ugly_segmentations[best_vi_improvement_index]
+        best_ugly_segmentation = np.array(Image(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_ugly.png'))
         best_vi_diff = global_vi_diffs[best_vi_improvement_index]
         best_fixed_segmentation = Util.merge_steps(best_ugly_segmentation, best_merge_pairs, best=best_merge_pair_index, store=True)
 
@@ -134,7 +135,7 @@ class Stats(object):
             rhoana_mean_sureness = mean_sureness
             rhoana_best_vi_diff = best_vi_diff
                     
-        Image.fromarray(Util.colorize(best_ugly_segmentation).astype(np.uint8)).save(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_ugly.png')
+        # Image.fromarray(Util.colorize(best_ugly_segmentation).astype(np.uint8)).save(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_ugly.png')
         Image.fromarray(Util.colorize(best_fixed_segmentation).astype(np.uint8)).save(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_fixed.png')
         
         # pickle_stats = {

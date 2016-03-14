@@ -108,7 +108,7 @@ class Stats(object):
         global_surenesses = p['global_surenesses']
         global_merge_pairs = p['global_merge_pairs']
         global_best_indices = p['global_best_indices']
-        global_vis = ['global_vis']
+        global_vis = p['global_vis']
 
         mean_vi_diff = np.mean(global_vi_diffs)
         mean_vi = np.mean(global_vis)
@@ -217,34 +217,34 @@ class Stats(object):
     # # OUTPUT
     # #
     # #
-    # with open(OUTPUT_PATH+'template.html','r') as f:
-    #     t = Template(f.read())
-    #     t_out = t.substitute(CNN_NAME=CNN_NAME,
-    #                         TRAINING=TRAINING,
-    #                         CONFIGURATION=CONFIGURATION,
-    #                         PATCHES=patches_html,
-    #                         EPOCH=EPOCH,
-    #                         TEST_LOSS=TEST_LOSS,
-    #                         TEST_ACC=TEST_ACC,
-    #                         SPLITS_GT_MEAN_VI=gt_mean_vi,
-    #                         SPLITS_GT_MEAN_VI_DIFF=gt_mean_vi_diff,
-    #                         SPLITS_GT_MEAN_SURENESS=gt_mean_sureness,
-    #                         SPLITS_GT_BEST_VI_DIFF=gt_best_vi_diff,
-    #                         SPLITS_RHOANA_MEAN_VI=rhoana_mean_vi,
-    #                         SPLITS_RHOANA_MEAN_VI_DIFF=rhoana_mean_vi_diff,
-    #                         SPLITS_RHOANA_MEAN_SURENESS=rhoana_mean_sureness,
-    #                         SPLITS_RHOANA_BEST_VI_DIFF=rhoana_best_vi_diff,
-    #                         MERGES_GT_TOP1=gt_top1,
-    #                         MERGES_GT_TOP2=gt_top2,
-    #                         MERGES_GT_TOP3=gt_top3,
-    #                         MERGES_GT_TOP4=gt_top4,
-    #                         MERGES_GT_TOP5=gt_top5,
-    #                         MERGES_RHOANA_TOP1=rhoana_top1,
-    #                         MERGES_RHOANA_TOP2=rhoana_top2,
-    #                         MERGES_RHOANA_TOP3=rhoana_top3,
-    #                         MERGES_RHOANA_TOP4=rhoana_top4,
-    #                         MERGES_RHOANA_TOP5=rhoana_top5                            
-    #                         )
+    with open(OUTPUT_PATH+'template.html','r') as f:
+        t = Template(f.read())
+        t_out = t.substitute(CNN_NAME=CNN_NAME,
+                            TRAINING=TRAINING,
+                            CONFIGURATION=CONFIGURATION,
+                            PATCHES=patches_html,
+                            EPOCH=EPOCH,
+                            TEST_LOSS=TEST_LOSS,
+                            TEST_ACC=TEST_ACC,
+                            SPLITS_GT_MEAN_VI=gt_mean_vi,
+                            SPLITS_GT_MEAN_VI_DIFF=gt_mean_vi_diff,
+                            SPLITS_GT_MEAN_SURENESS=gt_mean_sureness,
+                            SPLITS_GT_BEST_VI_DIFF=gt_best_vi_diff,
+                            SPLITS_RHOANA_MEAN_VI=rhoana_mean_vi,
+                            SPLITS_RHOANA_MEAN_VI_DIFF=rhoana_mean_vi_diff,
+                            SPLITS_RHOANA_MEAN_SURENESS=rhoana_mean_sureness,
+                            SPLITS_RHOANA_BEST_VI_DIFF=rhoana_best_vi_diff,
+                            MERGES_GT_TOP1=gt_top1,
+                            MERGES_GT_TOP2=gt_top2,
+                            MERGES_GT_TOP3=gt_top3,
+                            MERGES_GT_TOP4=gt_top4,
+                            MERGES_GT_TOP5=gt_top5,
+                            MERGES_RHOANA_TOP1=rhoana_top1,
+                            MERGES_RHOANA_TOP2=rhoana_top2,
+                            MERGES_RHOANA_TOP3=rhoana_top3,
+                            MERGES_RHOANA_TOP4=rhoana_top4,
+                            MERGES_RHOANA_TOP5=rhoana_top5                            
+                            )
         
     with open(REAL_OUTPUT_PATH+os.sep+'index.html', 'w') as f:
         f.write(t_out)

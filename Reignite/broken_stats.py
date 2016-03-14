@@ -118,7 +118,7 @@ class Stats(object):
         best_merge_pair_index = global_best_indices[best_vi_improvement_index]
         best_merge_pairs = global_merge_pairs[best_vi_improvement_index]
         # best_ugly_segmentation = global_ugly_segmentations[best_vi_improvement_index]
-        best_ugly_segmentation = np.array(Image(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_ugly.png'))
+        best_ugly_segmentation = mh.imread(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_best_ugly.png')
         best_vi_diff = global_vi_diffs[best_vi_improvement_index]
         best_fixed_segmentation = Util.merge_steps(best_ugly_segmentation, best_merge_pairs, best=best_merge_pair_index, store=True)
 

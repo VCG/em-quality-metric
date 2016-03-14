@@ -147,7 +147,18 @@ class Stats(object):
         # }
         
 
+        gt_top1 = 0
+        gt_top2 = 0
+        gt_top3 = 0
+        gt_top4 = 0
+        gt_top5 = 0
 
+        
+        rhoana_top1 = 0
+        rhoana_top2 = 0
+        rhoana_top3 = 0
+        rhoana_top4 = 0
+        rhoana_top5 = 0
 
     # #
     # #

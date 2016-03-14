@@ -9,6 +9,14 @@
 \usepackage{booktabs}
 \usepackage{todonotes}
 \usepackage{microtype}
+\usepackage{color}
+%
+\newcommand{\tnote}[3]{{\color{#2}#1: #3}}
+\newcommand{\change}[1]{\textcolor{red}{#1}}
+\newcommand{\DaH}[1]{\tnote{DaH}{red}{#1}}
+\newcommand{\VKF}[1]{\tnote{VKF}{green}{#1}}
+\newcommand{\JT}[1]{\tnote{JT}{blue}{#1}}
+\newcommand{\IGNORE}[1]{}
 %
 \begin{document}
 %

@@ -108,6 +108,7 @@ class Stats(object):
         global_surenesses = p['global_surenesses']
         global_merge_pairs = p['global_merge_pairs']
         global_best_indices = p['global_best_indices']
+        global_vis = ['global_vis']
 
         mean_vi_diff = np.mean(global_vi_diffs)
         mean_vi = np.mean(global_vis)

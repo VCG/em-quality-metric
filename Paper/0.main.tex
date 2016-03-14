@@ -20,7 +20,7 @@
 %
 \begin{document}
 %
-\title{Learning Split and Merge Errors in Electron Microscopy Cell Segmentations to Assist Connectomics Proofreading}
+\title{Segmentation Correction Suggestion for Semi-automatic EM Connectomics Proofreading}
 %
 \titlerunning{Learning Split and Merge Errors}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
@@ -41,7 +41,7 @@ Harvard Center for Brain Science, Cambridge MA 02138, USA}
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Automatic image segmentation methods for cells can lead to \emph{split errors}, where one cell is accidentally labeled as two or more, and to \emph{merge errors}, where two or more cells are accidentally labeled as one. We develop two classifiers which, given an input image and a candidate set of cell labelings, are able to identify split and merge errors in the segmentation. These classifiers are informed by supervised training of a convolutional neural network: from expert-labelled ground truth segmentations, and their corresponding input images and edge probabilities, we synthetically generate plausible split and merge errors as training. We design a new network architecture which is able to determine a true edge with high accuracy by considering a  wider uncertainty region around an edge as an additional input to the network. We demonstrate the application of this approach to proofreading of electron microsopy image segmentations for connectomics, where our system is able to automatically correct many errors, and otherwise prioritize a list of edges to which a human should direct their attention for manual correction.
+Automatic image segmentation methods for cells can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To reduce manual correction of these errors, we develop two classifiers which are able to suggest candidate split and merge errors to the user. These classifiers are informed by supervised training of a convolutional neural network: from expert-labeled ground truth segmentations, and their corresponding input images and edge probabilities, we synthetically generate plausible split and merge errors as training. We design a new network architecture which is able to determine potential erroneous edges in segmentation data by considering a wider uncertainty region around an edge as an additional input to the network. We demonstrate the application of this approach to proofreading of electron microsopy image segmentations for connectomics, where our system is able to both prioritize a list of edges to which a human should direct their attention, and suggest possible corrections automatically.
 \keywords{Segmentation, convolutional neural networks, connectomics.}
 \end{abstract}
 %

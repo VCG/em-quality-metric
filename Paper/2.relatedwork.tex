@@ -10,6 +10,14 @@ Paragraph: Work on learning in Connectomics
 
 Paragraph: Most related work. People tried this for 3D! \cite{BogovicHJ13}. 
 
+\paragraph{Interactive segmentation}
+
+Recent works attack the problem of massive volume segmentation through crowd-sourcing\cite{saalfeld09,anderson2011}. EyeWire~\cite{eyewire2012} asks novice users to participate in a segmentation game for segmenting neuronal structures using a semi-automatic algorithm. D2P ~\cite{Giuly2013DP2} uses a micro-labor workforce approach where local boolean decisions are combined to produce a consensus segmentation. NeuroProof \cite{neuroproof2013} allows interactive learning of agglomeration of over-segmentations of images, based on a random forest classifier. In general, our goal is to correct the output of a segmentation which is thought to be good; hence, our tool would be used after learning a segmentation model to direct user attention to correct likely erroneous areas.
+
+\paragraph{Proofreading Tools}
+Recent works in segmentation proofreading have begun to move towards semi-automatic methods. Raveler~\cite{raveler} targets expert users and offers many parameters for tweaking the process at the cost of a higher complexity. Sicat et al.~\cite{markus_proofreading} propose guiding the user to problem areas through a graph abstraction of potential problematic regions. Mojo~\cite{mojo2} and its follow-up Dojo~\cite{haehn_dojo_2014} provide semi-automatic merge error correction, though manual error finding is still required.
+
+
 Why don't we do 3D? Mega pipeline - people need to start proof-reading as soon as possible, need to maximize throughput. If we can do a good job on 2D, it eases this process as we can start working before the alignment stages.
 
 \subsection{Contributions}

@@ -4,11 +4,12 @@ import mahotas as mh
 import numpy as np
 import os
 import random
-# import tifffile as tif
+import tifffile as tif
 from scipy import ndimage as nd
 import partition_comparison
 import matplotlib.pyplot as plt
 import skimage.measure
+from scipy.spatial import distance
 
 
 class Util(object):
@@ -200,6 +201,81 @@ class Util(object):
 
 
     return image, prob, gold, rhoana
+
+  @staticmethod
+  def read_dojo_section(num, keep_zeros=False, fill_zeros=False, crop=True):
+
+    DATA_PATH = '/Users/d/Projects/dojo_data_vis2014'
+    if not os.path.isdir(DATA_PATH):
+      DATA_PATH = '/n/regal/pfister_lab/haehn/dojo_data_vis2014/'
+    GOLD_PATH = os.path.join(DATA_PATH,'groundtruth/')
+    RHOANA_PATH = os.path.join(DATA_PATH,'labels_after_automatic_segmentation/')
+    IMAGE_PATH = os.path.join(DATA_PATH,'images/')
+    PROB_PATH = os.path.join(DATA_PATH,'prob/')    
+        
+    gold = tif.imread(GOLD_PATH+str(num)+'.tif')
+    rhoana = tif.imread(RHOANA_PATH+os.sep+str(num)+".tif")
+    image = tif.imread(IMAGE_PATH+str(num)+'.tif')
+    prob = tif.imread(PROB_PATH+str(num)+'_syn.tif')
+
+    gold_original = np.array(gold)
+    gold = Util.normalize_labels(skimage.measure.label(gold).astype(np.uint64))[0]
+    gold[gold == 0] = gold.max()+1
+
+    rhoana = Util.normalize_labels(skimage.measure.label(rhoana).astype(np.uint64))[0]
+
+    # do we want to subtract the zeros?
+    if keep_zeros:
+      gold[gold_original == 0] = 0
+      # rhoana[gold_original == 0] = 0
+
+    if fill_zeros:
+      gold[gold_original == 0] = 0
+      gold_zeros = Util.threshold(gold, 0)
+      gold = Util.fill(gold, gold_zeros.astype(np.bool))
+
+    if crop:
+      bbox = mh.bbox(image)
+      bbox_larger = [bbox[0]-37, bbox[1]+37, bbox[2]-37, bbox[3]+37]
+      prob_new = prob
+    else:
+      bbox=bbox_larger = [0,1024,0,1024]      
+      prob_new = np.zeros(image.shape, dtype=np.uint8)
+      prob_new[bbox[0]:bbox[1], bbox[2]:bbox[3]] = prob[bbox[0]:bbox[1], bbox[2]:bbox[3]]
+
+      
+
+
+    return Util.crop_by_bbox(image, bbox_larger), Util.crop_by_bbox(prob_new, bbox_larger), Util.crop_by_bbox(gold, bbox_larger), Util.crop_by_bbox(rhoana, bbox_larger)
+
+
+  @staticmethod
+  def read_dojo_data():
+    input_image = np.zeros((10,1024,1024))
+    input_rhoana = np.zeros((10,1024,1024))
+    input_gold = np.zeros((10,1024,1024))
+    input_prob = np.zeros((10,1024,1024))
+    input_rhoana = tif.imread('/Users/d/Projects/dojo_data_vis2014/labels_after_automatic_segmentation_multi.tif')
+    input_gold = tif.imread('/Users/d/Projects/dojo_data_vis2014/groundtruth_multi.tif')
+    for i in range(10):
+        input_prob[i] = tif.imread('/Users/d/Projects/dojo_data_vis2014/prob/'+str(i)+'_syn.tif')
+        input_image[i] = tif.imread('/Users/d/Projects/dojo_data_vis2014/images/'+str(i)+'.tif')
+        
+    bbox = mh.bbox(input_image[0])
+    bbox_larger = [bbox[0]-37, bbox[1]+37, bbox[2]-37, bbox[3]+37]
+
+    prob_new = np.zeros(input_image.shape, dtype=np.uint8)
+    
+    input_image = input_image[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
+    input_rhoana = input_rhoana[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
+    input_gold = input_gold[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
+    # input_prob = input_prob[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
+    
+    prob_new[:,bbox[0]:bbox[1], bbox[2]:bbox[3]] = input_prob[:,bbox[0]:bbox[1], bbox[2]:bbox[3]]
+    prob_new = prob_new[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
+
+    return input_image.astype(np.uint8), prob_new.astype(np.uint8), input_gold.astype(np.uint32), input_rhoana.astype(np.uint32)
+
 
   @staticmethod
   def frame_image(image, shape=(75,75)):
@@ -431,16 +507,29 @@ class Util(object):
 
     coords = zip(*np.where(seed_array==1))
 
+    seed1_ = None
+    seed2_ = None
+    max_distance = -np.inf
 
-    seed1 = random.choice(coords)
-    seed2 = random.choice(coords)
+    for i in range(10):
+      seed1 = random.choice(coords)
+      seed2 = random.choice(coords)
+      d = distance.euclidean(seed1, seed2)
+      if max_distance < d:
+        max_distance = d
+        seed1_ = seed1
+        seed2_ = seed2
 
     seeds = np.zeros(array.shape, dtype=np.uint8)
-    seeds[seed1[0], seed1[1]] = 1
-    seeds[seed2[0], seed2[1]] = 2
+    seeds[seed1_[0], seed1_[1]] = 1
+    seeds[seed2_[0], seed2_[1]] = 2
+
+
 
     for i in range(8):
       seeds = mh.dilate(seeds)
+
+    # Util.view(seeds,large=True)      
 
     ws = mh.cwatershed(speed_image, seeds)
     ws[array == 0] = 0
@@ -481,8 +570,60 @@ class Util(object):
     b[borders==1] = (255,0,0)
     Util.view(b, color=False, large=True)
 
+  @staticmethod
+  def show_overlay(image, segmentation, borders=np.zeros((1,1)), labels=np.zeros((1,1)),mask=None):
 
+    b = np.zeros((image.shape[0],image.shape[1],4), dtype=np.uint8)
+    c = np.zeros((image.shape[0],image.shape[1],4), dtype=np.uint8)
+    b[:,:,0] = image[:]
+    b[:,:,1] = image[:]
+    b[:,:,2] = image[:]
+    b[:,:,3] = 255
+    # from PIL import Image
+    # def alpha_composite(src, dst):
+    #     '''
+    #     Return the alpha composite of src and dst.
 
+    #     Parameters:
+    #     src -- PIL RGBA Image object
+    #     dst -- PIL RGBA Image object
+
+    #     The algorithm comes from http://en.wikipedia.org/wiki/Alpha_compositing
+    #     '''
+    #     # http://stackoverflow.com/a/3375291/190597
+    #     # http://stackoverflow.com/a/9166671/190597
+    #     src = np.asarray(src)
+    #     dst = np.asarray(dst)
+    #     out = np.empty(src.shape, dtype = 'float')
+    #     alpha = np.index_exp[:, :, 3:]
+    #     rgb = np.index_exp[:, :, :3]
+    #     src_a = src[alpha]/255.0
+    #     dst_a = dst[alpha]/255.0
+    #     out[alpha] = src_a+dst_a*(1-src_a)
+    #     old_setting = np.seterr(invalid = 'ignore')
+    #     out[rgb] = (src[rgb]*src_a + dst[rgb]*dst_a*(1-src_a))/out[alpha]
+    #     np.seterr(**old_setting)    
+    #     out[alpha] *= 255
+    #     np.clip(out,0,255)
+    #     # astype('uint8') maps np.nan (and np.inf) to 0
+    #     out = out.astype('uint8')
+    #     out = Image.fromarray(out, 'RGBA')
+    #     return out
+
+    if not labels.shape[0]>1:
+      c[segmentation==1] = (00,0,200,130)
+      c[segmentation==2] = (0,150,00,130)
+    if borders.shape[0]>1:
+      borders[mh.erode(mh.erode(mh.erode(segmentation)))==0] = 0
+      c[borders==borders.max()] = (0,255,0,255)
+      c[borders==borders.max()-1] = (255,0,0,255)
+    elif labels.shape[0]>1:
+      c[mask!=0] = (0,0,200,130)
+      c[labels==1] = (0,150,0,130)
+      c[labels==2] = (0,0,200,130)
+    return b,c
+
+    # return alpha_composite(Image.fromarray(b, 'RGBA'),Image.fromarray(c, 'RGBA'))
 
 
 

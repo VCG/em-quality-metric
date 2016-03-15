@@ -1,6 +1,7 @@
 import copy
 import numpy as np
 import os
+import random
 import sys
 import theano
 import theano.tensor as T
@@ -127,9 +128,12 @@ class TrainCNN(object):
         'image': training['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'prob': training['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'binary': training['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label1': training['label1'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label2': training['label2'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'merged_array': training['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd_dyn_obj': training['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'larger_border_overlap': training[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
@@ -148,9 +152,12 @@ class TrainCNN(object):
         'image': val['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'prob': val['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'binary': val['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label1': val['label1'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label2': val['label2'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'merged_array': val['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd_dyn_obj': val['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'larger_border_overlap': val[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
@@ -169,9 +176,12 @@ class TrainCNN(object):
         'image': test['image'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'prob': test['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
         'binary': test['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label1': test['label1'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'label2': test['label2'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+        'dyn_bnd_dyn_obj': test['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'larger_border_overlap': test[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
@@ -253,7 +263,20 @@ class TrainCNN(object):
 
     network_stored = False
 
+    k_s = np.array([0,1,2,3],dtype=np.uint8)
+
     for epoch in range(self._EPOCHS):
+
+
+        # rotate each patch randomly
+        image_patches = X_train['image']
+        for i in range(len(image_patches)):
+            k = np.random.choice(k_s)
+            for key in X_train.keys():
+                X_train[key][i][0] = np.rot90(X_train[key][i][0], k)
+
+
+
         # In each epoch, we do a full pass over the training data:
         train_err = 0
         train_batches = 0
@@ -267,28 +290,28 @@ class TrainCNN(object):
           print 'WRONG PARAMETERS'
           sys.exit(1)
 
-        #
-        #
-        # also, now rotate (k=1,2,3)
-        #
-        #
-        #
-        if self._rotate_patches:
-          for k in range(1,4):
+        # #
+        # #
+        # # also, now rotate (k=1,2,3)
+        # #
+        # #
+        # #
+        # if self._rotate_patches:
+        #   for k in range(1,4):
 
-            X_train_rotated = {}
-            for key in X_train.keys():
-                patches = X_train[key]
-                X_train_rotated[key] = np.array(patches)
-                for i,p in enumerate(patches):
-                    array = p[0]
-                    rotated_array = np.rot90(array, k)
-                    X_train_rotated[key][i] = rotated_array
+        #     X_train_rotated = {}
+        #     for key in X_train.keys():
+        #         patches = X_train[key]
+        #         X_train_rotated[key] = np.array(patches)
+        #         for i,p in enumerate(patches):
+        #             array = p[0]
+        #             rotated_array = np.rot90(array, k)
+        #             X_train_rotated[key][i] = rotated_array
 
-            print 'Training on rotated set by', 90*k, 'degrees'
-            for batch in self.iterate_minibatches(X_train_rotated, y_train, self._BATCH_SIZE, shuffle=False):
-                train_err += train_fn(*batch)
-                train_batches += 1
+        #     print 'Training on rotated set by', 90*k, 'degrees'
+        #     for batch in self.iterate_minibatches(X_train_rotated, y_train, self._BATCH_SIZE, shuffle=False):
+        #         train_err += train_fn(*batch)
+        #         train_batches += 1
 
 
 

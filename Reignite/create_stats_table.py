@@ -35,7 +35,8 @@ if __name__ == '__main__':
 
 
 
-  OUTPUT_PATH = '/Volumes/DATA1/cnn_analysis/'
+  #OUTPUT_PATH = '/Volumes/DATA1/cnn_analysis/'
+  OUTPUT_PATH = '/tmp/cnn_analysis/'
   subdirs = os.listdir(OUTPUT_PATH)
 
   table = ''

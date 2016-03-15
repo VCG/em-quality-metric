@@ -168,6 +168,8 @@ class Fixer(object):
       for i in range(20):
           dilated_binary = mh.dilate(dilated_binary)      
 
+    # Util.view(dilated_binary, large=True)
+
     borders = np.zeros(cropped_binary.shape)
 
     best_border_prediction = np.inf
@@ -185,10 +187,10 @@ class Fixer(object):
         ws_label2 = ws.max()-1
         border = mh.labeled.border(ws, ws_label1, ws_label2)
 
-        # Util.view(ws, large=False)
+        # Util.view(ws, large=True)
 
 
-        # Util.view(border, large=False)
+        # Util.view(border, large=True)
 
         # print i, len(border[border==True])
 
@@ -238,7 +240,7 @@ class Fixer(object):
 
           ws = new_ws
 
-          # Util.view(new_ws, large=False, color=True)
+          # Util.view(new_ws, large=True, color=True)
 
         # ws[original_border == 1] = 0
         

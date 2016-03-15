@@ -51,11 +51,16 @@ class CNN(object):
       'prob': p['prob'].reshape(-1, 1, self._patch_size[0], self._patch_size[1]),
       'binary': p['binary'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'merged_array': p['merged_array'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'binary1': p['binary1'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'binary2': p['binary2'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,      
       'dyn_obj': p['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'dyn_bnd': p['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'overlap': p['overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'border_overlap': p['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'larger_border_overlap': p['larger_border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255 
     }
+
+
 
     # print p['image'].shape
     # print p['prob'].shape

@@ -411,8 +411,9 @@ class Experiment(object):
             found_borders = sorted(zip(vi_diff_per_error, predictions_per_error), key=lambda x: x[1])
             for i in range(5):
                 if len(found_borders) > i:
-                    vi_correction_bins[i] += found_borders[i][0]    
-                    bin_counts[i] += 1
+                    for j in range(i,5):
+                      vi_correction_bins[j] += found_borders[j][0]    
+                      bin_counts[j] += 1
                     
 
     for i in range(5):

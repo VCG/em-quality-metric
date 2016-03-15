@@ -445,8 +445,8 @@ class Patch(object):
           output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           # output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           output['binary'] = relabeled_cutout_binary_mask.astype(np.bool)
-          output['input_binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
-          output['input_binary2'] = binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['binary2'] = binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['merged_array'] = merged_array.astype(np.bool)
           output['dyn_obj'] = dyn_obj.astype(np.bool)
           output['dyn_bnd'] = dyn_bnd.astype(np.bool)
@@ -454,6 +454,7 @@ class Patch(object):
           output['border'] = border_yx
           output['border_center'] = new_border_center
           output['border_overlap'] = isolated_border.astype(np.bool)
+          output['overlap'] = overlap.astype(np.bool)
           output['larger_border_overlap'] = larger_isolated_border.astype(np.bool)
           output['l'] = l
           output['n'] = n

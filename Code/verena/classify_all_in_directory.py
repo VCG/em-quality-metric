@@ -21,17 +21,14 @@ if __name__ == '__main__':
     import mahotas
     import matplotlib.pyplot as plt
     #CPU
-    pathPrefix = '/Volumes/DATA1/EMQM_DATA/ac3x75/input/'#'/media/vkaynig/Data1/Synapses/AC3/'
+    pathPrefix = '/Users/d/Projects/dojo_data_vis2014/images/'#'/Volumes/DATA1/EMQM_DATA/ac3x75/input/'
     img_search_string_grayImages = pathPrefix + '*.tif'
     img_files = sorted( glob.glob( img_search_string_grayImages ) )
-    print img_files
+
     for image_path in img_files:
         print image_path
         image = mahotas.imread(image_path)
-
-        image = np.pad(image, 40, 'reflect')
-
-        imageSize = 1024+80
+        imageSize = 1024
         image = image[0:imageSize,0:imageSize]
         
         start_time = time.clock()
@@ -123,8 +120,6 @@ if __name__ == '__main__':
         
         prob_img = shift(prob_img,(32,32))
         
-        prob_img = prob_img[40:-40,40:-40]
-
         mahotas.imsave(image_path[:-4] + '_syn.tif', 
                        np.uint8((1-prob_img)*255))
         

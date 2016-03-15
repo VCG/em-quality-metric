@@ -12,7 +12,7 @@ Identification and correction of merge errors is challenging, because the correc
 Paragraph: What is the goal of generating labeled data? How do you generate fake splits? How do you generate fake merges? How do you generate patches for training? How can we know that the training data is representative of real data?
 
 \begin{figure}
-\missingfigure{Input to learning}
+\includegraphics[scale=.15]{gfx/patches.eps}
 \caption{Show visually each of the inputs to the system on a couple of patches.}
 \end{figure}
 
@@ -32,7 +32,8 @@ Each of the input patches is connected to a \VKF{3?}-layer network, with each la
 Jain et al. also developed two pooling techniques employed in the pooling layers of the CNN, dynamic boundary pooling and dynamic object pooling. The idea is to focus the pooling output on regions of interest, like the boundary between two regions (boundary pooling), or the joint area of the two regions considered (object pooling). Instead of convential pooling where a sliding window is equally applied to the whole output of the convolutional layer, dynamic pooling only averages outputs within the region of interest. We implemented both pooling methods and compare them in table \VKF{reference to result table}.
 
 \begin{figure}[t]
-\missingfigure{Network architecture figure}
+%\missingfigure{Network architecture figure}
+\includegraphics[scale=.15]{gfx/networks.eps}
 \caption{Network architecture diagram, showing parallel sub nets that feed into a multi-layer perceptron at the end.}
 \end{figure}
 

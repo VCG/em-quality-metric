@@ -426,17 +426,60 @@ class Patch(object):
           # overlap_thresholded[overlap_labeled == overlap_value] = 1
           # overlap = overlap_thresholded
 
-          dyn_obj = np.zeros(merged_array.shape)
-          r = 10
-          midpoint = [patch_size[0]/2, patch_size[1]/2]
-          dyn_obj[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = merged_array[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+          # dyn_obj = np.zeros(merged_array.shape)
+          # r = 10
+          # midpoint = [patch_size[0]/2, patch_size[1]/2]
+          # dyn_obj[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = merged_array[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
 
-          dyn_bnd = np.zeros(overlap.shape)
-          r = 25
-          midpoint = [patch_size[0]/2, patch_size[1]/2]
-          dyn_bnd[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = overlap[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+          # dyn_bnd = np.zeros(overlap.shape)
+          # r = 25
+          # midpoint = [patch_size[0]/2, patch_size[1]/2]
+          # dyn_bnd[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = overlap[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+
+          def recreate_binaries(binary, merged_binary):
+              # restore both labels
+              binary = np.array(binary.reshape(75,75), dtype=np.uint8)
+              merged_array = np.array(merged_binary.reshape(75,75), dtype=np.uint8)
+              
+              label1 = np.array(binary+merged_array, dtype=np.uint8)
+              label1[label1 != 2] = 0
+              label1 = label1.astype(np.bool)
+
+              label2 = np.array(merged_array - label1, dtype=np.bool)
+              
+              return label1, label2
+
+          def recreate_dyn_bnd(label1, label2, r=10):
+              amount = r/2
+              
+              dilated_label1 = np.array(label1)
+              for i in range(amount):
+                  dilated_label1 = mh.dilate(dilated_label1)
+
+              dilated_label2 = np.array(label2)
+              for i in range(amount):
+                  dilated_label2 = mh.dilate(dilated_label2)
+                  
+              dyn_bnd = np.logical_and(dilated_label1, dilated_label2)
+              
+              return dyn_bnd.astype(np.bool)
+                  
+          def recreate_dyn_obj(label1, label2, r=4, patch_size=(75,75)):
+              merged_array = label1 + label2
+              midpoint = [patch_size[0]/2, patch_size[1]/2]
+              
+              dyn_obj = np.zeros(merged_array.shape, dtype=np.bool)
+              dyn_obj[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r] = merged_array[midpoint[0]-r:midpoint[0]+r, midpoint[1]-r:midpoint[1]+r]
+              
+              return dyn_obj.astype(np.bool)
+              
+          label1, label2 = recreate_binaries(relabeled_cutout_binary_mask.astype(np.bool), merged_array.astype(np.bool))
 
 
+          dyn_bnd = recreate_dyn_bnd(label1, label2)
+          dyn_obj = recreate_dyn_obj(label1, label2)
+
+          dyn_bnd_dyn_obj = dyn_bnd+dyn_obj
 
           output = {}
           output['id'] = str(uuid.uuid4())
@@ -444,12 +487,13 @@ class Patch(object):
           
           output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           # output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
-          output['binary'] = relabeled_cutout_binary_mask.astype(np.bool)
-          output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
-          output['binary2'] = binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['binary'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['binary1'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
+          output['binary2'] = label2#binary_mask2[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['merged_array'] = merged_array.astype(np.bool)
           output['dyn_obj'] = dyn_obj.astype(np.bool)
           output['dyn_bnd'] = dyn_bnd.astype(np.bool)
+          output['dyn_bnd_dyn_obj'] = dyn_bnd_dyn_obj.astype(np.bool)
           output['bbox'] = bbox
           output['border'] = border_yx
           output['border_center'] = new_border_center

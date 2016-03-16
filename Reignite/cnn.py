@@ -55,6 +55,7 @@ class CNN(object):
       'binary2': p['binary2'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,      
       'dyn_obj': p['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'dyn_bnd': p['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
+      'dyn_bnd_dyn_obj': p['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'overlap': p['overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'border_overlap': p['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
       'larger_border_overlap': p['larger_border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255 

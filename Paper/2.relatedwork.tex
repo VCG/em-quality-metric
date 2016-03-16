@@ -1,24 +1,26 @@
 \section{Related Work}
 
-Paragraph: Work on segmentation in Connectomics...but none of these address specifically learning real edges against edges which lead to split or merge errors.
+%Paragraph: Work on segmentation in Connectomics...but none of these address specifically learning real edges against edges which lead to split or merge errors.
 
-Arganda-Carreras et al.~\cite{10.3389/fnana.2015.00142} posed the ISBI 2D EM segmentation challenge in 2012, where a 30-image corpus of fly cell `in/out' labels was used to train boundary detection. To overcome the often small amounts of expert-labeled ground-truth segmentation data for training convolutional networks for biomedical tasks, Ronneberger et al.~\cite{RonnebergerFB15} use a contracting/expanding path architecture to enable precise localization.
+\paragraph{Automatic Segmentation}
 
-The data we are most concerned with is more difficult than the ISBI 2012 challenge. Our mouse brain data has large intercellular space which is not b
+Multi-terabyte EM brain volumes require automatic segmentation~\cite{jain2010,kaynig13,Liu2014,NunezIglesias2013Machine,GALA2014,amelio_segmentation}, but this data is hard to classify as it contains ambiguous intercellular space. The 2013 IEEE ISBI neurites 3D segmentation challenge~\cite{isbi_challenge} showed that existing algorithms which learn from expert-segmented training data still exhibit high error rates. NeuroProof \cite{neuroproof2013} allows interactive learning of agglomeration of over-segmentations of images, based on a random forest classifier. Vazquez-Reina et al.~\cite{amelio_segmentation} propose automatic 3D segmentation by taking whole EM volumes into account rather than a per section approach, then solving a fusion problem with a global context. Kaynig et al.~\cite{kaynig13} propose a random forest classifier coupled with an anisotropic smoothing prior in a conditional random field framework and 3D segment fusion. 
 
-Paragraph: Work on learning in Connectomics
+It is also possible to learn segmentation classification features directly from images with CNNs. Ronneberger et al.~\cite{RonnebergerFB15} use a contracting/expanding CNN path architecture to enable precise boundary localization with small amounts of training data. Lee et al.~\cite{lee2015recursive} recursively train very deep networks with 2D and 3D filters to detect boundaries. Bogovic et al.~\cite{BogovicHJ13} learn 3D features with a dynamic pooling scheme, and show that they can be better than hand-designed features. 
+
+While these approaches make good progress, in general proofreading is required to improve them through generating more ground-truth segmentations.
+
+%Arganda-Carreras et al.~\cite{10.3389/fnana.2015.00142} posed the ISBI 2D EM segmentation challenge in 2012, where a 30-image corpus of fly cell `in/out' labels was used to train boundary detection. However, mouse brain EM data is more difficult than the ISBI 2012 challenge, as it contains large intercellular space which is hard to classify. 
 
 Paragraph: Most related work. People tried this for 3D! \cite{BogovicHJ13}. 
+One major reason for attempting to classify errors on 2D images is with the scale of the task. 3D reconstruction pipelines are often slow as they require non-linear image alignment or registration \cite{akselrod09,beyer13,Saalfeld2010Asrigidaspossible}. However, typically segmentation results are local decisions at the cell level. In this case, reconstruction is unnecessary and, instead of waiting for the 3D output, proofreading can start immediately to maximize throughput.
 
-\paragraph{Interactive segmentation}
+%\paragraph{Collaborative Interactive Segmentation}
 
-Recent works attack the problem of massive volume segmentation through crowd-sourcing\cite{saalfeld09,anderson2011}. EyeWire~\cite{eyewire2012} asks novice users to participate in a segmentation game for segmenting neuronal structures using a semi-automatic algorithm. D2P ~\cite{Giuly2013DP2} uses a micro-labor workforce approach where local boolean decisions are combined to produce a consensus segmentation. NeuroProof \cite{neuroproof2013} allows interactive learning of agglomeration of over-segmentations of images, based on a random forest classifier. In general, our goal is to correct the output of a segmentation which is thought to be good; hence, our tool would be used after learning a segmentation model to direct user attention to correct likely erroneous areas.
+%Recent works attack the problem of massive volume segmentation through crowd-sourcing\cite{saalfeld09,anderson2011}. EyeWire~\cite{eyewire2012} asks novice users to participate in a segmentation game for segmenting neuronal structures using a semi-automatic algorithm. D2P ~\cite{Giuly2013DP2} uses a micro-labor workforce approach where local boolean decisions are combined to produce a consensus segmentation. In general, our goal is to correct the output of a segmentation which is thought to be good; hence, our tool would be used after learning a segmentation model to direct user attention to correct likely erroneous areas.
 
 \paragraph{Proofreading Tools}
 Recent works in segmentation proofreading have begun to move towards semi-automatic methods. Raveler~\cite{raveler} targets expert users and offers many parameters for tweaking the process at the cost of a higher complexity. Sicat et al.~\cite{markus_proofreading} propose guiding the user to problem areas through a graph abstraction of potential problematic regions. Mojo~\cite{mojo2} and its follow-up Dojo~\cite{haehn_dojo_2014} provide semi-automatic merge error correction, though manual error finding is still required.
-
-
-Why don't we do 3D? Mega pipeline - people need to start proof-reading as soon as possible, need to maximize throughput. If we can do a good job on 2D, it eases this process as we can start working before the alignment stages.
 
 \subsection{Contributions}
 

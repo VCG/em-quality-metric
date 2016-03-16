@@ -9,8 +9,11 @@ from util import Util
 
 class Fixer(object):
 
+
+
+
   @staticmethod
-  def splits(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), smallest_first=False, oversampling=False, verbose=True, max=10000):
+  def splits(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
     '''
     '''
     t0 = time.time()
@@ -50,7 +53,7 @@ class Fixer(object):
     # NOW the matrix is filled and we can start merging
     #
 
-    sureness_threshold = 0.
+    # sureness_threshold = 0.
     matrix = np.array(M)
     segmentation_copy = np.array(segmentation)
 
@@ -183,6 +186,9 @@ class Fixer(object):
     for n in range(N):
         ws = Util.random_watershed(dilated_binary, speed_image, border_seeds=border_seeds, erode=erode)
         
+        if ws.max() == 0:
+          continue
+
         ws_label1 = ws.max()
         ws_label2 = ws.max()-1
         border = mh.labeled.border(ws, ws_label1, ws_label2)

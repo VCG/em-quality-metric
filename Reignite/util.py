@@ -507,6 +507,10 @@ class Util(object):
 
     coords = zip(*np.where(seed_array==1))
 
+    if len(coords) == 0:
+      # print 'err'
+      return np.zeros(array.shape)
+
     seed1_ = None
     seed2_ = None
     max_distance = -np.inf
@@ -530,7 +534,7 @@ class Util(object):
       seeds = mh.dilate(seeds)
 
     # Util.view(seeds,large=True)      
-
+    # print speed_image.shape, seeds.shape
     ws = mh.cwatershed(speed_image, seeds)
     ws[array == 0] = 0
 

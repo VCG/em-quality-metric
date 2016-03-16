@@ -54,16 +54,18 @@ Jain et al. also developed two pooling techniques employed in the pooling layers
 \subsection{Training}
 
 To train the network, we used a dataset of a mouse cortex (1024x1024x75 pixels). The tissue is dense mammalian neuropil from layers 4 and 5 of the S1 primary somatosensory cortex of a healthy mouse. The resolution of our data set is 6nm/pixel and the section thickness is 30nm. We trained an automatic segmentation pipeline on a similar dataset and used it to segment the data \cite{rhoana}. Manually labeled expert segmentation was available as a ground truth for the entire dataset. We used the first 65 sections of the data for training, the next 5 for validation and the last 5 for testing.
+%#   Training data:
+%#   Patch size: (75,75)
+%#   79828 correct splits
+%#   79828 split errors
+%#   rotated 90,180,270 degrees after each epoch
+%
+%#   validation data: 7464 correct splits + 7464 split errors
+%#   test data: 5748 correct splits + 5748 split errors
+First, we generated patches using the ground truth and simulated split errors via watershed. This approach did not work since the ground truth labeling did not include extra=cellular structures and applying the classifier to the dense segmentation output of our pipeline failed. Therefor, we performed maximum overlap between the ground truth and our automatic segmentation output. The difference in borders in our automatic segmentation and the maximum overlap segmentation were our errors. We generated 79828 correct splits and 79828 split error patches using this method.
 
-We generated 
+After a grid exploration of parameters for filter size, number of filters, batch size, learning rate and momentum, we found the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13x13$ and number of filters $fn=16$. We configured the network using Theano/Lasagne and ran the training on a Tesla K40m graphics hardware. We stopped once the training loss did not decrease anymore for 30 epochs.
 
-We used a publicly available dataset of a mouse cortex (1024x1024x65 pixels) for 
-
-Paragraph: How did we train the network? What tricks did we employ (e.g., rotation)? What are the parameters of the training? What software stack did we use? Hardware platform, training time (none very interesting, but for completeness). When do we stop training?
-
-
-
-Paragraph: What are the thresholds in the system? How do we pick the thresholds?
 
 
 \begin{table}

@@ -119,8 +119,20 @@ class CNN(object):
     '''
     '''
     network_file = sorted(glob.glob(self._RESULTS_PATH + os.sep + 'network*.p'))
-    print 'Loading', network_file[-1]
-    with open(network_file[-1], 'rb') as f:
+
+    max_epochs = -1
+    our_network = None
+    for n in network_file:
+      epochs = os.path.basename(n).split('_')[1].replace('.p','')
+      # print epochs, max_epochs
+      if max_epochs < int(epochs):
+
+        our_network = n
+        max_epochs = int(epochs)
+
+
+    print 'Loading', our_network
+    with open(our_network, 'rb') as f:
         n = pickle.load(f)
 
     # print n

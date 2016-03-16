@@ -154,10 +154,18 @@ class Fixer(object):
   @staticmethod
   def fix_single_merge(cnn, cropped_image, cropped_prob, cropped_binary, N=10, invert=True, dilate=True, 
                        border_seeds=True, erode=False, debug=False, before_merge_error=None,
-                       real_border=np.zeros((1,1)), oversampling=False):
+                       real_border=np.zeros((1,1)), oversampling=False, crop=True):
     '''
     invert: True/False for invert or gradient image
     '''
+
+    bbox = mh.bbox(cropped_binary)
+
+    orig_cropped_image = np.array(cropped_image)
+    orig_cropped_prob  = np.array(cropped_prob)
+    orig_cropped_binary = np.array(cropped_binary)
+
+
 
     speed_image = None
     if invert:

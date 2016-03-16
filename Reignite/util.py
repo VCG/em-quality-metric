@@ -629,8 +629,73 @@ class Util(object):
 
     # return alpha_composite(Image.fromarray(b, 'RGBA'),Image.fromarray(c, 'RGBA'))
 
+  @staticmethod
+  def ed(gt_stack, seg_stack):
+      min_2d_seg_size = 500
+      min_3d_seg_size = 2000    
+      
+      gt_ids = np.unique(gt_stack.ravel())
+      
+      seg_ids = np.unique(seg_stack.ravel())
 
+      # count 2d split operations required
+      split_count_2d = 0
+      for seg_id in seg_ids:
+          if seg_id == 0:
+              continue
+          if seg_stack.ndim == 2:
 
+                gt_counts = np.bincount(gt_stack[:,:][seg_stack[:,:]==seg_id])
+                if len(gt_counts) == 0:
+                    continue
+                gt_counts[0] = 0
+                gt_counts[gt_counts < min_2d_seg_size] = 0
+                gt_objects = len(np.nonzero(gt_counts)[0])
+                if gt_objects > 1:
+                    split_count_2d += gt_objects - 1
+
+          else:
+            for zi in range(seg_stack.shape[0]):
+                gt_counts = np.bincount(gt_stack[zi,:,:][seg_stack[zi,:,:]==seg_id])
+                if len(gt_counts) == 0:
+                    continue
+                gt_counts[0] = 0
+                gt_counts[gt_counts < min_2d_seg_size] = 0
+                gt_objects = len(np.nonzero(gt_counts)[0])
+                if gt_objects > 1:
+                    split_count_2d += gt_objects - 1
+
+      # count 3d split operations required
+      split_count_3d = 0
+      for seg_id in seg_ids:
+          if seg_id == 0:
+              continue
+          gt_counts = np.bincount(gt_stack[seg_stack==seg_id])
+          if len(gt_counts) == 0:
+              continue
+          gt_counts[0] = 0
+          gt_counts[gt_counts < min_3d_seg_size] = 0
+          gt_objects = len(np.nonzero(gt_counts)[0])
+          if gt_objects > 1:
+              split_count_3d += gt_objects - 1
+
+      # count 3d merge operations required
+      merge_count = 0
+      for gt_id in gt_ids:
+          if gt_id == 0:
+              continue
+          seg_counts = np.bincount(seg_stack[gt_stack==gt_id])
+          if len(seg_counts) == 0:
+              continue
+          seg_counts[0] = 0
+          seg_counts[seg_counts < min_3d_seg_size] = 0
+          seg_objects = len(np.nonzero(seg_counts)[0])
+          if seg_objects > 1:
+              merge_count += seg_objects - 1
+
+      print "{0} 2D Split or {1} 3D Split and {2} 3D Merge operations required.".format(split_count_2d, split_count_3d, merge_count)
+
+      return (split_count_2d, split_count_3d, merge_count)    
 
 
 

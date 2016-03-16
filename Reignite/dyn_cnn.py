@@ -76,7 +76,11 @@ class DynCNN(object):
     test_values = []
     for i in self._inputs:
       test_values.append(patch_reshaped[i])
+    
+    test_values.append(patch_reshaped['dyn_bnd_dyn_obj'])
     test_values.append(targets)
+
+
 
     pred, err, acc = self._val_fn(*test_values)#images, probs, binary1s, overlaps, targets)
             
@@ -120,8 +124,20 @@ class DynCNN(object):
     '''
     '''
     network_file = sorted(glob.glob(self._RESULTS_PATH + os.sep + 'network*.p'))
-    print 'Loading', network_file[-1]
-    with open(network_file[-1], 'rb') as f:
+
+    max_epochs = -1
+    our_network = None
+    for n in network_file:
+      epochs = os.path.basename(n).split('_')[1].replace('.p','')
+      # print epochs, max_epochs
+      if max_epochs < int(epochs):
+
+        our_network = n
+        max_epochs = int(epochs)
+
+
+    print 'Loading', our_network
+    with open(our_network, 'rb') as f:
         n = pickle.load(f)
 
     # print n
@@ -189,24 +205,28 @@ class DynCNN(object):
 
     network = layers['dense']['network']
 
-    return layers
+    # return layers
 
     theano_vars = []
     for i in self._inputs:
       theano_vars.append(layers[i]['input_layer'].input_var)
+      # print layers[i]['input_layer'].input_var.shape.eval()
     target_var = T.ivector('targets')
 
-    tl = theano.typed_list.TypedListType(theano.tensor.fvector)
-    binary_masks = []
-    for i in self._inputs:
-      binary_masks.append(layers[i]['c2d_layer']._binary_mask)
-    binary_mask_vars = T.concatenate(binary_masks)
+    # tl = theano.typed_list.TypedListType(theano.tensor.fvector)
+    # binary_masks = []
+    # for i in self._inputs:
+    binary_mask_vars = layers['image']['c2d_layer']._binary_mask
+      # print layers[i]['c2d_layer']._binary_mask.shape.eval()
+    # binary_mask_vars = T.concatenate(binary_masks)
+
+    
 
     # print type(layers['image']['input_layer'].input_var)
     # print type(layers['image']['c2d_layer']._binary_mask)
     # # print layers['image']['c2d_layer']._binary_mask.shape
     # binary_mask_var = layers['image']['c2d_layer']._binary_mask*4#T.tensor4('binary_mask')
-
+    # binary_mask_vars = T.tensor4('binary_mask')
     theano_function_vars = theano_vars + [binary_mask_vars] + [target_var]
     # theano_function_vars = theano_vars + [target_var]
     # print theano_function_vars

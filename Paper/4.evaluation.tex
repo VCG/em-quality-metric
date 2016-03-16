@@ -69,8 +69,10 @@ Our design variation & \\
 \end{table}
 
 \begin{figure}[t]
-\missingfigure{Examples of fixed edges (one split, one merge) + a failed example of each.}
-\caption{One successful split fix, one successful merge fix, and one failed example of each to show limitations.}
+\centering
+\includegraphics[scale=.22]{gfx/mergeerror.pdf}
+\caption{Merge error detection using our classifier: Possible boundaries are generated and rated as split errors using the proposed CNN. The lowest rated boundary which equals the least likely to be a split error is the most likely the correct boundary.}
+\label{fig:merge_error}
 \end{figure}
 
 Philosophical point of trading split errors for merge errors...

@@ -1,9 +1,7 @@
 \section{Discussion}
 
-Paragraph: Were there any interesting choices made that could have arguably gone the other way?
-
-Paragraph: What limitations are there in the method? What future work do you see?
+Unfortunately, our system was not able to provide a reliable fully automatic proofreading solution. Nevertheless, we believe that our work leads us towards such a strongly preferred automatic solution - simply, to be able to handle the huge amount of connectomics data available. The performances of the trained networks were limited based on the lack of ground truth data matching our automatic segmentation pipeline. For baseline comparison, we chose a recently published user study comparing interactive proofreading tools \cite{haehn_dojo_2014}. This comparison makes sense but unfortunately the used dataset is very small. Furthermore, we would like to have non-experts and experts test our proofreading application with minimal user input.
 
 \section{Conclusion}
 
-Paragraph: What we did. What the consequences of what we did are. What is now possible from what we did.
+Manual proofreading of automatic cell boundary labeling is a very time-consuming and error-prone task. In this paper we propose a combination of machine learning and minimal user guidance to perform segmentation corrections. Our results show that this combination makes it possible to enhance the performance as well as to decrease the required time to perform segmentation corrections. We would like to encourage testing of our proposed architecture on more data and provide the developed software and trained networks free and open source\footnote{The implementation, trained networks and supplementary material are available at \url{http://rhoana.org/cnnproofreading}}.

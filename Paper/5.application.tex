@@ -1,14 +1,10 @@
 \section{Application - Proof reading}
 
-Paragraph: Description of the interactive process of proof reading.
-
-Paragraph: How would this be improved for splits? 1. Automatic fixes, but give user control over the threshold so that they can judge it correctly. 2. Providing an ordered list of edges to inspect.
-
-Paragraph: How would the proof-reading process be improved for merges?
+In our experiments, we observed the best performance using a combination of user guidance and our trained network. In contrast to fully interactive proofreading tools like Dojo, Mojo and Raveler, our system requires only minimal user input. We distinguish between merge and split errors and provide a very simple user interface to correct these (see figure \ref{fig:system}).
+The system shows only one potential error - either a false merge or a false split - in the interface. In the case of merge errors, the user is presented the highest scoring five possible boundaries as overlays on the corresponding grayscale image and also a possibility to draw a boundary interactively. The user then chooses one of the suggestions, draws a boundary or marks the cell as correct.  For split errors, the system shows the grayscale image and a possible border and the user marks the cell as correct or indicates he wants to split. Our experiment baseline, the Dojo user study, was limited to 30 minutes and participants performed 59 corrections in average (~30 seconds per correction). We think that even non-experts can perform a correction using our system in 15 seconds and thus, the system increases the proofreading performance.
 
 \begin{figure}
 \missingfigure{System of notification within Dojo, for instance.}
-\caption{What would it look like if we integrated this into Dojo? E.G., set threshold for automatic edits, with visual marks to notify automatic edits. Then, ordered list of most probable edges that the proof-reader should look through.}
+\caption{}
+\label{fig:system}
 \end{figure}
-
-The hard part is detecting whether there is a merge error at all; not the part that picks the edge which corrects the merge error.

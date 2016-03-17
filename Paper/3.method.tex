@@ -60,17 +60,29 @@ First, we generated patches using the ground truth and simulated split errors vi
 
 After a grid exploration of parameters for filter size, number of filters, batch size, learning rate and momentum, we found the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13x13$ and number of filters $fn=16$. We configured the network using Theano/Lasagne and ran the training on a Tesla K40m graphics hardware. We stopped once the training loss did not decrease anymore for 30 epochs.
 
+\subsection{Automatic Error Correction}
+Cell boundaries are rated by our first classifier as correct ($p=.0$) or split errors ($p=1.0$) using the direct CNN probability score. A greedy algorithm then merges neighboring labels sequentially, starting with the highest probability scores and then declining. Following each merge, neighboring boundaries are then re-evaluated. Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$).
 
+Our second classifier identifies merge errors by using the inverse score of the trained network for split error detection. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. Experiments have shown that this performs slightly better than using a gradient image. Further, we dilate the label by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels which then match the boundary of the cell, we perform erosion by a fixed amount ($e=5$).
 
-\begin{table}
-\begin{tabular}{ll}
-\toprule
-Parameter & Value \\
-\midrule
-one & \\
-two & \\
-three & \\
-\bottomrule
-\end{tabular}
-\caption{This is a table of parameters. This is not very interesting, but it's easier to read than in the body text and putting everything together helps the reader quickly assess.}
-\end{table}
+\DaH{some formula?}
+
+\begin{figure}[t]
+\centering
+\includegraphics[scale=.22]{gfx/mergeerror.pdf}
+\caption{Merge error detection and correction using our classifier: Possible boundaries are generated and rated as split errors using the proposed CNN. The lowest rated boundary which has the lowest split error score, is the most likely the correct boundary.}
+\label{fig:merge_error}
+\end{figure}
+%
+%\begin{table}
+%\begin{tabular}{ll}
+%\toprule
+%Parameter & Value \\
+%\midrule
+%one & \\
+%two & \\
+%three & \\
+%\bottomrule
+%\end{tabular}
+%\caption{This is a table of parameters. This is not very interesting, but it's easier to read than in the body text and putting everything together helps the reader quickly assess.}
+%\end{table}

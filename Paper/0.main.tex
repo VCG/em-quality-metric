@@ -25,7 +25,7 @@
 %
 \begin{document}
 %
-\title{Suggesting Segmentation Errors for Semi-automatic Connectomics EM Proofreading}
+\title{Suggesting Segmentation Errors and Corrections for Proofreading in Connectomics}
 %
 \titlerunning{Learning Split and Merge Errors}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
@@ -46,7 +46,7 @@
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Automatic cell image segmentation methods can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid manual correction of these errors, we develop two fast classifiers which are able to suggest candidate errors and corrections to the user. These classifiers are informed by training a convolutional neural network with known errors in automatic segmentations by comparison to expert-labeled ground truth. Our network architecture is able to determine potential erroneous regions by considering a wider uncertainty region around an edge. In application, proofreading of mouse cortex electron microscopy image segmentations for connectomics is improved \JT{whatever result we have here}.
+Automatic cell image segmentation methods can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid manual correction of these errors, we develop two classifiers which are able to suggest candidate errors and corrections to the user. These classifiers are informed by training a convolutional neural network with known errors in automatic segmentations by comparison to expert-labeled ground truth. Our network architecture is able to detect erroneous regions by considering a large context region around a segmentation boundary. In application, proofreading of mouse cortex electron microscopy image segmentations for connectomics is improved \JT{whatever result we have here}.
 \keywords{Segmentation, convolutional neural networks, connectomics.}
 \end{abstract}
 %

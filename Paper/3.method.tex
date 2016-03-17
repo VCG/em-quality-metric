@@ -56,19 +56,22 @@ To train the network, we use a mouse cortex data set ($1024\times1024\times75$ v
 %#   validation data: 7464 correct splits + 7464 split errors
 %#   test data: 5748 correct splits + 5748 split errors
 
-To generate training data, we identify correct regions and split errors in the automatic segmentation by intersecting with the ground truth regions. From these regions we sample 79,828 correct regions and 79,828 split error patches.
+To generate training data, we identify correct regions and split errors in the automatic segmentation by intersecting with the ground truth regions. From these regions, we sample 79,828 correct regions and 79,828 split error patches.
 
 We train our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13\times13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano, and trained on a Tesla K40m graphics card. 
 
 \JT{Where do we talk about the additional input of the focused boundary region?}
 
+\subsection{Split Error Discovery and Correction}
 
-\subsection{Automatic Error Correction}
-Cell boundaries are rated by our split error classifier as a genuine split ($p=0$) or as a split errors ($p=1$) using the direct CNN probability score. \JT{Don't we sample along each edge at multiple points?}
+Cell boundaries are rated by our split error classifier as a genuine split ($p=0$) or as a split errors ($p=1$) using the direct CNN probability score. \JT{Don't we sample along each edge at multiple points? Yes; James knows how this works now.}
 
 A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability score. Following each merge, neighboring boundaries are re-evaluated for split errors. \VKF{Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$) not sure what to do with this, I think this is from the test data? Do we need this still? At the moment it sounds weird}.
 
-Our second classifier identifies merge errors by using the inverse score of the trained network for split error detection. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. \VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the label by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels which then match the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
+
+\subsection{Merge Error Discovery and Correction}
+
+With the intuition that merge errors are caused by the failure to correctly detect a boundary, we can use the inverse probability of the network trained for split errors to help discover merge errors. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. \VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the region segmentation by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels that then overlap the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
 
 %
 %\begin{table}

@@ -1,8 +1,13 @@
 \section{Method}
 %Paragraph one: Overview of the method. What are the high level steps taken to build the system? What are the key techniques used within the system?
-We build a split error classifier using a convolutional neural network (CNN) to check the boundaries of an existing automatic segmentation. For each boundary, our classifier provides a probability that points sampled along the boundary caused a split error. These samples are then averaged into a final edge score. Correcting a split error is as simple as merging the two bordering labels, either automatically based on a score threshold, or through highlighting that alerts a user to the likely error boundary.
+We build a split error classifier using a convolutional neural network (CNN) to check the boundaries of an existing automatic segmentation. For each boundary, the CNN provides a probability that points sampled along the boundary caused a split error. For each boundary, we sample up to 10 decision points, where the decision points are spread evenly over the boundary length, so long as their context windows do not overlap. These probabilities are then weighted by the length of the boundary within the context over the total boundary length, and averaged. A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability score. Following each merge, neighboring boundaries are re-evaluated for split errors. Correcting a split error is as simple as merging the two bordering labels, either automatically based on a score threshold, or through highlighting that alerts a user to the likely error boundary.
 
 Identification and correction of merge errors is slower and more challenging, because we must look inside segmentation regions for missing or incomplete boundaries and then propose the correct boundary. However, we can reuse the same trained CNN for this task. For each segmentation label, we generate 30 potential boundaries through the region by placing watershed seed points at opposite sides of the label boundary and generating the corresponding split. Then, we check to see whether any potential edge is classified as a split error as before. If the CNN detects a boundary with a very low split error score, then the boundary should have been in the segmentation and the region is a candidate for a merge error.\JT{Candidate for figure - this potential boundary generation is a bit tricky to follow.}\VKF{Maybe put some more candidates into Figure 1 as examples?}
+
+
+
+
+
 
 \begin{figure}[t]
 \centering
@@ -48,7 +53,7 @@ One way to combine these inputs is to treat them as a 3-channel input, so that a
 \subsection{Training}
 To train the network, we use a mouse cortex data set ($1024\times1024\times75$ voxels). The tissue is dense mammalian neuropil from layers 4 and 5 of the S1 primary somatosensory cortex of a healthy mouse. The resolution of our data set is $6\, nm$ per pixel, and the section thickness is $30\, nm$. 
 %\VKF{For the initial automatic segmentation, we train an existing pipeline on a similar data set}. 
-A manually-labeled expert segmentation was available as a ground truth for the entire data set \JT{citation? URL?} \VKF{I have also published with private data so its ok if we make it available with the paper instead of citing the data source here I think}. We use the first 65 sections of the data for training, the next 5 for validation, and the last 5 for testing.
+A manually-labeled expert segmentation was available as a ground truth for the entire data set. We use the first 65 sections of the data for training, the next 5 for validation, and the last 5 for testing.
 %#   Training data:
 %#   Patch size: (75,75)
 %#   79828 correct splits
@@ -60,20 +65,18 @@ A manually-labeled expert segmentation was available as a ground truth for the e
 
 To generate training data, we identify correct regions and split errors in the automatic segmentation by intersecting with the ground truth regions. From these regions, we sample 79,828 correct regions and 79,828 split error patches.
 
-We train our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13\times13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano \VKF{If we have the space by any chance in the end it would be nice to cite the theano paper, I put into the references, Bastien-Theano-2012}, and trained on a Tesla K40m graphics card. 
+We train our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13\times13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano \cite{Bastien-Theano-2012}, and trained on a Tesla K40m graphics card. 
 
 \JT{Where do we talk about the additional input of the focused boundary region?}
 
-\subsection{Split Error Discovery and Correction}
+%\subsection{Error Discovery and Correction}
 
-Cell boundaries are rated by our split error classifier as a genuine split ($p=0$) or as a split errors ($p=1$) using the direct CNN probability score. \JT{Don't we sample along each edge at multiple points? Yes; James knows how this works now.}
+%\VKF{Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$) not sure what to do with this, I think this is from the test data? Do we need this still? At the moment it sounds weird}.
+%\subsection{Merge Error Discovery and Correction}
 
-A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability score. Following each merge, neighboring boundaries are re-evaluated for split errors. \VKF{Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$) not sure what to do with this, I think this is from the test data? Do we need this still? At the moment it sounds weird}.
+%With the intuition that merge errors are caused by the failure to correctly detect a boundary, we can use the inverse probability of the split error classifier to help discover merge errors. For each segmentation region, we generate 30 possible splits across the region using watersheds seeded from the region boundary (Fig.~\ref{fig:merge_error}). Then, each candidate split is tested using our split error classifier. If the candidate split is 
 
-
-\subsection{Merge Error Discovery and Correction}
-
-With the intuition that merge errors are caused by the failure to correctly detect a boundary, we can use the inverse probability of the network trained for split errors to help discover merge errors. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. \VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the region segmentation by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels that then overlap the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
+%\VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the region segmentation by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels that then overlap the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
 
 %
 %\begin{table}

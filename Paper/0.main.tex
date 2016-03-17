@@ -25,7 +25,7 @@
 %
 \begin{document}
 %
-\title{Discovering Segmentation Errors and Corrections for Proofreading in Connectomics}
+\title{Recommending Segmentation Errors and Corrections for Proofreading in Connectomics}
 %
 \titlerunning{Discovering Segmentation Errors and Corrections}  % abbreviated title (for running head)
 %                                     also used for the TOC unless
@@ -46,9 +46,7 @@
 \maketitle              % typeset the title of the contribution
 
 \begin{abstract}
-Automatic cell image segmentation methods in connectomics can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid error correction, we develop two classifiers that are able to discover candidate errors and their corrections, either for automatic fixing or as suggestions to guide the user. These classifiers are informed by training a convolutional neural network with known errors from an automatic segmentation. 
-%by comparison to expert-labeled ground truth. 
-Our network architecture is able to detect erroneous regions by considering a large context region around a segmentation boundary. Proofreading of mouse cortex electron microscopy image segmentations is improved by reducing VI scores from 0.59 to 0.49, with further potential gains in user-in-the-loop simulations.
+Automatic cell image segmentation methods in connectomics can lead to \emph{split} and \emph{merge} errors, which require correction through proofreading. To aid error correction, we develop two classifiers that are able to recommend candidate errors and their corrections, either for automatic fixing or as suggestions to guide the user. These classifiers are informed by training a convolutional neural network with known errors in automatic segmentations by comparison to expert-labeled ground truth. Our network architecture is able to detect erroneous regions by considering a large context region around a segmentation boundary. Proofreading of mouse cortex electron microscopy image segmentations is improved by reducing VI scores from 0.59\JT{update} to 0.49\JT{update}, with further potential gains in user-in-the-loop simulations.
 \keywords{Segmentation, convolutional neural networks, connectomics.}
 \end{abstract}
 %

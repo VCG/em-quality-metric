@@ -65,12 +65,6 @@ Cell boundaries are rated by our first classifier as correct ($p=0$) or split er
 
 Our second classifier identifies merge errors by using the inverse score of the trained network for split error detection. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. \VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the label by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels which then match the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
 
-\begin{figure}[t]
-\centering
-\includegraphics[scale=.22]{gfx/mergeerror.pdf}
-\caption{Merge error detection and correction using our classifier: Possible boundaries are generated and rated as split errors using the proposed CNN. The lowest rated boundary which has the lowest split error score, is the most likely the correct boundary.}
-\label{fig:merge_error}
-\end{figure}
 %
 %\begin{table}
 %\begin{tabular}{ll}

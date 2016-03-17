@@ -19,17 +19,16 @@ One classic way to combine these inputs is to treat them as a 3-channel input, s
 
 Another change is in the pooling layer itself. Bogovic et al.~\cite{BogovicHJ13} designed an unsupervised learning approach for agglomerative clustering of oversegmentations, using dynamic pooling of features extracted around objects and boundaries to increase performance. Inspired by their call for a supervised learning equivalent, we integrate a pooling layer into our CNN which is similar in spirit to their unsupervised approach. Instead of conventional max- or avg-pooling where a sliding window is equally applied to the whole output of the convolutional layer, our dynamic pooling only averages outputs within a region of interest. We implemented both pooling methods and compared them \VKF{reference to result table}.
 
-\JT{Up to here.}
 \begin{figure}[t]
  \centering
     \subfloat[CNN Layers\label{fig:layers}]{%
-      \includegraphics[width=0.55\textwidth]{gfx/layers.pdf}
+      \includegraphics[width=0.55\textwidth]{gfx/layers_jt.png}
     }
     \hfill
     \subfloat[Network configurations\label{fig:networks}]{%
       \includegraphics[width=0.4\textwidth]{gfx/networks.pdf}
     }
-	\caption{a) Our proposed network architecture with up to four input channels. Each input channel involves two convolutional and two pooling layers with optional dynamic pooling using a binary mask as described by Bogovic et al \cite{viren}. b) We trained five different network configurations with three and four inputs: A) image, probability and merged binary mask, B) extended with a small border mask, C) extended with a large border mask and D)+E) using a single label binary mask instead of the merged one with the small and large border mask.}
+	\caption{a) Our proposed network architecture with up to four input channels. Each input channel involves two convolutional and two pooling layers, where the first is a dynamic pooling layer inspired by Bogovic et al.~\cite{BogovicHJ13}. b) We trained five different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask, B) extended with a small border mask, C) extended with a large border mask and D)+E) using a single label binary mask instead of the merged one with the small and large border mask.}
 \end{figure}
 %  
 %    \begin{subfig}[b]{0.5\textwidth}
@@ -45,10 +44,8 @@ Another change is in the pooling layer itself. Bogovic et al.~\cite{BogovicHJ13}
 %\missingfigure{Network architecture figure}
 
 
-
 \subsection{Training}
-
-To train the network, we used a dataset of a mouse cortex (1024x1024x75 pixels). The tissue is dense mammalian neuropil from layers 4 and 5 of the S1 primary somatosensory cortex of a healthy mouse. The resolution of our data set is 6nm/pixel and the section thickness is 30nm. We trained an automatic segmentation pipeline on a similar dataset and used it to segment the data \cite{rhoana}. Manually labeled expert segmentation was available as a ground truth for the entire dataset. We used the first 65 sections of the data for training, the next 5 for validation and the last 5 for testing.
+To train the network, we use a mouse cortex data set (1024x1024x75 pixels). The tissue is dense mammalian neuropil from layers 4 and 5 of the S1 primary somatosensory cortex of a healthy mouse. The resolution of our data set is $6nm$ per pixel, and the section thickness is $30nm$. For the initial automatic segmentation, we train an existing pipeline on a similar data set \cite{kaynig2015large}. Manually-labeled expert segmentation was available as a ground truth for the entire data set \JT{citation? URL?}. We use the first 65 sections of the data for training, the next 5 for validation, and the last 5 for testing.
 %#   Training data:
 %#   Patch size: (75,75)
 %#   79828 correct splits
@@ -57,7 +54,9 @@ To train the network, we used a dataset of a mouse cortex (1024x1024x75 pixels).
 %
 %#   validation data: 7464 correct splits + 7464 split errors
 %#   test data: 5748 correct splits + 5748 split errors
-First, we generated patches using the ground truth and simulated split errors via watershed. This approach did not work since the ground truth labeling did not include extra=cellular structures and applying the classifier to the dense segmentation output of our pipeline failed. Therefor, we performed maximum overlap between the ground truth and our automatic segmentation output. The difference in borders in our automatic segmentation and the maximum overlap segmentation were our errors. We generated 79828 correct splits and 79828 split error patches using this method.
+
+\JT{Up to here.}
+First, we generated patches using the ground truth and simulated split errors via watershed. This approach did not work since the ground truth labeling did not include extra=cellular structures and applying the classifier to the dense segmentation output of our pipeline failed. Therefore, we performed maximum overlap between the ground truth and our automatic segmentation output. The difference in borders in our automatic segmentation and the maximum overlap segmentation were our errors. We generated 79828 correct splits and 79828 split error patches using this method.
 
 After a grid exploration of parameters for filter size, number of filters, batch size, learning rate and momentum, we found the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13x13$ and number of filters $fn=16$. We configured the network using Theano/Lasagne and ran the training on a Tesla K40m graphics hardware. We stopped once the training loss did not decrease anymore for 30 epochs.
 

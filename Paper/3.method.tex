@@ -56,16 +56,14 @@ To train the network, we use a mouse cortex data set (1024x1024x75 pixels). The 
 %#   test data: 5748 correct splits + 5748 split errors
 
 \JT{Up to here.}
-To generate training data, we performed maximum overlap between the ground truth and our automatic segmentation output. The difference in borders in our automatic segmentation and the maximum overlap segmentation  our errors. We generated 79828 correct splits and 79828 split error patches using this method.
+To generate training data, identify correct regions and split errors in the automatic segmentation by comparing the overlap with the ground truth regions. From these regions we sample 79828 correct regions and 79828 split error patches.
 
-We trained our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13x13$ and number of filters $fn=16$. We configured the network using Theano/Lasagne and ran the training on a Tesla K40m graphics hardware. We stopped once the validation loss did not decrease for 30 epochs.
+We train our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13x13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano, and trained on a Tesla K40m graphics card. 
 
 \subsection{Automatic Error Correction}
-Cell boundaries are rated by our first classifier as correct ($p=.0$) or split errors ($p=1.0$) using the direct CNN probability score. A greedy algorithm then merges neighboring labels sequentially, starting with the highest probability scores and then declining. Following each merge, neighboring boundaries are then re-evaluated. Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$).
+Cell boundaries are rated by our first classifier as correct ($p=0$) or split errors ($p=1$) using the direct CNN probability score. A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability scores. Following each merge, neighboring boundaries need to be re-evaluated. \VKF{Our experiments have shown that the best average probability threshold to stop this process is in the range ($p_t=.7-1.0$) not sure what to do with this, I think this is from the test data? Do we need this still? At the moment it sounds weird}.
 
-Our second classifier identifies merge errors by using the inverse score of the trained network for split error detection. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. Experiments have shown that this performs slightly better than using a gradient image. Further, we dilate the label by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels which then match the boundary of the cell, we perform erosion by a fixed amount ($e=5$).
-
-\DaH{some formula?}
+Our second classifier identifies merge errors by using the inverse score of the trained network for split error detection. For this, we generate many possible splits in a given label using randomly seeded watershed on the inverted grayscale EM image as shown in figure \ref{fig:merge_error}. \VKF{Do we need this? If it stays we should not just hope. I think it can go if we publish the code. Further, we dilate the label by a fixed amount ($d=20$) prior to running watershed, hoping that one of the generated split edges clings to the boundary of the cell and then follows the correct splitting edge. To remove pixels which then match the boundary of the cell, we perform erosion by a fixed amount ($e=5$).} 
 
 \begin{figure}[t]
 \centering

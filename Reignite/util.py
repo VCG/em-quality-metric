@@ -274,7 +274,16 @@ class Util(object):
     prob_new[:,bbox[0]:bbox[1], bbox[2]:bbox[3]] = input_prob[:,bbox[0]:bbox[1], bbox[2]:bbox[3]]
     prob_new = prob_new[:, bbox_larger[0]:bbox_larger[1], bbox_larger[2]:bbox_larger[3]]
 
-    return input_image.astype(np.uint8), prob_new.astype(np.uint8), input_gold.astype(np.uint32), input_rhoana.astype(np.uint32)
+
+
+    for i in range(0,10):
+      zeros_gold = Util.threshold(input_gold[i], 0)
+      input_gold[i] = Util.normalize_labels(skimage.measure.label(input_gold[i]).astype(np.uint64))[0]
+      # restore zeros
+      input_gold[i][zeros_gold==1] = 0
+      input_rhoana[i] = Util.normalize_labels(skimage.measure.label(input_rhoana[i]).astype(np.uint64))[0]
+
+    return input_image.astype(np.uint8), prob_new.astype(np.uint8), input_gold.astype(np.uint32), input_rhoana.astype(np.uint32), bbox_larger
 
 
   @staticmethod
@@ -693,9 +702,10 @@ class Util(object):
           if seg_objects > 1:
               merge_count += seg_objects - 1
 
-      print "{0} 2D Split or {1} 3D Split and {2} 3D Merge operations required.".format(split_count_2d, split_count_3d, merge_count)
+      # print "{0} 2D Split or {1} 3D Split and {2} 3D Merge operations required.".format(split_count_2d, split_count_3d, merge_count)
 
-      return (split_count_2d, split_count_3d, merge_count)    
+      # return (split_count_2d, split_count_3d, merge_count)    
+      return split_count_2d+merge_count
 
 
 

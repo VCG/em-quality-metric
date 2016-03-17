@@ -41,7 +41,9 @@ class Experiment(object):
     global_ris = []
     global_vis = []
     global_vi_diffs = []
+    global_ed_diffs = []
     global_surenesses = []
+    global_ed_surenesses = []
     global_merge_pairs = []
     global_ugly_segmentations = []
     global_best_indices = []
@@ -91,7 +93,7 @@ class Experiment(object):
       #
       # now run the fixer
       #
-      vi_s, merge_pairs, surenesses = Fixer.splits(cnn, 
+      vi_s, ed_s, merge_pairs, surenesses = Fixer.splits(cnn, 
                                                    input_image,
                                                    input_prob,
                                                    ugly_segmentation,
@@ -104,13 +106,22 @@ class Experiment(object):
       best_vi = vi_s[best_index]
       best_sureness = surenesses[best_index]
 
+      best_ed_index = ed_s.index(np.min(ed_s))
+      best_ed = ed_s[best_ed]
+      best_sureness_ed = surenesses[best_ed]
+
       vi_diff = before_vi - best_vi
+      ed_diff = before_ed - best_ed
 
       global_vis.append(best_vi)
       global_vi_diffs.append(vi_diff)
       global_surenesses.append(best_sureness)
       global_merge_pairs.append(merge_pairs)
       global_best_indices.append(best_index)
+
+      global_eds.append(best_ed)
+      global_ed_diffs.append(ed_diff)
+      global_surenesses_ed.append(best_sureness_ed)      
 
     #
     # now all done
@@ -125,7 +136,16 @@ class Experiment(object):
     print 'Surenesses:'
     Util.stats(global_surenesses)
 
-    return global_vis, global_vi_diffs, global_surenesses, global_merge_pairs, global_best_indices, global_ugly_segmentations
+    print 'ED:'
+    Util.stats(global_eds)    
+
+    print 'ED before-after:'
+    Util.stats(global_ed_diffs)    
+
+    print 'ED Surenesses:'
+    Util.stats(global_surenesses_ed)    
+
+    return global_vis, global_vi_diffs, global_surenesses, global_eds, global_ed_diffs, global_surenesses_ed, global_merge_pairs, global_best_indices, global_ugly_segmentations
 
 
 

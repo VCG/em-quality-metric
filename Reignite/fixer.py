@@ -2,13 +2,199 @@ import time
 import mahotas as mh
 import numpy as np
 import skimage.measure
-
+import random
 
 from patch import Patch
 from util import Util
 
 class Fixer(object):
 
+  @staticmethod
+  def splits_user_simulated(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), error_rate=0, sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
+    '''
+    '''
+    t0 = time.time()
+    patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling, max=max)
+    if verbose:
+      print len(patches), 'generated in', time.time()-t0, 'seconds.'
+
+    t0 = time.time()
+    grouped_patches = Patch.group(patches)
+    if verbose:
+      print 'Grouped into', len(grouped_patches.keys()), 'patches in', time.time()-t0, 'seconds.'
+
+
+    hist = Util.get_histogram(segmentation.astype(np.float))
+    labels = len(hist)
+
+    # create Matrix
+    M = np.zeros((labels, labels), dtype=np.float)
+    # .. and initialize with -1
+    M[:,:] = -1
+
+
+
+
+    for l_n in grouped_patches.keys():
+
+      l = int(l_n.split('-')[0])
+      n = int(l_n.split('-')[1])
+
+      # test this patch group for l and n
+      prediction = Patch.test_and_unify(grouped_patches[l_n], cnn)
+
+      # fill value into matrix
+      M[l,n] = prediction
+      M[n,l] = prediction
+      
+
+    #
+    # NOW the matrix is filled and we can start merging
+    #
+
+    print 'Start M', len(np.where(M!=-1)[0])
+
+    # sureness_threshold = 0.
+    matrix = np.array(M)
+    segmentation_copy = np.array(segmentation)
+
+
+    before_vi = Util.vi(segmentation_copy, groundtruth)
+
+    # we keep track of the following values
+    vi_s = []
+    ed_s = []
+    merge_pairs = []
+    surenesses = []
+
+    last_vi = before_vi
+
+    good_fix_counter = 0
+    bad_fix_counter = 0
+
+    # now the loop
+    t0 = time.time()
+    while (matrix.max() >= sureness_threshold):
+        
+        sureness = matrix.max()
+        
+        largest_indices = np.where(matrix==sureness)
+
+
+        picked = 0
+        l,n = largest_indices[0][picked], largest_indices[1][picked]
+        
+
+        # print 'M', len(np.where(np.logical_and(matrix!=-1, matrix!=-2))[0])
+
+
+
+
+        before_segmentation_copy = np.array(segmentation_copy)
+        segmentation_copy[segmentation_copy == n] = l
+
+
+        
+ 
+      
+        after_merge_vi = Util.vi(segmentation_copy, groundtruth)
+        # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
+        
+        pxlsize = len(np.where(before_segmentation_copy == l)[0])
+        pxlsize2 = len(np.where(before_segmentation_copy == n)[0])
+
+
+        good_fix = False
+        # print '-'*80
+        # print 'vi diff', last_vi-after_merge_vi
+        if after_merge_vi < last_vi:
+          #
+          # this is a good fix
+          #
+          good_fix = True
+          good_fix_counter += 1
+          # Util.view_labels(before_segmentation_copy,[l,n], crop=False)
+          # print 'good fix'
+          # print 'size first label:', pxlsize
+          # print 'size second label:',pxlsize2          
+        else:
+          #
+          # this is a bad fix
+          #
+          good_fix = False
+          bad_fix_counter += 1
+          # print 'bad fix, excluding it..'
+          # print 'size first label:', pxlsize
+          # print 'size second label:',pxlsize2
+
+        #
+        #
+        # ERROR RATE
+        #
+        rnd = random.random()
+        if rnd < error_rate:
+          # no matter what, this is a user error
+          good_fix = not good_fix
+          print 'user err'
+
+        matrix[l,n] = -2
+        matrix[n,l] = -2
+
+        if good_fix:
+          #
+          # PERFORM THE MERGE
+          #
+          #
+
+          # reset all l,n entries
+          matrix[l,:] = -2
+          matrix[:,l] = -2
+          matrix[n,:] = -2
+          matrix[:,n] = -2
+
+          vi_s.append(after_merge_vi)
+          surenesses.append(sureness)
+
+          merge_pairs.append((l,n))
+          
+          # grab new neighbors of l
+          l_neighbors = Util.grab_neighbors(segmentation_copy, l)
+
+          for l_neighbor in l_neighbors:
+              # recalculate new neighbors of l
+              
+              if l_neighbor == 0:
+                  # ignore neighbor zero
+                  continue
+          
+              prediction = Patch.grab_group_test_and_unify(cnn, image, prob, segmentation_copy, l, l_neighbor, oversampling=oversampling)
+          
+              matrix[l,l_neighbor] = prediction
+              matrix[l_neighbor,l] = prediction
+
+
+          last_vi = Util.vi(segmentation_copy, groundtruth)
+
+        if not good_fix:
+          #
+          # DO NOT PERFORM THIS MERGE
+          #
+          segmentation_copy = before_segmentation_copy
+
+
+
+    if verbose:
+      print 'Merge loop finished in', time.time()-t0, 'seconds.'
+
+    if groundtruth.shape[0]>1:
+      min_vi_index = vi_s.index(np.min(vi_s))
+      if verbose:
+        print 'Before VI:', before_vi
+        print 'Smallest VI:', vi_s[min_vi_index]
+        print 'Sureness threshold:', surenesses[min_vi_index]
+
+
+    return vi_s, merge_pairs, surenesses, good_fix_counter, bad_fix_counter
 
 
 
@@ -62,6 +248,7 @@ class Fixer(object):
 
     # we keep track of the following values
     vi_s = []
+    ed_s = []
     merge_pairs = []
     surenesses = []
 
@@ -115,6 +302,7 @@ class Fixer(object):
         
         if groundtruth.shape[0]>1:
           after_merge_vi = Util.vi(segmentation_copy, groundtruth)
+          # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
           vi_s.append(after_merge_vi)
 
         merge_pairs.append((l,n))

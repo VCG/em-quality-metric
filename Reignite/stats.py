@@ -1,4 +1,5 @@
 from cnn import CNN
+from dyn_cnn import DynCNN
 from experiment import Experiment
 from util import Util
 from patch import Patch
@@ -19,7 +20,7 @@ import matplotlib.pyplot as plt
 class Stats(object):
 
   @staticmethod
-  def create(cnn_name, patch_path, inputs, trained_gt=True):
+  def create(cnn_name, patch_path, inputs, trained_gt=True, cnn_class=CNN):
 
 
     OUTPUT_PATH = '/Volumes/DATA1/cnn_analysis/'
@@ -44,7 +45,7 @@ class Stats(object):
     MERGE_ITERATIONS = 1
 
     # load CNN
-    NETWORK = CNN(CNN_NAME, PATCH_PATH, CNN_PATCHES)
+    NETWORK = cnn_class(CNN_NAME, PATCH_PATH, CNN_PATCHES)
     # get configuration, epoch, test_loss, test_acc
     EPOCH = NETWORK._epochs
     TEST_LOSS = NETWORK._test_loss
@@ -134,7 +135,10 @@ class Stats(object):
             'global_vi_diffs':global_vi_diffs,
             'global_surenesses':global_surenesses,
             'global_merge_pairs':global_merge_pairs,
-            'global_best_indices':global_best_indices
+            'global_best_indices':global_best_indices,
+            # 'global_eds':global_eds,
+            # 'global_ed_diffs':global_ed_diffs,
+            # 'global_surenesses_ed':global_surenesses_ed,            
         }
         
         with open(REAL_OUTPUT_PATH+os.sep+'splits_'+data+'_results.p', 'wb') as f:

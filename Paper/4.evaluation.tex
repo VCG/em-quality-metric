@@ -1,5 +1,20 @@
 \section{Evaluation}
 
+Recently, Haehn et al. discussed requirements for interactive proofreading software and evaluated three different existing tools on connectomics data \cite{haehn_dojo_2014}. The authors performed a non-expert user study and stated that their software Dojo provides better results than other tools due to a minimalistic user interface and sophisticated 3D volume rendering. We use their findings as baseline for the evaluation of our method and compare \textit{fully automatic proofreading} versus \textit{user-guided proofreading} versus \textit{interactive proofreading}. For comparison, we use the same data as Haehn et al. which is as well as the user generated proofreading results, publicly available. The data is part of the ISBI 2013 challenge dataset (1024x1024x100 pixels) which was acquired using a serial section scanning electron microscope (ssSEM) with a resolution of 6x6x30nm/pixel. Haehn et al. perform their user study on the most representative sub-volume (400x400x10 pixels) in terms of distribution of object size. For optimal comparison, we use exactly the same data.
+
+\textbf{Fully automatic proofreading.} During training, we defined parameters for our split and merge classifiers including thresholds for automatic correction of these. To evaluate automatic proofreading, we use both classifiers in a greedy fashion and choose the split and merge errors with the best scores for automatic correction.
+
+\textbf{User-guided proofreading.} For the evaluation of user-guided proofreading, we simulate user feedback during our automatic correction from above by comparing the resulting segmentation before and after each performed correction. Since users are not perfect, we also introduce an error rate which simulates falsely specified user feedback.
+
+\textbf{Interactive proofreading.} We use the published results from Haehn et al. to compare our results against fully interactive proofreading using their software Dojo. We studied the published results and gain additional insights, e.g. edits per time a user performs on average.
+
+Each method is compared against the available manual segmentation of the data for similarity and is scored using the variation of information (VI) metric. VI is a measure of the distance between two clusterings, closely related to mutual information, but lower being better.
+
+
+
+
+
+
 For evaluation, we 
 
 Merge errors more seldom than split errors

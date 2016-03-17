@@ -11,7 +11,9 @@ Recently, Haehn et al. discussed requirements for interactive proofreading softw
 
 \textbf{User-guided proofreading.} For the evaluation of user-guided proofreading, we simulate user feedback during our automatic correction by comparing the resulting segmentation before and after each performed correction to the ground truth segmentation. Since users are not perfect, we also introduce an error rate which simulates falsely specified user feedback. This error rate defines if we accept a good split or reject it as well as accept a bad split or reject such, based on direct comparison with the ground truth using a scoring metric. Assuming a perfect user with an error rate of 0, the average VI improvement in comparison to the ground truth was \VKF{update $0.11$}.
 
-\textbf{Interactive proofreading.} We use the published results from Haehn et al. to compare our results against fully interactive proofreading using their software Dojo. Since the performance between participants of Haehn's user study shows large differences, we decided to choose the best performing user (VI improvement $.0598$) as well as the average performance among all users (VI improvement $-0.012$) as our baseline.
+\textbf{Interactive proofreading.} We use the published results from Haehn et al. to compare our results against fully interactive proofreading using their software Dojo. In this study, the proofreading time was limited to 30 minutes and participants performed 59 corrections on average (~30 seconds per correction). For our interactive proofreading we assume that  non-experts can perform a correction using our system in 15 seconds, as they only have to accept or reject the suggested solution, instead of drawing correction boundaries for merge errors or clicking on relevant regions for split errors in Dojo. 
+
+Since the performance between participants of Haehn's user study shows large differences, we decided to choose the best performing user (VI improvement $.0598$) as well as the average performance among all users (VI improvement $-0.012$) as our baseline.
 
 \begin{figure}[t]
 \centering

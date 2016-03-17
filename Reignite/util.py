@@ -624,8 +624,13 @@ class Util(object):
     #     return out
 
     if not labels.shape[0]>1:
-      c[segmentation==1] = (00,0,200,130)
-      c[segmentation==2] = (0,150,00,130)
+      # c[segmentation==1] = (00,0,200,130)
+      # c[segmentation==2] = (0,150,00,130)
+      # c[mask!=0] = (0,0,200,130)
+      c[segmentation==1] = (0,150,0,130)
+      c[segmentation==2] = (200,0,000,130)
+      c[segmentation==3] = (100,100,00,130)
+      c[segmentation==4] = (0,0,200,130)      
     if borders.shape[0]>1:
       borders[mh.erode(mh.erode(mh.erode(segmentation)))==0] = 0
       c[borders==borders.max()] = (0,255,0,255)
@@ -633,7 +638,9 @@ class Util(object):
     elif labels.shape[0]>1:
       c[mask!=0] = (0,0,200,130)
       c[labels==1] = (0,150,0,130)
-      c[labels==2] = (0,0,200,130)
+      c[labels==2] = (200,0,000,130)
+      c[labels==3] = (100,100,00,130)
+      c[labels==4] = (0,0,200,130)
     return b,c
 
     # return alpha_composite(Image.fromarray(b, 'RGBA'),Image.fromarray(c, 'RGBA'))

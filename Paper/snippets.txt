@@ -1,0 +1,29 @@
+\begin{figure}[t]
+ \centering
+    \subfloat[CNN Layers\label{fig:layers}]{%
+      \includegraphics[width=0.48\textwidth]{gfx/results_new.pdf}
+    }
+    \hfill
+    \subfloat[Network configurations\label{fig:networks}]{%
+      \includegraphics[width=0.48\textwidth]{gfx/out_er.pdf}
+    }
+  \caption{a) Our proposed network architecture with up to four input channels. Each input channel involves two convolutional and two pooling layers, where the first is a dynamic pooling layer inspired by Bogovic et al.~\cite{BogovicHJ13}. b) We trained five different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask, B) extended with a small border mask, C) extended with a large border mask and D)+E) using a single label binary mask instead of the merged one with the small and large border mask.}
+\end{figure}
+
+
+
+
+
+\begin{table}[t]
+\begin{tabular}{lccc}
+\toprule
+Network & Training Loss & Test Loss & Test Acc. (\%) \\
+\midrule
+Bogovic et al. & 0.385302 & 0.416295 & 81.15 \\
+Bogovic et al. + small border overlap($d=1$) & 0.379833 & 0.384347 & 82.34\\
+Bogovic et al. + large border overlap ($d=5$) &  0.370280 & 0.391911 & 83.02\\
+\bottomrule
+\end{tabular}
+\caption{This is a table of results. It shows the comparison to Jain et al., and the comparison to different variations of these algorithms with the varying overlap regions.}
+\label{tab:spliterrorcorrectionperformance}
+\end{table}

@@ -2,6 +2,19 @@
 \label{sec:evaluation}
 We evaluate our split and merge error detection and correction recommendation in the context of interactive proofreading tools: to direct users to regions with a high probability of error and to suggest corrections (Fig.~\ref{fig:results}). For comparison, we take publicly available mouse cortex data of the same kind as our training data. This data is part of the ISBI 2013 challenge training dataset ($1024\times1024\times100$ voxels) which was acquired using a serial section scanning electron microscope (ssSEM) with a resolution of $6\times6\times30\, nm$ per voxel. We use the available manually-labeled ground truth to score our approach using the variation of information (VI) metric, which is closely related to mutual information. VI is a measure of the distance between two clusterings, where lower VI numbers are better. Since our classifiers are trained on 2D image slices, we perform all evaluations on slices rather than 3D volumes.
 
+\begin{figure}[t]
+\centering
+	%\subfloat[Segmentation test cases\label{fig:results}]{%
+	\includegraphics[scale=.2]{gfx/results_0129AM_latest.pdf}
+	%}
+	%\subfloat[Simulated user VI vs. user error rate\label{fig:simusererrorrate}]{%
+	%\includegraphics[scale=.08]{gfx/results_0129AM_latest.pdf}
+	%}
+%\includegraphics[scale=.1]{gfx/user_error_rate.pdf}
+\caption{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, the average and best users in the Haehn et al.~experiment with Dojo, our simulated user, our simulated user when presented with random recommendations, and finally a fully-automatic correction of recommended errors based on a threshold of acceptance. Lower scores are better.}
+\label{fig:results}
+\end{figure}
+
 \paragraph{Interactive proofreading.}
 Recently, Haehn et al.~discussed requirements for interactive proofreading and evaluated three different tools on connectomics data in a study with naive users~\cite{haehn_dojo_2014}. This study asked users to spend 30 minutes proofreading with the different tools, to correct split and merge errors to improve the automatic segmentation. The best performing tool in their evaluation was Dojo. We use their findings and their user-generated proofreading result data, which they kindly provided, as a baseline for the evaluation of our method.
 %The authors performed a non-expert user study and stated that their software Dojo provides better results than other tools due to a minimalistic user interface and sophisticated 3D volume rendering.
@@ -11,16 +24,10 @@ To compare against Dojo, we simulate a user for proofreading correction. We assu
 
 \paragraph{Random recommendations.} We decided to test a classifier with random performance in comparison to our learned CNN. For split errors, the simulated user is presented with randomly picked boundaries, which they can accept or reject. For merge errors, the simulated user is presented with 5 randomly selected boundaries from the interior of the segmented region. The significantly worse performance of this approach demonstrates that our network is informative to the user.
 
-\paragraph{Automatic correction.} As a comparison, we also perform automatic correction. During training, we define a probability threshold $p_t=0.95$ for automatic split correction based on CNN probability from the test set. Then, for automatic correction, we apply both classifiers to produce lists of split and merge errors sorted by confidence. First, we correct merge errors with $\max(1-p)$, followed by split error correction using $p_t$. The total time for the correcting all errors was 17 minutes on a 3.2 GHz Quad-core Intel Xeon with an NVIDIA GeForce Titan (merge error correction 15min, split error correction 2min). The median VI improvement in comparison to the ground truth was negative, at $-0.0552$ (Fig.~\ref{fig:results}). This is not surprising, as the problem is very challenging, and this motivates the need for human-in-the-loop proofreading tools.
+\paragraph{Automatic correction.} As a comparison, we also perform automatic correction. During training, we define a probability threshold $p_t=0.95$ for automatic split correction based on CNN probability from the test set. Then, for automatic correction, we apply both classifiers to produce lists of split and merge errors sorted by confidence. First, we correct merge errors with $\max(1-p)$, followed by split error correction using $p_t$. The total time for correcting all errors was 17 minutes on a 3.2 GHz Quad-core Intel Xeon with an NVIDIA GeForce Titan (merge error correction 15min, split error correction 2min). The median VI improvement in comparison to the ground truth was negative, at $-0.0552$ (Fig.~\ref{fig:results}). This is not surprising, as the problem is very challenging, and this motivates the need for human-in-the-loop proofreading tools.
 
 
-\begin{figure}[t]
-\centering
-\includegraphics[scale=.2]{gfx/results_0129AM_latest.pdf}
-%\includegraphics[scale=.1]{gfx/user_error_rate.pdf}
-\caption{We compare distributions of VI measures across 10 sections for the initial automatic segmentation, the average and best users in the Haehn et al.~experiment with Dojo, our simulated user, our simulated user when presented with random recommendations, and finally a fully-automatic correction of recommended errors based on a threshold of acceptance. Lower scores are better.}
-\label{fig:results}
-\end{figure}
+
 %
 %
 %\subsection{Split error evaluation}

@@ -6,6 +6,7 @@ We evaluate our split and merge error detection and correction recommendation in
 \centering
 	%\subfloat[Segmentation test cases\label{fig:results}]{%
 	\includegraphics[scale=.2]{gfx/results_0129AM_latest.pdf}
+%	\includegraphics[scale=.10]{gfx/new_er.pdf}
 	%}
 	%\subfloat[Simulated user VI vs. user error rate\label{fig:simusererrorrate}]{%
 	%\includegraphics[scale=.08]{gfx/results_0129AM_latest.pdf}
@@ -13,6 +14,7 @@ We evaluate our split and merge error detection and correction recommendation in
 %\includegraphics[scale=.1]{gfx/user_error_rate.pdf}
 \caption{(a) We compare distributions of VI measures across 10 sections for the initial automatic segmentation, the average and best users in the Haehn et al.~experiment with Dojo, our simulated user, our simulated user when presented with random recommendations, and finally a fully-automatic correction of recommended errors based on a threshold of acceptance. Lower scores are better.}
 \label{fig:results}
+\vspace{-0.4cm}
 \end{figure}
 
 \paragraph{Interactive proofreading.}
@@ -20,7 +22,32 @@ Recently, Haehn et al.~discussed requirements for interactive proofreading and e
 %The authors performed a non-expert user study and stated that their software Dojo provides better results than other tools due to a minimalistic user interface and sophisticated 3D volume rendering.
 %Haehn et al. perform their user study on the most representative sub-volume ($400\times400\times10$ voxels) in terms of distribution of object size. For optimal comparison, we use exactly the same data.
 
-To compare against Dojo, we simulate a user for proofreading correction. We assume that all classification has been computed ahead of time, and that the user is presented with a stream of error corrections to assess. The assessment is simulated by comparing the VI before and after each performed correction. Corrections are accepted only when VI reduces, and we test this across different user error rates (Fig.~\ref{fig:results}). In Haehn et al., the proofreading time was limited to 30 minutes, and human participants performed 59 corrections on average ($\approx30$ seconds per correction). In our scenario, users do not need to visually find errors and manually correct them, and so instead we assume each correction assessment takes 15 seconds (120 assessments in 30 minutes). Split errors are likely to take less time than this; however, merge errors are harder to assess, as the user must select between the top 5 candidate boundaries. Since the performance between human participants of Haehn et al.'s user study shows large variation, we present both the best performing user (VI improvement: $0.0102$) and the average performance among all users (VI improvement: $-0.0582$) as our baseline. For our simulated user, the VI improvement is $0.0502$ (Fig.~\ref{fig:results}).
+To compare against Dojo, we simulate a user for proofreading correction. We assume that all classification has been computed ahead of time, and that the user is presented with a stream of error corrections to assess. The assessment is simulated by comparing the VI before and after each performed correction. Corrections are accepted only when VI reduces, and we test this across different user error rates (Fig.~\ref{fig:results}). In Haehn et al., the proofreading time was limited to 30 minutes, and human participants performed 59 corrections on average ($\approx30$ seconds per correction). In our scenario, users do not need to visually find errors and manually correct them, and so instead we assume each correction assessment takes 15 seconds (120 assessments in 30 minutes). Split errors are likely to take 
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \vspace{-0.95cm}
+  \begin{center}
+    \includegraphics[scale=.1]{gfx/new_er.pdf}
+  \end{center}
+  \vspace{-1cm}
+  \caption{VI vs.~sim.~user error rate.}
+  \vspace{-1.5cm}
+\end{wrapfigure}
+
+\noindent less time than this; however, merge errors are harder to assess, as the user must select between the top 5 candidate boundaries. Since the performance between human participants of Haehn et al.'s user study shows large variation, we present both the best performing user (VI improvement: $0.0102$) and the average performance among all users (VI improvement: $-0.0582$) as our baseline. For our simulated user, the VI improvement is $0.0502$ (Fig.~\ref{fig:results}).
+
+%, and we test this across different user error rates
+
+
+
+
+
+%\begin{figure}{h}
+%\centering
+%    \includegraphics[scale=.05]{gfx/new_er.pdf}
+%  \caption{VI vs.~sim.~user error rate.}
+%  \vspace{-0.25cm}
+%\end{figure}
 
 \paragraph{Random recommendations.} We decided to test a classifier with random performance in comparison to our learned CNN. For split errors, the simulated user is presented with randomly picked boundaries, which they can accept or reject. For merge errors, the simulated user is presented with 5 randomly selected boundaries from the interior of the segmented region. The significantly worse performance of this approach demonstrates that our network is informative to the user.
 

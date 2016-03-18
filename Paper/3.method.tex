@@ -1,20 +1,21 @@
 \begin{figure}[t]
  \centering
     \subfloat[CNN Layers\label{fig:layers}]{%
-      \includegraphics[width=0.55\textwidth]{gfx/cnn_new/cnn/network_2.png}
+      \includegraphics[width=0.5\textwidth]{gfx/cnn_new/cnn/network_2.png}
     }
     \hfill
     \subfloat[Network configurations\label{fig:networks}]{%
-      \includegraphics[width=0.41\textwidth]{gfx/cnn_new/cnn/cnn/network_inputs_2.png}
+      \includegraphics[width=0.39\textwidth]{gfx/cnn_new/cnn/cnn/network_inputs_2.png}
     }
 	\caption{(a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. (b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.}
+	\vspace{-0.4cm}
 \end{figure}
 
 \section{Method}
 %Paragraph one: Overview of the method. What are the high level steps taken to build the system? What are the key techniques used within the system?
 We build a split error classifier using a convolutional neural network (CNN) to check the boundaries of an existing automatic segmentation. For each boundary, the CNN provides a probability that points sampled along the boundary caused a split error. For each boundary, we sample up to 10 decision points, where the decision points are spread evenly over the boundary length, so long as their context windows do not overlap. These probabilities are then weighted by the length of the boundary within the context over the total boundary length, and averaged. A greedy algorithm then merges neighboring regions sequentially, starting with the highest probability score. Following each merge, neighboring boundaries are re-evaluated for split errors. Correcting a split error is as simple as merging the two bordering labels.
 
-Identification and correction of merge errors is slower and more challenging, because we must look inside segmentation regions for missing or incomplete boundaries and then propose the correct boundary. However, we can reuse the same trained CNN for this task. For each segmentation label, we generate 30 potential boundaries through the region by placing watershed seed points at opposite sides of the label boundary and generating the corresponding split. Then, we check to see whether any potential edge is classified as a split error as before. If the CNN detects a boundary with a very low split error score, then the boundary should have been in the segmentation and the region is a candidate for a merge error.
+Identification and correction of merge errors is more challenging, because we must look inside segmentation regions for missing or incomplete boundaries and then propose the correct boundary. However, we can reuse the same trained CNN for this task. For each segmentation label, we generate 30 potential boundaries through the region by placing watershed seed points at opposite sides of the label boundary and generating the corresponding split. Then, we check to see whether any potential edge is classified as a split error. If the CNN detects a boundary with a very low split error score, then the boundary should have been in the segmentation and the region is a candidate for a merge error.
 %\JT{Candidate for figure - this potential boundary generation is a bit tricky to follow.}\VKF{Maybe put some more candidates into Figure 1 as examples?}
 
 

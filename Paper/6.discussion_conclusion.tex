@@ -1,6 +1,14 @@
 \section{Discussion and Conclusion}
 
-Manual proofreading of automatic cell boundary labeling is a very time-consuming and error-prone task. Currently it is a significant bottleneck in the analysis of large data sets in connectomics. In this paper we propose a combination of machine learning and minimal user guidance to perform segmentation corrections. Our results show that this combination makes it possible to enhance the performance as well as to decrease the required time to perform segmentation corrections. We would like to encourage testing of our proposed architecture on more data and provide the developed software and trained networks free and open source at (link omitted for review).%\footnote{The implementation, trained networks and supplementary material are available at \url{http://rhoana.org/cnnproofreading}}.
+Manual proofreading of connectomics segmentations is a time consuming and error-prone task, as can be seen from the Dojo human trials: on average, participants actually made the segmentations worse (Fig.~\ref{fig:results}). The underlying automatic cell boundary segmentation task is difficult, and trying to improve segmentations by re-learning correct boundaries through split and error correction is, in principle, no different than trying to improve the underlying 
+
+However, there is possibly value in directing users to assess possible corrections areas
+
+In effect, we have re-learned a confidence measure on boundaries 
+
+\JT{Do the edges we correct come from areas where RhoANA is itself less confident? Have we just re-learned a confidence measure on RhoANA?}
+
+Currently it is a significant bottleneck in the analysis of large data sets in connectomics. In this paper we propose a combination of machine learning and minimal user guidance to perform segmentation corrections. Our results show that this combination makes it possible to enhance the performance as well as to decrease the required time to perform segmentation corrections. We would like to encourage testing of our proposed architecture on more data and provide the developed software and trained networks free and open source at (link omitted for review).%\footnote{The implementation, trained networks and supplementary material are available at \url{http://rhoana.org/cnnproofreading}}.
 
 Although, our system was not able to provide a reliable fully automatic proofreading solution, the interactive results are promising and we believe that our work leads us towards a fully automatic system. 
 

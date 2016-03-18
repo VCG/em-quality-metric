@@ -45,7 +45,7 @@ class Patch(object):
 
     # analyze both borders
     patches_l = Patch.analyze_border(image, prob, binary_l, binary_n, border, l, n, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
-    patches_n = []#Patch.analyze_border(image, prob, binary_n, binary_l, border, n, l, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
+    patches_n = Patch.analyze_border(image, prob, binary_n, binary_l, border, n, l, sample_rate=sample_rate, patch_size=patch_size, oversampling=oversampling, mode=mode)
 
     return patches_l, patches_n
 

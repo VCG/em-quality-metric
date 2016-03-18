@@ -9,6 +9,210 @@ from util import Util
 
 class Fixer(object):
 
+
+  @staticmethod
+  def splits_global(cnn, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), randomize=False, error_rate=0, sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
+
+    bigM = []
+
+    t0 = time.time()
+    for slice in range(volume.shape[0]):
+
+      image = volume[slice]
+      prob = volume_prob[slice]
+      segmentation = volume_segmentation[slice]
+      groundtruth = volume_groundtruth[slice]
+
+      
+      patches = Patch.patchify(image, prob, segmentation, oversampling=oversampling, max=max)
+      if verbose:
+        print len(patches), 'generated in', time.time()-t0, 'seconds.'
+
+      t0 = time.time()
+      grouped_patches = Patch.group(patches)
+      if verbose:
+        print 'Grouped into', len(grouped_patches.keys()), 'patches in', time.time()-t0, 'seconds.'
+
+
+      hist = Util.get_histogram(segmentation.astype(np.float))
+      labels = len(hist)
+
+      # create Matrix
+      M = np.zeros((labels, labels), dtype=np.float)
+      # .. and initialize with -1
+      M[:,:] = -1
+
+
+
+      for l_n in grouped_patches.keys():
+
+        l = int(l_n.split('-')[0])
+        n = int(l_n.split('-')[1])
+
+        # test this patch group for l and n
+        prediction = Patch.test_and_unify(grouped_patches[l_n], cnn)
+
+        # fill value into matrix
+        M[l,n] = prediction
+        M[n,l] = prediction
+
+
+      # now the matrix for this slice is filled
+      bigM.append(M)
+
+
+    bigM = np.array(bigM)
+
+
+    out_volume = np.array(volume_segmentation)
+    # return out_volume
+
+    good_fix_counter = 0
+    bad_fix_counter = 0
+    # error_rate = 0
+
+    for i in range(120):
+
+      # print i
+
+      superMax = -np.inf
+      superL = -1
+      superN = -1
+      superSlice = -1
+
+      #
+      for slice in range(bigM.shape[0]):
+          max_in_slice = bigM[slice].max()
+          largest_indices = np.where(bigM[slice]==max_in_slice)
+          # print largest_indices
+          if max_in_slice > superMax:
+              
+              # found a new large one
+              l,n = largest_indices[0][0], largest_indices[1][0]
+              superSlice = slice
+              superL = l
+              superN = n
+              superMax = max_in_slice
+          
+      if randomize:
+        superMax = .5
+        superSlice = np.random.choice(bigM.shape[0])
+
+        uniqueIDs = np.where(bigM[superSlice] > -3)
+
+        superL = np.random.choice(uniqueIDs[0])
+
+        neighbors = Util.grab_neighbors(volume_segmentation[superSlice], superL)
+        superN = np.random.choice(neighbors)
+
+
+      # print 'merging', superL, superN, 'in slice ', superSlice, 'with', superMax
+
+      image = volume[superSlice]
+      prob = volume_prob[superSlice]
+      # segmentation = volume_segmentation[slice]
+      groundtruth = volume_groundtruth[superSlice]
+
+
+
+      ### now we have a new max
+      slice_with_max_value = np.array(out_volume[superSlice])
+
+      rollback_slice_with_max_value = np.array(slice_with_max_value)
+
+      last_vi = Util.vi(slice_with_max_value, groundtruth)
+
+      # now we merge
+      slice_with_max_value[slice_with_max_value == superN] = superL
+
+
+    
+      after_merge_vi = Util.vi(slice_with_max_value, groundtruth)
+      # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
+      
+      # pxlsize = len(np.where(before_segmentation_copy == l)[0])
+      # pxlsize2 = len(np.where(before_segmentation_copy == n)[0])
+
+
+      good_fix = False
+      # print '-'*80
+      # print 'vi diff', last_vi-after_merge_vi
+      if after_merge_vi < last_vi:
+        #
+        # this is a good fix
+        #
+        good_fix = True
+        good_fix_counter += 1
+        # Util.view_labels(before_segmentation_copy,[l,n], crop=False)
+        # print 'good fix'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2          
+      else:
+        #
+        # this is a bad fix
+        #
+        good_fix = False
+        bad_fix_counter += 1
+        # print 'bad fix, excluding it..'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2
+
+      #
+      #
+      # ERROR RATE
+      #
+      rnd = random.random()
+
+      if rnd < error_rate:
+        # no matter what, this is a user error
+        good_fix = not good_fix
+        print 'user err'
+      
+
+
+
+      # reset all l,n entries
+      bigM[superSlice][superL,superN] = -2
+      bigM[superSlice][superN,superL] = -2
+
+      if good_fix:
+
+
+        # re-calculate neighbors
+        # grab new neighbors of l
+        l_neighbors = Util.grab_neighbors(slice_with_max_value, superL)
+
+        for l_neighbor in l_neighbors:
+          # recalculate new neighbors of l
+
+          if l_neighbor == 0:
+              # ignore neighbor zero
+              continue
+
+          prediction = Patch.grab_group_test_and_unify(cnn, image, prob, slice_with_max_value, superL, l_neighbor, oversampling=oversampling)
+          # print superL, l_neighbor
+          bigM[superSlice][superL,l_neighbor] = prediction
+          bigM[superSlice][l_neighbor,superL] = prediction
+
+      else:
+
+        slice_with_max_value = rollback_slice_with_max_value
+
+
+
+
+      out_volume[superSlice] = slice_with_max_value
+
+    return bigM, out_volume
+
+
+
+
+
+
+
+
+
   @staticmethod
   def splits_user_simulated(cnn, image, prob, segmentation, groundtruth=np.zeros((1,1)), error_rate=0, sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
     '''
@@ -76,6 +280,8 @@ class Fixer(object):
     t0 = time.time()
     while (matrix.max() >= sureness_threshold):
         
+
+
         sureness = matrix.max()
         
         largest_indices = np.where(matrix==sureness)
@@ -181,6 +387,10 @@ class Fixer(object):
           #
           segmentation_copy = before_segmentation_copy
 
+
+        if bad_fix_counter + good_fix_counter == 12:
+          print 'ALL DONE - LIMIT REACHED'
+          break
 
 
     if verbose:

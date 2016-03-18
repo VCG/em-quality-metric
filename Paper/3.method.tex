@@ -7,7 +7,7 @@
     \subfloat[Network configurations\label{fig:networks}]{%
       \includegraphics[width=0.41\textwidth]{gfx/cnn_new/cnn/cnn/network_inputs_2.png}
     }
-	\caption{a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.}
+	\caption{(a) Our network architecture with up to four input channels, each with two convolutional and two pooling layers. (b) We trained three different network configurations with three and four inputs: A) image, boundary map probability, and merged binary mask; B) A configuration extended with a small border mask, to focus on the specific boundary in question; C) A configuration extended with a large border mask.}
 \end{figure}
 
 \section{Method}
@@ -67,11 +67,12 @@ A manually-labeled expert segmentation is available as a ground truth for the en
 %#   validation data: 7464 correct splits + 7464 split errors
 %#   test data: 5748 correct splits + 5748 split errors
 
-We train our network using the following parameters: learning rate $lr=.00001$, momentum $m=.9$, filter size $fs=13\times13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano \cite{Bastien-Theano-2012}, and trained on a Tesla K40m graphics card.
+We train our network using the following parameters: learning rate \mbox{$lr=0.00001$}, momentum $m=0.9$, filter size $fs=13\times13$ and number of filters $fn=16$. We assume that the training has converged if the validation loss does not decrease for 30 epochs. The network is specified using the deep learning libraries Lasagne and Theano \cite{Bastien-Theano-2012}, and trained on a Tesla K40m graphics card.
 
 Table \ref{tab:spliterrorcorrectionperformance} presents training and test loss function scores (cross validation), and test accuracy percent. Based on these performances, we select configuration C to evaluate against human performance in a VI improvement experiment.
 
 \begin{table}[t]
+\caption{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance. We take configuration C to evaluate VI against human performance.}
 \begin{tabular}{l rrr}
 \toprule
 Network & Training loss & \hspace{0.1cm}Test loss & \hspace{0.1cm}Test acc.~(\%) \\
@@ -83,8 +84,8 @@ C. A config. + large border overlap ($d=5$) &  0.3703 & 0.3919 & 83.02\\
 %Bogovic et al. + large border overlap ($d=5$) &  0.370280 & 0.391911 & 83.02\\
 \bottomrule
 \end{tabular}
-\caption{Network design training evaluation. Adding an extra channel containing a binary mask of just the border slightly increases performance. We take configuration C to evaluate VI against human performance.}
 \label{tab:spliterrorcorrectionperformance}
+\vspace{-0.25cm}
 \end{table}
 
 %\subsection{Error Discovery and Correction}

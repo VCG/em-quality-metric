@@ -189,6 +189,7 @@ class CNN(object):
     config = self.load_configuration()
     self._BATCH_SIZE = config['batchsize']
     layers = self.load_network()
+    self._layers = layers
     # image_var = layers['image']['input_layer'].input_var
     # prob_var = layers['prob']['input_layer'].input_var
     # binary1_var = layers['binary1']['input_layer'].input_var

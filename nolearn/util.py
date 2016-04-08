@@ -9,6 +9,7 @@ from scipy import ndimage as nd
 import partition_comparison
 import matplotlib.pyplot as plt
 import skimage.measure
+import time
 from scipy.spatial import distance
 
 
@@ -720,12 +721,14 @@ class Util(object):
 
       PATCH_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/' + PATCH_PATH + '/'
 
+      print 'Loading data..'
+      t0 = time.time()
       #
       #
       # LOAD PATCHES
       #
       #
-      training = np.load(PATCH_PATH+'train.npz')
+      training = np.load(PATCH_PATH+'train.npz', mmap_mode='r')
       training_targets = np.load(PATCH_PATH+'train_targets.npz')
 
       if 'larger_border_overlaps' in training:
@@ -739,14 +742,14 @@ class Util(object):
       training = {
         'image': (training['image'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
         'prob': (training['prob'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'binary': training['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'binary': training['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary1': training['binary1'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary2': training['binary2'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'merged_array': training['merged_array'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_obj': training['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_bnd': training['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'dyn_bnd_dyn_obj': training['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'border_overlap': training['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'larger_border_overlap': training[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])
       }
 
@@ -754,7 +757,7 @@ class Util(object):
 
 
 
-      val = np.load(PATCH_PATH+'val.npz')
+      val = np.load(PATCH_PATH+'val.npz', mmap_mode='r')
       val_targets = np.load(PATCH_PATH+'val_targets.npz')
 
       #
@@ -763,14 +766,14 @@ class Util(object):
       val = {
         'image': (val['image'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
         'prob': (val['prob'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'binary': val['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'binary': val['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary1': val['binary1'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary2': val['binary2'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'merged_array': val['merged_array'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_obj': val['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_bnd': val['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'dyn_bnd_dyn_obj': val['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'border_overlap': val['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'larger_border_overlap': val[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])
       }
 
@@ -778,7 +781,7 @@ class Util(object):
 
 
 
-      test = np.load(PATCH_PATH+'test.npz')
+      test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
       test_targets = np.load(PATCH_PATH+'test_targets.npz')
 
       #
@@ -787,14 +790,14 @@ class Util(object):
       test = {
         'image': (test['image'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
         'prob': (test['prob'].astype(np.double)/255).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'binary': test['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'binary': test['binary'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary1': test['binary1'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'binary2': test['binary2'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'merged_array': test['merged_array'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         # 'dyn_bnd_dyn_obj': test['dyn_bnd_dyn_obj'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
-        'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
+        # 'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1]),
         'larger_border_overlap': test[larger_border_overlap_label].astype(np.uint8).reshape(-1, 1, patch_size[0], patch_size[1])
       }
 
@@ -802,6 +805,8 @@ class Util(object):
 
       #val = np.load(PATCH_PATH+'val.npz')
       #val_targets = np.load(PATCH_PATH+'val_targets.npz')
+
+      print 'Done in ', time.time()-t0, 'seconds.'
 
       return training, training_targets, val, val_targets, test, test_targets
 

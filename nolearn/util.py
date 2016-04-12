@@ -717,6 +717,19 @@ class Util(object):
 
 
   @staticmethod
+  def load(PATCH_PATH, patch_size=(75,75)):
+
+      PATCH_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/' + PATCH_PATH + '/'
+
+      print 'Loading data..'
+      t0 = time.time()
+
+      training = np.load(PATCH_PATH+'train.npz', mmap_mode='r')
+      training_targets = np.load(PATCH_PATH+'train_targets.npz')
+
+      return training, training_targets                
+
+  @staticmethod
   def load_dataset(PATCH_PATH, patch_size = (75,75)):
 
       PATCH_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/' + PATCH_PATH + '/'

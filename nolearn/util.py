@@ -727,7 +727,11 @@ class Util(object):
       training = np.load(PATCH_PATH+'train.npz', mmap_mode='r')
       training_targets = np.load(PATCH_PATH+'train_targets.npz')
 
-      return training, training_targets                
+      test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
+      test_targets = np.load(PATCH_PATH+'test_targets.npz')
+
+      return training, training_targets, test, test_targets      
+    
 
   @staticmethod
   def load_dataset(PATCH_PATH, patch_size = (75,75)):

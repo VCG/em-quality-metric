@@ -719,7 +719,7 @@ class Util(object):
   @staticmethod
   def load(PATCH_PATH, patch_size=(75,75)):
 
-      PATCH_PATH = '/Volumes/DATA1/EMQM_DATA/ac3x75/' + PATCH_PATH + '/'
+      PATCH_PATH = os.path.abspath('~/data') + os.sep + PATCH_PATH + '/'
 
       print 'Loading data..'
       t0 = time.time()

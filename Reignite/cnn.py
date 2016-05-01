@@ -27,10 +27,10 @@ class CNN(object):
     self._PATCH = patches
     self._PATCH_PATH = os.path.join(self._DATA_PATH,self._PATCH+'/')
     self._NETWORK_ID = network_id
-    self._OUTPUT_PATH = '/Volumes/DATA1/split_cnn'
+    self._OUTPUT_PATH = '/home/d/dojo_xp/nets/'#'/Volumes/DATA1/split_cnn'
     if not os.path.isdir(self._OUTPUT_PATH):
       self._OUTPUT_PATH = '/n/regal/pfister_lab/haehn/split_cnn'
-    self._RESULTS_PATH = os.path.join(self._OUTPUT_PATH, self._PATCH, self._NETWORK_ID)
+    self._RESULTS_PATH = os.path.join(self._OUTPUT_PATH, self._NETWORK_ID)#os.path.join(self._OUTPUT_PATH, self._PATCH, self._NETWORK_ID)
     self._BATCH_SIZE = -1
 
 

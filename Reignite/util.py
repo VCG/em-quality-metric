@@ -161,6 +161,8 @@ class Util(object):
     cm_path = '/Volumes/DATA1/ac3x75/mojo/ids/colorMap.hdf5'
     if not os.path.exists(cm_path):
       cm_path = '/n/regal/pfister_lab/haehn/ac3x75/mojo/ids/colorMap.hdf5'
+      cm_path = '/home/d/dojo_xp/data/colorMap.hdf5'
+
 
     cm = Util.load_colormap(cm_path)
     segmentation = cm[segmentation % len(cm)]
@@ -255,11 +257,13 @@ class Util(object):
     input_rhoana = np.zeros((10,1024,1024))
     input_gold = np.zeros((10,1024,1024))
     input_prob = np.zeros((10,1024,1024))
-    input_rhoana = tif.imread('/Users/d/Projects/dojo_data_vis2014/labels_after_automatic_segmentation_multi.tif')
-    input_gold = tif.imread('/Users/d/Projects/dojo_data_vis2014/groundtruth_multi.tif')
+    path_prefix = '/Users/d/Projects/'
+    path_prefix = '/home/d/dojo_xp/data/' # for beast only
+    input_rhoana = tif.imread(path_prefix+'dojo_data_vis2014/labels_after_automatic_segmentation_multi.tif')
+    input_gold = tif.imread(path_prefix+'dojo_data_vis2014/groundtruth_multi.tif')
     for i in range(10):
-        input_prob[i] = tif.imread('/Users/d/Projects/dojo_data_vis2014/prob/'+str(i)+'_syn.tif')
-        input_image[i] = tif.imread('/Users/d/Projects/dojo_data_vis2014/images/'+str(i)+'.tif')
+        input_prob[i] = tif.imread(path_prefix+'dojo_data_vis2014/prob/'+str(i)+'_syn.tif')
+        input_image[i] = tif.imread(path_prefix+'dojo_data_vis2014/images/'+str(i)+'.tif')
         
     bbox = mh.bbox(input_image[0])
     bbox_larger = [bbox[0]-37, bbox[1]+37, bbox[2]-37, bbox[3]+37]

@@ -4,6 +4,7 @@ import numpy as np
 import theano
 import theano.tensor as T
 import glob
+import os
 
 from cnn import *
 from mlp import HiddenLayer, MLP, rectified_linear
@@ -21,14 +22,17 @@ if __name__ == '__main__':
     import mahotas
     import matplotlib.pyplot as plt
     #CPU
-    pathPrefix = '/Users/d/Projects/dojo_data_vis2014/images/'#'/Volumes/DATA1/EMQM_DATA/ac3x75/input/'
-    img_search_string_grayImages = pathPrefix + '*.tif'
+    pathPrefix = '/home/d/data/S1_RDExtendLeft/orig_images/'#'/Users/d/Projects/dojo_data_vis2014/images/'#'/Volumes/DATA1/EMQM_DATA/ac3x75/input/'
+    img_search_string_grayImages = pathPrefix + '*.png'
     img_files = sorted( glob.glob( img_search_string_grayImages ) )
 
     for image_path in img_files:
+
+        if os.path.exists(image_path.replace('.png', '_syn.tif')):
+          continue
         print image_path
         image = mahotas.imread(image_path)
-        imageSize = 1024
+        imageSize = image.shape[0]#1024
         image = image[0:imageSize,0:imageSize]
         
         start_time = time.clock()

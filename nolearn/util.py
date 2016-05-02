@@ -719,7 +719,7 @@ class Util(object):
   @staticmethod
   def load(PATCH_PATH, patch_size=(75,75)):
 
-      PATCH_PATH = os.path.abspath('~/data') + os.sep + PATCH_PATH + '/'
+      PATCH_PATH = os.path.abspath('/home/d/data') + os.sep + PATCH_PATH + '/'
 
       print 'Loading data..'
       t0 = time.time()
@@ -730,7 +730,7 @@ class Util(object):
       test = np.load(PATCH_PATH+'test.npz', mmap_mode='r')
       test_targets = np.load(PATCH_PATH+'test_targets.npz')
 
-      return training, training_targets, test, test_targets      
+      return training, training_targets['targets'], test, test_targets['targets']
     
 
   @staticmethod

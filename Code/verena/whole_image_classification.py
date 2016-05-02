@@ -55,8 +55,8 @@ def basic_convolution(image_shared, filterMap):
 
 
 def get_convolution_output(image_shared, clayer):
-    print image_shared.dtype
-    print clayer.W.dtype
+    #print image_shared.dtype
+    #print clayer.W.dtype
     output = basic_convolution(image_shared, clayer.W)
     return output
 

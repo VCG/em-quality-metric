@@ -1,4 +1,5 @@
 import cPickle as pickle
+import numpy as np
 import os
 
 from util import Util
@@ -6,10 +7,11 @@ from uitools import UITools
 
 class Manager(object):
 
-  def __init__(self):
+  def __init__(self, output_dir):
     '''
     '''
     self._data_path = '/home/d/dojo_xp/data/'
+    self._output_path = os.path.join(self._data_path, 'ui_out', output_dir)
     self._merge_errors = None
 
   def start( self ):
@@ -131,9 +133,22 @@ class Manager(object):
         #
         self._bigM[z][label,:] = -3
         self._bigM[z][:,label] = -3
-        # TODO a better way would be to re-calculate bigM but this takes too much time on the fly
+        
+        # now add the two new labels
+        label1 = new_rhoana.max()
+        label2 = new_rhoana.max()-1
+        new_m = np.zeros((self._bigM[z].shape[0]+2, self._bigM[z].shape[1]+2), dtype=self._bigM[z].dtype)
+        new_m[:,:] = -1
+        new_m[0:-2,0:-2] = self._bigM[z]
 
-        # self.finish()
+        print 'adding', label1, 'to', z
+
+        new_m = UITools.add_new_label_to_M(self._cnn, new_m, input_image[z], input_prob[z], new_rhoana, label1)
+        new_m = UITools.add_new_label_to_M(self._cnn, new_m, input_image[z], input_prob[z], new_rhoana, label2)
+
+        # re-propapage new_m to bigM
+        self._bigM[z] = new_m
+
 
     # remove merge error
     del self._merge_errors[0]
@@ -164,6 +179,7 @@ class Manager(object):
 
     else:
         # we correct this split
+        # print 'fixing slice',z,'labels', labels
         new_m, new_rhoana = UITools.correct_split(self._cnn, m, input_image[z], input_prob[z], input_rhoana[z], labels[0], labels[1], oversampling=False)
         self._bigM[z] = new_m
         self._input_rhoana[z] = new_rhoana
@@ -173,13 +189,16 @@ class Manager(object):
     return 'split'
 
 
-  def finish(self):
+  def store(self):
 
     vi = UITools.VI(self._input_gold, self._input_rhoana)
     print 'New VI', vi[0]
 
+    if not os.path.exists(self._output_path):
+        os.makedirs(self._output_path)
+
     # store our changed rhoana
-    with open(os.path.join(self._data_path, 'ui_results.p'), 'wb') as f:
+    with open(os.path.join(self._output_path, 'ui_results.p'), 'wb') as f:
         pickle.dump(self._input_rhoana, f)
 
     print 'All stored.'

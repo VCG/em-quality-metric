@@ -74,7 +74,12 @@ class WebServer:
 
     splitted_request = handler.request.uri.split('/')
 
-    # print splitted_request
+    #
+    # store
+    #
+    if splitted_request[2] == 'store':
+      self._manager.store()
+
 
     if splitted_request[1] == 'merge':
 

@@ -387,6 +387,8 @@ class UITools(object):
 
     label1_neighbors = Util.grab_neighbors(rhoana_copy, label1)
 
+    # print 'neighbors', label1_neighbors
+
     for l_neighbor in label1_neighbors:
       # recalculate new neighbors of l
 
@@ -395,13 +397,32 @@ class UITools(object):
           continue
 
       prediction = Patch.grab_group_test_and_unify(cnn, input_image, input_prob, rhoana_copy, label1, l_neighbor, oversampling=oversampling)
-      # print superL, l_neighbor
+
       new_m[label1,l_neighbor] = prediction
       new_m[l_neighbor,label1] = prediction
 
 
-
     return new_m, rhoana_copy
+
+  @staticmethod
+  def add_new_label_to_M(cnn, m, input_image, input_prob, input_rhoana, label1):
+
+    # calculate neighbors of the two new labels
+    label1_neighbors = Util.grab_neighbors(input_rhoana, label1)
+    for l_neighbor in label1_neighbors:
+      # recalculate new neighbors of l
+
+      if l_neighbor == 0:
+          # ignore neighbor zero
+          continue
+
+      prediction = Patch.grab_group_test_and_unify(cnn, input_image, input_prob, input_rhoana, label1, l_neighbor, oversampling=False)
+
+      m[label1,l_neighbor] = prediction
+      m[l_neighbor,label1] = prediction
+
+    return m
+
 
   @staticmethod
   def skip_split(m, label1, label2):
@@ -415,14 +436,14 @@ class UITools(object):
 
   @staticmethod
   def VI(gt, seg):
-      total_vi = 0
+      # total_vi = 0
       slice_vi = []    
       for i in range(10):
           current_vi = Util.vi(gt[i].astype(np.int64), seg[i].astype(np.int64))
-          total_vi += current_vi
+          # total_vi += current_vi
           slice_vi.append(current_vi)
-      total_vi /= 10
-      return total_vi, slice_vi
+      # total_vi /= 10
+      return np.mean(slice_vi), np.median(slice_vi), slice_vi
 
 
 

@@ -1,4 +1,6 @@
 import json
+import mahotas as mh
+import numpy as np
 import os
 import socket
 import time
@@ -7,6 +9,11 @@ import tornado.gen
 import tornado.web
 import tornado.websocket
 import urllib
+import StringIO
+
+from uitools import UITools
+
+from PIL import Image
 
 
 class WebServerHandler(tornado.web.RequestHandler):
@@ -24,11 +31,13 @@ class WebServerHandler(tornado.web.RequestHandler):
 
 class WebServer:
 
-  def __init__( self, port=2001 ):
+  def __init__( self, manager, port=2001 ):
     '''
     '''
-    # self._manager = manager
+    self._manager = manager
     self._port = port
+
+    self._image_function_cache = []
 
   def start( self ):
     '''
@@ -45,6 +54,8 @@ class WebServer:
       # (r'/metainfo/(.*)', WebServerHandler, dict(webserver=self)),
       # (r'/data/(.*)', WebServerHandler, dict(webserver=self)),
       # (r'/query/(.*)', WebServerHandler, dict(webserver=self)),
+      (r'/merge/(.*)', WebServerHandler, dict(webserver=self)),
+      (r'/split/(.*)', WebServerHandler, dict(webserver=self)),
       (r'/(.*)', tornado.web.StaticFileHandler, dict(path=os.path.join(os.path.dirname(__file__),'web'), default_filename='index.html'))
   
     ])
@@ -63,64 +74,79 @@ class WebServer:
 
     splitted_request = handler.request.uri.split('/')
 
-    path = '/'.join(splitted_request[2:])
+    # print splitted_request
 
-    if splitted_request[1] == 'tree':
+    if splitted_request[1] == 'merge':
 
-      data_path = path.split('?')[0]
-      parameters = path.split('?')[1].split('&')
-      
-      if parameters[0][0] != '_':
-        data_path = urllib.unquote(parameters[0].split('=')[1])
-      else:
-        data_path = None
-      
-      content = json.dumps(self._manager.get_tree(data_path))
+      image_function = self._manager.get_merge_error_image
+      correction_function = self._manager.correct_merge
+      error = self._manager.get_next_merge_error()
+      correction_count = len(error[3])
+
+    elif splitted_request[1] == 'split':
+
+      image_function = self._manager.get_split_error_image
+      correction_function = self._manager.correct_split
+      error = self._manager.get_next_split_error()
+      correction_count = 1
+
+
+    if splitted_request[2] == 'get_correction_count':
+
+      self._image_function_cache = []
+      for i in range(correction_count):
+        border_before, border_after, labels_before, labels_after, slice_overview = image_function(error, i)
+        self._image_function_cache.append([border_before, border_after, labels_before, labels_after, slice_overview])
+    
+      content = json.dumps({'correction_count': correction_count})
       content_type = 'text/html'
 
-    elif splitted_request[1] == 'type':
+    elif splitted_request[2] == 'correct':
 
-      content = self._manager.check_path_type(path)
-      if not content:
-        content = 'NULL'
+      clicked_correction = splitted_request[3];
+      new_mode = correction_function(clicked_correction);
+
+      content = json.dumps({'mode':new_mode})
       content_type = 'text/html'
 
-    elif splitted_request[1] == 'content':
 
-      content = json.dumps(self._manager.get_content(path))
-      content_type = 'text/html'
 
-    elif splitted_request[1] == 'metainfo':
+        
 
-      content = self._manager.get_meta_info(path)
-      content_type = 'text/html'
+    if not content:
 
-    elif splitted_request[1] == 'query':
+      image = np.zeros((1,1))
+      number = int(splitted_request[3])
+      border_before, border_after, labels_before, labels_after, slice_overview = self._image_function_cache[number]
 
-      path = '/'.join(splitted_request[2:-1])
+      if splitted_request[2] == 'slice_overview':
 
-      tile = splitted_request[-1].split('-')
+        image = slice_overview
 
-      i = int(tile[0])
-      j = int(tile[1])
+      elif splitted_request[2] == 'current':
 
-      content = self._manager.get_query(path, i, j)
-      content_type = 'text/html'
+        image = border_before
 
-    elif splitted_request[1] == 'data':
+      elif splitted_request[2] == 'current_labels':
 
-      # this is for actual image data
-      path = '/'.join(splitted_request[2:-1])
+        image = labels_before
 
-      tile = splitted_request[-1].split('-')
+      elif splitted_request[2] == 'correction':
 
-      x = int(tile[1])
-      y = int(tile[2])
-      z = int(tile[3])
-      w = int(tile[0])
+        image = border_after
 
-      content = self._manager.get_image(path, x, y, z, w)
-      content_type = 'image/jpeg'
+      elif splitted_request[2] == 'correction_labels':
+        
+        image = labels_after
+
+      if image.shape[0]!=1:
+
+        image = Image.fromarray(image, 'RGBA')
+        output = StringIO.StringIO()
+        image.save(output, 'PNG')
+
+        content_type = 'image/png'
+        content = output.getvalue()
 
 
 

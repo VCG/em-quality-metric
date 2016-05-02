@@ -2,45 +2,62 @@
   <head>
     <title>MLProof</title>
     <link rel="stylesheet" type="text/css" href="style.css">
+
+    <script type='text/javascript' src='lib/jquery.min.js'></script>
+    <script type='text/javascript' src='mlproof.js'></script>
+
+    <script type='text/javascript'>
+
+      window.onload = function() {
+        MLProof.start();
+      };
+
+    </script>
   </head>
   <body>
 
-  <div id='spliterror'>
-    <div id='slice_preview'><img src='gfx/slice_preview.png'></div>
+    <div id='loading'><br><br><br><br><br><br><br><center>Loading..</center></div>
+
+    <div id='slice_overview'><img src='gfx/slice_preview.png'></div>
 
     <div id='centered'>
 
-      <div class='correction' id='borders'>
+      <div class='correction' id='current'>
       Current<br>
-        <img src='gfx/borders.png'>
+        <img class='borders' src='gfx/borders.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
     
       <div class='correction' id='correction1'>
       Correction 1<br>
-        <img src='gfx/correction.png'>
+        <img class='borders' src='gfx/correction.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
 
       <div class='correction' id='correction2'>
       Correction 2<br>
-        <img src='gfx/correction.png'>
+        <img class='borders' src='gfx/correction.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
 
       <div class='correction' id='correction3'>
       Correction 3<br>
-        <img src='gfx/correction.png'>
+        <img class='borders' src='gfx/correction.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
 
       <div class='correction' id='correction4'>
       Correction 4<br>
-        <img src='gfx/correction.png'>
+        <img class='borders' src='gfx/correction.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
 
       <div class='correction' id='correction5'>
       Correction 5<br>
-        <img src='gfx/correction.png'>
+        <img class='borders' src='gfx/correction.png'><br><br>
+        <img class='labels' src='gfx/labels.png'>
       </div>
 
-    </div>
   </div>
 
   </body>

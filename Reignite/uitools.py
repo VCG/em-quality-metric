@@ -169,6 +169,13 @@ class UITools(object):
     e[:,:,2] = input_image[:]
     e[:,:,3] = 255    
 
+    f = np.zeros((input_image.shape[0],input_image.shape[1],4), dtype=np.uint8)
+    f[:,:,0] = input_image[:]
+    f[:,:,1] = input_image[:]
+    f[:,:,2] = input_image[:]
+    f[:,:,3] = 255    
+    f[input_rhoana == labels[0]] = (200,0,0,255)
+    f[input_rhoana == labels[1]] = (200,0,0,255)
 
 
     thresholded_rhoana = Util.view_labels(input_rhoana, labels, crop=False, return_it=True)
@@ -197,7 +204,11 @@ class UITools(object):
     e[cropped_rhoana_bbox[0], cropped_rhoana_bbox[2]:cropped_rhoana_bbox[3]] = (255,255,0,255)
     e[cropped_rhoana_bbox[1], cropped_rhoana_bbox[2]:cropped_rhoana_bbox[3]] = (255,255,0,255)
 
-    return cropped_image, cropped_labels, cropped_borders, cropped_binary_border, e
+    slice_overview = e
+
+    cropped_binary_labels = Util.crop_by_bbox(f, cropped_rhoana_bbox)
+
+    return cropped_image, cropped_labels, cropped_borders, cropped_binary_border, cropped_binary_labels, slice_overview
 
 
 
@@ -227,7 +238,26 @@ class UITools(object):
     c[:,:,3] = 255        
     c[binary_border == 1] = (0,255,0,255)
 
-    # border[binary==0] = 0
+    e = np.zeros((input_image.shape[0],input_image.shape[1],4), dtype=np.uint8)
+    e[:,:,0] = input_image[:]
+    e[:,:,1] = input_image[:]
+    e[:,:,2] = input_image[:]
+    e[:,:,3] = 255        
+
+    f = np.zeros((input_image.shape[0],input_image.shape[1],4), dtype=np.uint8)
+    f[:,:,0] = input_image[:]
+    f[:,:,1] = input_image[:]
+    f[:,:,2] = input_image[:]
+    f[:,:,3] = 255  
+    f[binary == 1] = (0,255,0,255)
+
+    g = np.zeros((input_image.shape[0],input_image.shape[1],4), dtype=np.uint8)
+    g[:,:,0] = input_image[:]
+    g[:,:,1] = input_image[:]
+    g[:,:,2] = input_image[:]
+    g[:,:,3] = 255  
+
+    border[binary==0] = 0
 
     b[border == 1] = (255,0,0,255)
     b[binary_border == 1] = (0,255,0,255)
@@ -247,7 +277,20 @@ class UITools(object):
     result += corrected_binary.astype(np.uint64)
     cropped_result = Util.crop_by_bbox(corrected_binary, binary_bbox)
 
-    return cropped_image, cropped_binary_border, cropped_combined_border, cropped_border_only, cropped_result, result
+    g[corrected_binary_original==2] = (255,0,0,255)
+    g[corrected_binary_original==1] = (0,255,0,255)
+    cropped_fusion = Util.crop_by_bbox(g, binary_bbox)
+
+    e[binary_bbox[0]:binary_bbox[1], binary_bbox[2]] = (255,255,0,255)
+    e[binary_bbox[0]:binary_bbox[1], binary_bbox[3]] = (255,255,0,255)
+    e[binary_bbox[0], binary_bbox[2]:binary_bbox[3]] = (255,255,0,255)
+    e[binary_bbox[1], binary_bbox[2]:binary_bbox[3]] = (255,255,0,255)  
+
+    sliceoverview = e
+
+    cropped_binary = Util.crop_by_bbox(f, binary_bbox)
+
+    return cropped_image, cropped_binary_border, cropped_combined_border, cropped_border_only, cropped_result, result, sliceoverview, cropped_binary, cropped_fusion
 
   @staticmethod
   def remove_border_mess(e):
@@ -360,6 +403,7 @@ class UITools(object):
 
     return new_m, rhoana_copy
 
+  @staticmethod
   def skip_split(m, label1, label2):
 
     new_m = np.array(m)
@@ -369,8 +413,16 @@ class UITools(object):
 
     return new_m
 
-
-
+  @staticmethod
+  def VI(gt, seg):
+      total_vi = 0
+      slice_vi = []    
+      for i in range(10):
+          current_vi = Util.vi(gt[i].astype(np.int64), seg[i].astype(np.int64))
+          total_vi += current_vi
+          slice_vi.append(current_vi)
+      total_vi /= 10
+      return total_vi, slice_vi
 
 
 

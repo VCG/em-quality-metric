@@ -2,6 +2,7 @@
 import os
 import sys
 
+from manager import Manager
 from webserver import WebServer
 
 CACHE = {}
@@ -15,8 +16,8 @@ if __name__ == "__main__":
   if len(sys.argv) == 2:
     port = sys.argv[1]
 
-  # manager = _mbeam.Manager()
-  # manager.start()
+  manager = Manager()
+  manager.start()
 
-  webserver = WebServer(port)
+  webserver = WebServer(manager, port)
   webserver.start()

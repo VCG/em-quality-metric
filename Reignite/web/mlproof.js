@@ -10,7 +10,7 @@ MLProof.start = function() {
     MLProof.CORRECTIONS = [];
 
     MLProof.EXPERIMENT_START_TIME = 0;
-    MLProof.EXPERIMENT_END_TIME = 30*60*1000;
+    MLProof.EXPERIMENT_END_TIME = 60*1000;
 
     // onclick handler for corrections
     $('.correction').on('click', MLProof.apply_correction);
@@ -107,7 +107,7 @@ MLProof.apply_correction = function(e) {
 
     var contents = $.ajax({
         type: "GET",
-        url: MLProof.MODE+'/correct/'+clicked_correction+'/'+Math.random()
+        url: MLProof.MODE+'/correct/'+clicked_correction+'/'+(t1-MLProof.t0)+'/'+Math.random()
     }).done(function() {
         var response = JSON.parse(contents.responseText);
         MLProof.MODE = response['mode'];

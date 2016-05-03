@@ -107,7 +107,7 @@ MLProof.apply_correction = function(e) {
 
     var contents = $.ajax({
         type: "GET",
-        url: MLProof.MODE+'/correct/'+clicked_correction+'/'+Math.random()
+        url: MLProof.MODE+'/correct/'+clicked_correction+'/'+(t1-MLProof.t0)+'/'+Math.random()
     }).done(function() {
         var response = JSON.parse(contents.responseText);
         MLProof.MODE = response['mode'];

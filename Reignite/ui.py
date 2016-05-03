@@ -10,8 +10,8 @@ from webserver import WebServer
 #
 if __name__ == "__main__":
 
-  port = 2001
-  output_dir = sys.argv[1]
+  port = int(sys.argv[1])
+  output_dir = sys.argv[2]
   # if len(sys.argv) >= 2:
 
   #   port = sys.argv[2]

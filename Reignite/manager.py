@@ -14,6 +14,9 @@ class Manager(object):
     self._output_path = os.path.join(self._data_path, 'ui_out', output_dir)
     self._merge_errors = None
 
+    self._corrections = []
+    self._correction_times = []    
+
   def start( self ):
     '''
     '''
@@ -111,7 +114,7 @@ class Manager(object):
     input_rhoana = self._input_rhoana
 
     if not clicked_correction == 'current':
-        clicked_correction = int(clicked_correction)
+        clicked_correction = int(clicked_correction)-1
 
         #
         # correct the merge
@@ -200,6 +203,14 @@ class Manager(object):
     # store our changed rhoana
     with open(os.path.join(self._output_path, 'ui_results.p'), 'wb') as f:
         pickle.dump(self._input_rhoana, f)
+
+    # store the times
+    with open(os.path.join(self._output_path, 'times.p'), 'wb') as f:
+        pickle.dump(self._correction_times, f)
+
+    # store the corrections
+    with open(os.path.join(self._output_path, 'corrections.p'), 'wb') as f:
+        pickle.dump(self._corrections, f)
 
     print 'All stored.'
 

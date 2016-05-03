@@ -108,8 +108,14 @@ class WebServer:
 
     elif splitted_request[2] == 'correct':
 
-      clicked_correction = splitted_request[3];
-      new_mode = correction_function(clicked_correction);
+      clicked_correction = splitted_request[3]
+      time_used = splitted_request[4]
+      self._manager._corrections.append([splitted_request[1], clicked_correction])
+      self._manager._correction_times.append(time_used)
+      new_mode = correction_function(clicked_correction)
+
+      print self._manager._corrections
+      print self._manager._correction_times
 
       content = json.dumps({'mode':new_mode})
       content_type = 'text/html'

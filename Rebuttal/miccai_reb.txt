@@ -1,0 +1,43 @@
+We would like to thank the reviewers for their constructive comments and have tried to address all of them.
+
+Since our initial submission, we increased the training data size for our network configuration to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yielded significantly better results on our now also larger test data (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx). We report the new scores as follows:
+  now: train. loss. 0.045, test loss. 0.064, precision/recall 0.9, f1-score 0.9, test acc. 90.12%
+  previously: train. loss 0.37, test loss 0.39, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
+
+As suggested by the reviewers, we performed a real-world user experiment with 1 novice user and 2 expert users. This allowed us to revise our initially estimated timing for each correction (before 15secs, now 5seconds - the avg. time within 4 samples was 3.2 seconds). Each user tested the initial reported network as well as our re-trained network to recommend segmentation errors in randomized order. Accordingly, we therefore update our evaluation results (median VI scores) as follows:
+Our simulated user YYY (new network), YYY (old network, new timing), initially ZZZ
+Novice YYY, ZZZ
+Expert 1 YYY, ZZZ
+Expert 2 YYY, ZZZ
+Random Recommendations YYY (new network), YYY (old network, new timing), initially ZZZ
+Automatic Corrections YYY (new network), YYY (old network, new timing), initially ZZZ
+
+To strengthen our evaluation as kindly pointed out by the reviewers, we ran automatic corrections as described in the initial submission on a larger dataset (XXX). This yielded the following results:
+
+
+
+In addition, please allow us to respond to the following reviewers' comments:
+
+ - Variation of information as a measure for segmentation quality
+
+ - Noisy results: The images used are indeed very noisy with significant noise level differences per slice. Our interactive experiments are performed on the most representative subvolume in terms of object size distribution.
+ 
+ - Only 2D: We agree with the reviewers that additional 3D information would help the network to classify. However, the workflow in our institute requires an expensive alignment process to be able to obtain aligned volumetric data. Our segmentation pipeline works without alignment so that our work allows immediate proofreading after segmentation.
+
+ - Random recommendations all non errors?
+ 
+
+ - Counter-intuitive user results from the Dojo experiment: We compare our results against previously published results from Haehn et al. They report that they chose completely unexperienced participants in their study to perform an "extreme case" simulation. As far as we understand, the best Dojo user was an outlier and most participants made the segmentation worse due to no background knowledge.
+
+
+
+ - Typos, report patch size: We accidentally forget to report our patch size of 75 x 75 pixels which covers around 80% of all boundaries in our segmentation output. Sampling the boundaries multiple times, as reported previously, ensures that we also cover larger boundaries.
+
+ - Total # of errors
+
+ 
+
+Further, we provide the following anonymous website with updated figures and a video demonstrating our approach: http://anonmiccaiproofreading.github.com/
+
+
+Finally, we would like to thank all reviewers again for the constructive and very important feedback.

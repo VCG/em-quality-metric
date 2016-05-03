@@ -74,6 +74,7 @@ class Fixer(object):
     # error_rate = 0
 
     for i in range(120):
+    # while (matrix.max() >= .5):
 
       # print i
 
@@ -95,6 +96,8 @@ class Fixer(object):
               superL = l
               superN = n
               superMax = max_in_slice
+
+              # print 'found', l, n, slice, max_in_slice
           
       if randomize:
         superMax = .5
@@ -125,6 +128,7 @@ class Fixer(object):
       last_vi = Util.vi(slice_with_max_value, groundtruth)
 
       # now we merge
+      # print 'merging', superL, superN
       slice_with_max_value[slice_with_max_value == superN] = superL
 
 
@@ -193,6 +197,7 @@ class Fixer(object):
 
           prediction = Patch.grab_group_test_and_unify(cnn, image, prob, slice_with_max_value, superL, l_neighbor, oversampling=oversampling)
           # print superL, l_neighbor
+          # print 'new pred', prediction
           bigM[superSlice][superL,l_neighbor] = prediction
           bigM[superSlice][l_neighbor,superL] = prediction
 

@@ -10,12 +10,16 @@ import mahotas as mh
 import numpy as np
 import time
 import skimage.measure
+import cPickle as pickle
 
 class UITools(object):
 
   @staticmethod
   def load_cnn():
-    cnn = CNN('mine_merged_large_7', 'patches_7th', ['image', 'prob', 'merged_array', 'larger_border_overlap'])
+    # cnn = CNN('mine_merged_large_7', 'patches_7th', ['image', 'prob', 'merged_array', 'larger_border_overlap'])
+
+    with open('/home/d/nets/MergeNet_larger_border_overlap_cylinder1_dataaugmentation/net.p', 'rb') as f:
+        cnn = pickle.load(f)
 
     return cnn
 

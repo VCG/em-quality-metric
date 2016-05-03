@@ -485,9 +485,9 @@ class Patch(object):
 
           output = {}
           output['id'] = str(uuid.uuid4())
-          output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+          output['image'] = image[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1] / 255.
           
-          output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
+          output['prob'] = prob[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1] / 255.
           # output['binary1'] = binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1]
           output['binary'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
           output['binary1'] = label1#binary_mask[bbox[0]:bbox[1] + 1, bbox[2]:bbox[3] + 1].astype(np.bool)
@@ -609,9 +609,13 @@ class Patch(object):
     for i,patch in enumerate(patches):
 
       if cnn:
-        pred = cnn.test_patch(patch)
-        if pred < pred_threshold:
-          continue
+        # pred = cnn.test_patch(patch)
+        pred = cnn.predict_proba({'image_input': patch['image'].reshape(-1,1,75,75),
+                   'prob_input': patch['prob'].reshape(-1,1,75,75),
+                   'binary_input': patch['merged_array'].reshape(-1,1,75,75),
+                   'border_input': patch['border_overlap'].reshape(-1,1,75,75)})[0][1]  
+        # if pred < pred_threshold:
+        #   continue
 
       else:
         pred = '?'
@@ -729,7 +733,12 @@ class Patch(object):
 
     for i,patch in enumerate(patches):
 
-      pred = cnn.test_patch(patch)
+      # pred = cnn.test_patch(patch)
+      # cnn.predict
+      pred = cnn.predict_proba({'image_input': patch['image'].reshape(-1,1,75,75),
+           'prob_input': patch['prob'].reshape(-1,1,75,75),
+           'binary_input': patch['merged_array'].reshape(-1,1,75,75),
+           'border_input': patch['border_overlap'].reshape(-1,1,75,75)})[0][1]
       results.append(pred)
 
     if stats:
@@ -793,7 +802,11 @@ class Patch(object):
                       # valid border point
                       valid_border_points += 1
 
-          pred = cnn.test_patch(p)
+          # pred = cnn.test_patch(p)
+          pred = cnn.predict_proba({'image_input': p['image'].reshape(-1,1,75,75),
+           'prob_input': p['prob'].reshape(-1,1,75,75),
+           'binary_input': p['merged_array'].reshape(-1,1,75,75),
+           'border_input': p['border_overlap'].reshape(-1,1,75,75)})[0][1]
           weights.append(valid_border_points)
           predictions.append(pred)
 

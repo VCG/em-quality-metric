@@ -35,7 +35,7 @@ class Manager(object):
   def load_merge_errors(self):
     '''
     '''
-    with open(os.path.join(self._data_path, 'merges2.p'), 'rb') as f:
+    with open(os.path.join(self._data_path, 'merges_new_cnn.p'), 'rb') as f:
       merge_errors = pickle.load(f)
 
     return sorted(merge_errors, key=lambda x: x[3], reverse=False)
@@ -43,7 +43,7 @@ class Manager(object):
   def load_split_errors(self):
     '''
     '''
-    with open(os.path.join(self._data_path, 'bigM.p'), 'rb') as f:
+    with open(os.path.join(self._data_path, 'bigM_new_cnn.p'), 'rb') as f:
       bigM = pickle.load(f)
 
     return bigM
@@ -111,13 +111,14 @@ class Manager(object):
     input_rhoana = self._input_rhoana
 
     if not clicked_correction == 'current':
-        clicked_correction = int(clicked_correction)
+        clicked_correction = int(clicked_correction)-1
 
         #
         # correct the merge
         #
         merge_error = self._merge_errors[0]
         number = clicked_correction
+        print number, len(merge_error[3])
         border = merge_error[3][number][1]
         z = merge_error[0]
         label = merge_error[1]

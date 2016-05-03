@@ -10,7 +10,7 @@ MLProof.start = function() {
     MLProof.CORRECTIONS = [];
 
     MLProof.EXPERIMENT_START_TIME = 0;
-    MLProof.EXPERIMENT_END_TIME = 60*1000;
+    MLProof.EXPERIMENT_END_TIME = 30*60*1000;
 
     // onclick handler for corrections
     $('.correction').on('click', MLProof.apply_correction);

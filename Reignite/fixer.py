@@ -64,7 +64,7 @@ class Fixer(object):
 
     bigM = np.array(bigM)
     # for development, we just need the matrix and the patches
-    return bigM, None, global_patches
+    # return bigM, None, global_patches
 
     out_volume = np.array(volume_segmentation)
     # return out_volume
@@ -73,7 +73,7 @@ class Fixer(object):
     bad_fix_counter = 0
     # error_rate = 0
 
-    for i in range(120):
+    for i in range(360):
     # while (matrix.max() >= .5):
 
       # print i

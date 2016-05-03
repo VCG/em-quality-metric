@@ -121,7 +121,6 @@ class Manager(object):
         #
         merge_error = self._merge_errors[0]
         number = clicked_correction
-        print number, len(merge_error[3])
         border = merge_error[3][number][1]
         z = merge_error[0]
         label = merge_error[1]

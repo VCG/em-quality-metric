@@ -1,14 +1,18 @@
 We thank the reviewers for their constructive comments.
 
-There were two major issues:
+We will fix all minor issues. There were two major issues:
 1) the size and singularity of our dataset, and 
-2) the lack of a real user. Since our initial submission, we have improved both.
+2) the lack of a real user.
 
-1) We increased the training data for our network configuration to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yielded significantly better results on our (now also larger) test data. (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx). We report the new scores as follows:
- - now: train. loss. 0.045, test loss. 0.064, precision/recall 0.9, f1-score 0.9, test acc. 90.12%
- - previously: train. loss 0.37, test loss 0.39, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
 
-2) Instead of our simulated user, we have now performed a real-world user experiment with 1 novice user and 2 expert users. In simulation, we budgeted 15 seconds for each split/merge error decision. Having measured real-world performance, the avg. time within 4 samples (JT: what does this mean?) was 3.2 seconds. Hence, our new simulation budget is 5 seconds. Each user tested the initially reported network as well as our new re-trained network to recommend segmentation errors in randomized order. Our updated results (median VI scores) are as follows:
+Since our initial submission, we have improved both.
+
+1) We have added a new dataset (blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015). This increases the training data for our network configuration to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yielded significantly better results on our (now also larger) test data (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx):
+
+ - New data: train. loss. 0.045, test loss. 0.064, precision/recall 0.9, f1-score 0.9, test acc. 90.12%
+ - Existing: train. loss 0.37, test loss 0.39, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
+
+2) We have performed a real-world user experiment with 1 novice and 2 expert users, where our system recommended errors with suggested corrections. Each user tested both our existing network and our new re-trained network. New median VI scores:
 
 Our simulated user YYY (new network), YYY (old network, new timing), initially ZZZ
 Novice YYY, ZZZ
@@ -16,6 +20,10 @@ Expert 1 YYY, ZZZ
 Expert 2 YYY, ZZZ
 Random Recommendations YYY (new network), YYY (old network, new timing), initially ZZZ
 Automatic Corrections YYY (new network), YYY (old network, new timing), initially ZZZ
+
+Notes:
+- In simulation, we previously budgeted 15 seconds for each split/merge error decision. However, from real-world user performance, the avg. time within 4 samples (JT: what does this mean?) was 3.2 seconds. Hence, our new simulation budget is 5 seconds.
+
 
 To strengthen our evaluation as kindly pointed out by the reviewers, we ran automatic corrections as described in the initial submission on a larger dataset (XXX). This yielded the following results:
 
@@ -34,15 +42,14 @@ In addition, please allow us to respond to the following reviewers' comments:
 
  - Counter-intuitive user results from the Dojo experiment: We compare our results against previously published results from Haehn et al. They report that they chose completely unexperienced participants in their study to perform an "extreme case" simulation. As far as we understand, the best Dojo user was an outlier and most participants made the segmentation worse due to no background knowledge.
 
-
-
- - Typos, report patch size: We accidentally forget to report our patch size of 75 x 75 pixels which covers around 80% of all boundaries in our segmentation output. Sampling the boundaries multiple times, as reported previously, ensures that we also cover larger boundaries.
-
  - Total # of errors
 
- 
 
-Further, we provide the following anonymous website with updated figures and a video demonstrating our approach: http://anonmiccaiproofreading.github.com/
+- Typos, report patch size: We accidentally forget to report our patch size of 75 x 75 pixels which covers around 80% of all boundaries in our segmentation output. Sampling the boundaries multiple times, as reported previously, ensures that we also cover larger boundaries.
+(typos, patch size = 75x75, covers ~80% of all boundaries in our segmentation output). 
+
+
+For your convenience, we have added updated plots representing the new rebuttal numbers to an anonymous website, along with a small video demonstrating the user study interface: http://anonmiccaiproofreading.github.com/
 
 
 Thanks!

@@ -1,28 +1,25 @@
 We thank the reviewers for their constructive comments.
-We will fix all minor issues. 
+We will fix all minor issues.
 
 There were two major issues:
-1) the size and singularity of our dataset
-2) the lack of a real user
+1) The size and singularity of our dataset
+2) The lack of a real user
 
-Since our initial submission, we have improved both and recomputed our results.
+Since our initial submission, we have corrected both issues and recomputed our results.
 
-1) We have added a new dataset (blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015). This increases the training data for our network configuration to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yielded significantly better results on our (now also larger) test data (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx):
+1) We have added a new dataset (blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015). This increases the training data for our CNN to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yields better results on our (now also larger) test data (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx):
 
- - New data: train. loss. 0.045, test loss. 0.064, precision/recall 0.9, f1-score 0.9, test acc. 90.12%
- - Existing: train. loss 0.37, test loss 0.39, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
+- New data: train. loss 0.045, test loss 0.064, precision/recall 0.90, f1-score 0.90, test acc. 90.12%
+- Existing: train. loss 0.370, test loss 0.390, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
 
 
-2) We have performed a real-world user experiment with 1 novice and 2 expert users, where our system recommended errors with suggested corrections on an interactive website. Each user tested both our existing network and our new re-trained network (3 users x 2 trials; avg. num. error decisions = ~450 per trial in 30 minutes). 
+2) We have performed a user experiment with 1 novice and 2 expert users, where our system recommended errors with suggested corrections on an interactive website. Each user tested both our existing network and our new re-trained network (3 users x 2 trials; avg. num. error decisions = ~450 per trial in 30 minutes). 
 
-For our simulated user, we budgeted 15 seconds for each split/merge error decision. However, from real-world user performance, the avg. time was ~3.2 seconds. Hence, our new simulation budget is 5 seconds.
+For our simulated user, we budgeted 15 seconds for each split/merge error decision. However, from real-world user performance, the avg. time was ~3.2 seconds. Hence, our new budget is 5 seconds.
 
-JT: error rate for the real users?
 
- 
 
-Updated results:
-================
+Updated results (test on existing data):
  
 Our simulated user YYY (new network), YYY (old network, new timing), initially ZZZ
 Novice YYY, ZZZ
@@ -31,36 +28,36 @@ Expert 2 YYY, ZZZ
 Random Recommendations YYY (new network), YYY (old network, new timing), initially ZZZ
 Automatic Corrections YYY (new network), YYY (old network, new timing), initially ZZZ
 
-
 New median VI scores:
 
+- R2: Total # of errors: how many splits / merges?
+
+New results:
+
+To strengthen our evaluation, we also tested against the new larger dataset (blue 3-cylinder volume):
+
+Automatic Corrections: YYY (new network), YYY (old network, new timing)
 
 
-To strengthen our evaluation as kindly pointed out by the reviewers, we ran automatic corrections as described in the initial submission on a larger dataset (XXX). This yielded the following results:
 
+Specific reviewer comments:
 
+- R1: VI unintuitive as segmentation quality measure: True; we will include examples in supplementary material to help demonstrate.
 
-In addition, please allow us to respond to the following reviewers' comments:
-
- - Variation of information as a measure for segmentation quality
-
- - Noisy results: The images used are indeed very noisy with significant noise level differences per slice. Our interactive experiments are performed on the most representative subvolume in terms of object size distribution.
+- R1: Noisy results: Our new experiments on larger data present clearer performance indications, as you suggest.
  
- - Only 2D: We agree with the reviewers that additional 3D information would help the network to classify. However, the workflow in our institute requires an expensive alignment process to be able to obtain aligned volumetric data. Our segmentation pipeline works without alignment so that our work allows immediate proofreading after segmentation.
+- R1: Only 2D: 3D information _would_ help the network to classify, though typically this requires expensive slice alignment to obtain volumetric data. In 2D, segmentation proofreading can begin immediately without alignment.
 
- - Random recommendations all non errors?
+- R1: Random recommendations: all non errors?
  
+- R1: Counter-intuitive user results (Dojo experiment):
+Perhaps it is more understandable given that Haehn et al. chose completely unexperienced participants in their Dojo study to simulate an "extreme case". We took this to imply a 'crowdsourcing' scenario where potentially thousands of people tackle large proofreading tasks. In this case, our improved approach may hold merit.
 
- - Counter-intuitive user results from the Dojo experiment: We compare our results against previously published results from Haehn et al. They report that they chose completely unexperienced participants in their study to perform an "extreme case" simulation. As far as we understand, the best Dojo user was an outlier and most participants made the segmentation worse due to no background knowledge.
-
- - Total # of errors
-
-
-- Typos, report patch size: We accidentally forget to report our patch size of 75 x 75 pixels which covers around 80% of all boundaries in our segmentation output. Sampling the boundaries multiple times, as reported previously, ensures that we also cover larger boundaries.
-(typos, patch size = 75x75, covers ~80% of all boundaries in our segmentation output). 
+- R2: Patch size: 75x75, defined to cover ~80% of all boundaries in our segmentation output.
 
 
-For your convenience, we have added updated plots representing the new rebuttal numbers to an anonymous website, along with a small video demonstrating the user study interface: http://anonmiccaiproofreading.github.com/
+
+For your convenience, we have added updated plots representing the new results in this rebuttal to an anonymous website, along with a small video demonstrating the user study interface: http://anonmiccaiproofreading.github.com/
 
 
 Thanks!

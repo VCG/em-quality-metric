@@ -1,18 +1,26 @@
 We thank the reviewers for their constructive comments.
 
-We will fix all minor issues. There were two major issues:
-1) the size and singularity of our dataset, and 
-2) the lack of a real user.
+We will fix all minor issues. 
+There were two major issues:
+1) the lack of a real user
+2) the size and singularity of our dataset
 
+Since our initial submission, we have improved both and recomputed results.
 
-Since our initial submission, we have improved both.
+1) We have performed a real-world user experiment with 1 novice and 2 expert users, where our system recommended errors with suggested corrections in an interactive website. Each user tested both our existing network and our new re-trained network (3 users x 2 trials; avg. num. error decisions = ~450 per trial in 30 minutes). 
+
+For our simulated user, we budgeted 15 seconds for each split/merge error decision. However, from real-world user performance, the avg. time was ~3.2 seconds. Hence, our new simulation budget is 5 seconds.
+
+JT: error rate for the real users?
+
+New median VI scores:
+
 
 1) We have added a new dataset (blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015). This increases the training data for our network configuration to 2048 x 2048 x 250 voxels (vx) with 266088 correct regions and 266088 split error patches (previously 1024 x 1024 x 70 vx, 79828 correct and 79828 error patches). This yielded significantly better results on our (now also larger) test data (2048 x 2048 x 50 vx, previously 1024 x 1024 x 5 vx):
 
  - New data: train. loss. 0.045, test loss. 0.064, precision/recall 0.9, f1-score 0.9, test acc. 90.12%
  - Existing: train. loss 0.37, test loss 0.39, precision/recall 0.83, f1-score 0.83, test acc. 83.02%
 
-2) We have performed a real-world user experiment with 1 novice and 2 expert users, where our system recommended errors with suggested corrections. Each user tested both our existing network and our new re-trained network. New median VI scores:
 
 Our simulated user YYY (new network), YYY (old network, new timing), initially ZZZ
 Novice YYY, ZZZ
@@ -22,7 +30,7 @@ Random Recommendations YYY (new network), YYY (old network, new timing), initial
 Automatic Corrections YYY (new network), YYY (old network, new timing), initially ZZZ
 
 Notes:
-- In simulation, we previously budgeted 15 seconds for each split/merge error decision. However, from real-world user performance, the avg. time within 4 samples (JT: what does this mean?) was 3.2 seconds. Hence, our new simulation budget is 5 seconds.
+- 
 
 
 To strengthen our evaluation as kindly pointed out by the reviewers, we ran automatic corrections as described in the initial submission on a larger dataset (XXX). This yielded the following results:

@@ -6,28 +6,28 @@ There were two major issues:
 
 We have corrected both issues and recomputed our results.
 
-1) We have added a new dataset: blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015. This increases the training data for our CNN to 2048x2048x250 voxels (vx) with 266k correct regions and 266k split error patches (previously 1024x1024x70 vx, 80k correct and 80k error patches). This yields better results on our (now also larger) test data (2048x2048x50 vx, previously 1024x1024x5 vx):
+1) We have added a new dataset: blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015. This increases the training data for our CNN to 2048x2048x250 voxels (vx) with 266k correct and 266k error patches (previously 1024x1024x70 vx, 80k correct and 80k error patches). This yields better results on our (now also larger) test data (2048x2048x50 vx, previously 1024x1024x5 vx):
 
 Results - previous in ():
-Train. loss 0.045 (0.37) 
+Train. loss 0.045 (0.37)
 Test loss 0.064 (0.39)
 Precision/recall 0.90 (0.83)
 f1-score 0.90 (0.83)
 test acc. 90.12% (83.02%)
 
-2) We implemented and evaluated our method in an interactive website with 1 novice and 2 expert users, where our system recommended errors with suggested corrections. Each user tested both our previous network and our new re-trained network (3 users x 2 trials; avg. num. decisions = ~450 per trial in 30 minutes).
+2) We evaluated our method in an interactive website with 1 novice and 2 expert users, where our system recommended errors with suggested corrections. Each user tested both our previous network and our new re-trained network (3 users x 2 trials; avg. num. decisions = ~450 per trial in 30 minutes).
 
-For our simulated user, we used 15 seconds per split/merge error decision. From real-world user performance, avg. decision time was ~3.2 seconds. Hence, we now use 5 seconds.
+For our simulated user, we used 15 sec. per error decision. From real-world user performance, avg. decision time was ~3.2 sec.; thus, we now use 5 sec.
 
 Updated results on the small test volume (median Variation of Information, lower is better):
-New network (NN); old network (ON).
+New network (NN); old network (ON)
 
-Novice: NN: 0.443. ON: 0.424
-Expert 1: NN: 0.415. ON: 0.43
-Expert 2: NN: 0.396. ON: 0.407
-Our simulated user: NN: 0.394, ON: 0.402 (5 sec.), initially 0.426
-Random Recommendations: NN: 0.477. ON: 0.472 (5 sec.), initially 0.475
-Automatic Corrections: NN: 0.498. ON: 0.536
+Novice:   NN: 0.443 ON: 0.424
+Expert 1: NN: 0.415 ON: 0.430
+Expert 2: NN: 0.396 ON: 0.407
+Our simulated user:     NN: 0.394 ON: 0.402 (5 sec.), initially 0.426
+Random Recommendations: NN: 0.477 ON: 0.472 (5 sec.), initially 0.475
+Automatic Corrections:  NN: 0.498 ON: 0.536
 
 To strengthen our evaluation, we also tested against the new large dataset:
 
@@ -35,27 +35,29 @@ Automatic Segmentation: 0.485
 Automatic Corrections: NN: 0.434. ON: 0.479
 
 
-Specific reviewer comments:
+Specific comments:
 
-- R1: VI unintuitive as segmentation quality measure: 
+- R1: VI unintuitive as segmentation quality measure:
 While unintuitive, VI is a common metric to evaluates region segmentation performance (Nunez-Iglesias et al. 2013). We will include example VI changes in supplemental to help.
 
-- R1: Noisy results: 
+- R1: Noisy results:
 Our new experiments on larger data present clearer and improved performance.
- 
-- R1: Only 2D: 
+
+- R1: Only 2D:
 3D information _would_ help the network to classify, but this requires expensive slice alignment to obtain volumetric data. In 2D, segmentation proofreading can begin immediately without alignment which is crucial for large scale high throughput multiSEM data.
 
 - R1: Random recommendations: all non errors?
 TO ANSWER.
- 
+
 - R1: Counter-intuitive user results (Dojo experiment):
 Haehn et al. chose completely inexperienced participants in their Dojo study to simulate an "extreme case". We took this to imply a 'crowdsourcing' scenario where potentially thousands of people tackle large proofreading tasks. Here, our approach may help.
 
-- R2: Patch size: 
+- R2: Patch size:
 75x75, defined to cover ~80% of all boundaries in our segmentation output.
 
-- R2: Total # of errors: how many splits / merges?
+- R2: Total # of errors:
+Splits: XX
+Merges: XX
 
 
 For your convenience, we have uploaded updated plots for the new results to an anonymous website, along with a user study interface video: http://anonmiccai2016.github.io/

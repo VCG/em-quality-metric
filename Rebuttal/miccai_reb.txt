@@ -21,12 +21,13 @@ For our simulated user, we budgeted 15 seconds for each split/merge error decisi
 
 Updated results (test on existing data):
  
-Our simulated user YYY (new network), YYY (old network, new timing), initially ZZZ
-Novice YYY, ZZZ
-Expert 1 YYY, ZZZ
-Expert 2 YYY, ZZZ
-Random Recommendations YYY (new network), YYY (old network, new timing), initially ZZZ
-Automatic Corrections YYY (new network), YYY (old network, new timing), initially ZZZ
+All results are reported as median Variation of Information (the lower the better):
+Novice 0.443 (new network), 0.424 (old network)
+Expert 1 0.415 (new network), 0.43 (old network)
+Expert 2 0.396 (new network), 0.407 (old network)
+Our simulated user 0.394 (new network), 0.402 (old network, new timing), initially 0.426
+Random Recommendations 0.477 (new network), 0.472 (old network, new timing), initially 0.475
+Automatic Corrections 0.498 (new network), 0.536 (old network)
 
 New median VI scores:
 
@@ -36,7 +37,8 @@ New results:
 
 To strengthen our evaluation, we also tested against the new larger dataset (blue 3-cylinder volume):
 
-Automatic Corrections: YYY (new network), YYY (old network, new timing)
+Automatic Segmentation: 0.485
+Automatic Corrections: 0.434 (new network), 0.479 (old network)
 
 
 
@@ -46,7 +48,7 @@ Specific reviewer comments:
 
 - R1: Noisy results: Our new experiments on larger data present clearer performance indications, as you suggest.
  
-- R1: Only 2D: 3D information _would_ help the network to classify, though typically this requires expensive slice alignment to obtain volumetric data. In 2D, segmentation proofreading can begin immediately without alignment.
+- R1: Only 2D: 3D information _would_ help the network to classify, though typically this requires expensive slice alignment to obtain volumetric data. In 2D, segmentation proofreading can begin immediately without alignment which is crucial in our processing pipeline.
 
 - R1: Random recommendations: all non errors?
  
@@ -57,7 +59,7 @@ Perhaps it is more understandable given that Haehn et al. chose completely unexp
 
 
 
-For your convenience, we have added updated plots representing the new results in this rebuttal to an anonymous website, along with a small video demonstrating the user study interface: http://anonmiccaiproofreading.github.com/
+For your convenience, we have added updated plots representing the new results in this rebuttal to an anonymous website, along with a small video demonstrating the user study interface as well as example corrections: http://anonmiccai2016.github.io/
 
 
 Thanks!

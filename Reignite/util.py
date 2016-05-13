@@ -301,7 +301,7 @@ class Util(object):
     return framed
 
   @staticmethod
-  def view(array,color=True,large=False,crop=False, text=None):
+  def view(array,color=True,large=False,crop=False, text=None, filename=''):
     
     if large:
       figsize = (10,10)
@@ -317,12 +317,15 @@ class Util(object):
       text = '\n\n\n'+str(text)
       fig.text(0,1,text)      
 
+    
+
 
     if color:
       plt.imshow(Util.colorize(array), picker=True)
     else:
       plt.imshow(array, cmap='gray', picker=True)
 
+    plt.savefig('/tmp/'+filename)
 
   @staticmethod
   def propagate_max_overlap(rhoana, gold):
@@ -442,7 +445,7 @@ class Util(object):
           Util.view(state_array, large=True)
 
         elif best == -1 and i % snapshot_interval == 0:
-          Util.view(state_array, large=False)
+          Util.view(state_array, large=True)
 
 
   @staticmethod

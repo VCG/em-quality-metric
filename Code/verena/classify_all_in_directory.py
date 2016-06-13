@@ -21,7 +21,7 @@ if __name__ == '__main__':
     import mahotas
     import matplotlib.pyplot as plt
     #CPU
-    pathPrefix = '/Users/d/Projects/dojo_data_vis2014/images/'#'/Volumes/DATA1/EMQM_DATA/ac3x75/input/'
+    pathPrefix = '/home/d/data/ac4_test/image/'
     img_search_string_grayImages = pathPrefix + '*.tif'
     img_files = sorted( glob.glob( img_search_string_grayImages ) )
 

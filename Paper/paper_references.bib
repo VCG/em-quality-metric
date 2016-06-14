@@ -1040,3 +1040,57 @@ abstract = "Abstract The study of neural circuit reconstruction, i.e., connectom
           year = {2012},
   howpublished = {Deep Learning and Unsupervised Feature Learning NIPS 2012 Workshop}
 }
+
+
+@article{uzunbas,
+title = "An efficient conditional random field approach for automatic and interactive neuron segmentation ",
+journal = "Medical Image Analysis ",
+volume = "27",
+number = "",
+pages = "31 - 44",
+year = "2016",
+note = "Discrete Graphical Models in Biomedical Image Analysis ",
+issn = "1361-8415",
+doi = "http://dx.doi.org/10.1016/j.media.2015.06.003",
+url = "http://www.sciencedirect.com/science/article/pii/S1361841515000900",
+author = "Mustafa Gokhan Uzunbas and Chao Chen and Dimitris Metaxas",
+keywords = "Conditional random field",
+keywords = "Watershed",
+keywords = "EM segmentation",
+keywords = "User interaction ",
+abstract = "Abstract We present a new graphical-model-based method for automatic and interactive segmentation of neuron structures from electron microscopy (EM) images. For automated reconstruction, our learning based model selects a collection of nodes from a hierarchical merging tree as the proposed segmentation. More specifically, this is achieved by training a conditional random field (CRF) whose underlying graph is the watershed merging tree. The maximum a posteriori (MAP) prediction of the \{CRF\} is the output segmentation. Our results are comparable to the results of state-of-the-art methods. Furthermore, both the inference and the training are very efficient as the graph is tree-structured. The problem of neuron segmentation requires extremely high segmentation quality. Therefore, proofreading, namely, interactively correcting mistakes of the automatic method, is a necessary module in the pipeline. Based on our efficient tree-structured inference algorithm, we develop an interactive segmentation framework which only selects locations where the model is uncertain for a user to proofread. The uncertainty is measured by the marginals of the graphical model. Only giving a limited number of choices makes the user interaction very efficient. Based on user corrections, our framework modifies the merging tree and thus improves the segmentation globally. "
+}
+
+@article{karimov_guided_volume_editing,
+  title =      "Guided Volume Editing based on Histogram Dissimilarity",
+  author =     "Alexey Karimov and Gabriel Mistelbauer and Thomas Auzinger
+               and Stefan Bruckner",
+  year =       "2015",
+  abstract =   "Segmentation of volumetric data is an important part of many
+               analysis pipelines, but frequently requires manual
+               inspection and correction. While plenty of volume editing
+               techniques exist, it remains cumbersome and error-prone for
+               the user to find and select appropriate regions for editing.
+               We propose an approach to improve volume editing by
+               detecting potential segmentation defects while considering
+               the underlying structure of the object of interest. Our
+               method is based on a novel histogram dissimilarity measure
+               between individual regions, derived from structural
+               information extracted from the initial segmentation. Based
+               on this information, our interactive system guides the user
+               towards potential defects, provides integrated tools for
+               their inspection, and automatically generates suggestions
+               for their resolution. We demonstrate that our approach can
+               reduce interaction effort and supports the user in a
+               comprehensive investigation for high-quality segmentations. ",
+  month =      may,
+  journal =    "Computer Graphics Forum",
+  number =     "3",
+  volume =     "34",
+  pages =      "91--100",
+  keywords =   "Edge and feature detection, Image Processing and Computer
+               Vision, Computer Graphics, Display algorithms, Picture/Image
+               Generation, Segmentation, Methodology and Techniques,
+               Interaction techniques",
+  URL =        "https://www.cg.tuwien.ac.at/research/publications/2015/karimov-2015-HD/",
+}

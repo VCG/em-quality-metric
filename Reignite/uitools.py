@@ -178,8 +178,8 @@ class UITools(object):
     f[:,:,1] = input_image[:]
     f[:,:,2] = input_image[:]
     f[:,:,3] = 255    
-    f[input_rhoana == labels[0]] = (200,0,0,255)
-    f[input_rhoana == labels[1]] = (200,0,0,255)
+    f[input_rhoana == labels[0]] = (255,0,0,255)
+    f[input_rhoana == labels[1]] = (255,0,0,255)
 
 
     thresholded_rhoana = Util.view_labels(input_rhoana, labels, crop=False, return_it=True)
@@ -191,12 +191,12 @@ class UITools(object):
     cropped_rhoana_bbox = mh.bbox(cropped_rhoana_dilated)
     binary_border = mh.labeled.borders(thresholded_rhoana.astype(np.bool))
 
-    b[input_rhoana == labels[0]] = (200,0,0,255)
-    c[mh.labeled.borders(Util.threshold(input_rhoana, labels[0])) == 1] = (200,0,0,255)
-    d[binary_border == 1] = (200,0,0,255)
+    b[input_rhoana == labels[0]] = (255,0,0,255)
+    c[mh.labeled.borders(Util.threshold(input_rhoana, labels[0])) == 1] = (255,0,0,255)
+    d[binary_border == 1] = (255,0,0,255)
     if len(labels) > 1:
-      b[input_rhoana == labels[1]] = (0,200,0,255)
-      c[mh.labeled.borders(Util.threshold(input_rhoana, labels[1])) == 1] = (0,200,0,255)
+      b[input_rhoana == labels[1]] = (0,255,0,255)
+      c[mh.labeled.borders(Util.threshold(input_rhoana, labels[1])) == 1] = (0,255,0,255)
 
     cropped_image = Util.crop_by_bbox(input_image, cropped_rhoana_bbox)
     cropped_labels = Util.crop_by_bbox(b, cropped_rhoana_bbox)

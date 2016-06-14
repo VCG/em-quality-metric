@@ -1,0 +1,64 @@
+Thank you for your constructive comments. We will fix all minor issues.
+
+There were two major issues:
+1) The size and singularity of our dataset
+2) The lack of a real user
+
+We have corrected both issues and recomputed our results.
+
+1) We have added a new dataset: blue 3-cylinder volume - Kasthuri et al. Cell 162, 2015. This increases the training data for our CNN to 2048x2048x250 voxels (vx) with 266k correct + 266k error patches (previously 1024x1024x70 vx, 80k correct + 80k error patches). This yields better results on new larger test data (2048x2048x50 vx, before 1024x1024x5 vx) - while keeping the CNN architecture the same:
+
+Results - previous in ():
+Train. loss 0.045 (0.37) 
+Test loss 0.064 (0.39)
+Precision/recall 0.90 (0.83)
+f1-score 0.90 (0.83)
+Test acc. 90.12% (83.02%)
+
+2) We evaluated our method with 1 novice and 2 experts, where our system suggested corrections. Each user tested both our old as well as our new network (3 users x 2 trials; avg. num. decisions = ~450 per trial in 30 minutes).
+
+Previously, we estimated 15 seconds per correction. From real-world user performance, avg. decision time was ~3.2 seconds. Hence, we now use 5 seconds.
+
+Updated results (median Variation of Information (VI), lower is better):
+New network (NN); old network (ON).
+
+Automatic segmentation: 0.476
+Novice: NN: 0.443. ON: 0.424
+Expert 1: NN: 0.415. ON: 0.43
+Expert 2: NN: 0.396. ON: 0.407
+Our simulated user: NN: 0.394, ON: 0.402 (5 sec.), initially 0.426
+Random Recommendations: NN: 0.477, ON: 0.472 (5 sec.), initially 0.475
+Automatic Corrections: NN: 0.498. ON: 0.536
+
+We also automatically tested on 2048x2048x50 vx (simulated user not completed yet):
+
+Automatic segmentation: 0.485
+Automatic Corrections: NN: 0.434. ON: 0.479
+
+
+Specific comments:
+
+- R1: VI unintuitive as segmentation quality measure: 
+While unintuitive, VI is a common metric to evaluate region segmentation performance (Nunez-Iglesias et al. 2013). We will include example VI changes in supplemental to help.
+
+- R1: Noisy results: 
+Our new experiments on larger data now present clearer and improved performance.
+ 
+- R1: Only 2D: 
+3D information _would_ help the network to classify, but this requires expensive slice alignment to obtain volumetric data. In 2D, proofreading can begin after segmentation completes.
+
+- R1: Random recommendations: all non errors?
+~80% of all presented splits did not need to be corrected. Hence, the median VI did not decrease by much.
+ 
+- R1: Counter-intuitive user results (Dojo experiment):
+Haehn et al. chose completely inexperienced participants in their Dojo study to simulate an "extreme case". For a ‘crowdsourcing’ scenario, this seems realistic.
+
+- R2: Patch size: 
+75x75 pixels, defined to cover ~80% of all boundaries in our segmentation output.
+
+- R2: Total # of errors: 
+18 merge and 842 split errors were predicted in our small dataset.
+
+
+For your convenience, we have uploaded updated plots for the new results to an anonymous website: http://anonmiccai2016.github.io
+

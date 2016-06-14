@@ -1,0 +1,278 @@
+
+
+------------------------ Submission 165, Review 1 ------------------------
+
+Title: Recommending Segmentation Errors and Corrections for Proofreading in Connectomics
+
+
+Revised Overall Recommendation
+
+   Sufficient - Probably accept
+
+Opinion after the rebuttal
+
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   The paper presents a method to speed up proofreading of segmentations of
+   EM stacks for connectomics.
+   It is based on a relatively simple CNN classifier used as a split error
+   detector. The classifier uses multiple information sources around the
+   considered pixel on the boundary, namely the image data, the boundary
+   probabilities, and the binary mask of the regions at both sides of the
+   boundary, merged.
+
+   I would not consider the approach "highly innovative"; it would fall more
+   into the "interesting applications of existing methods" category.
+   However, the experimental validation, despite being promising, is not
+   very solid or convincing yet.
+
+Strengths
+
+   - The topic is definitely important and relevant.
+   - Designining sophisticated automation to help work by human proofreaders
+   is an interesting task with a lot of potential applications.
+   - The idea for reusing the same classifier for split error detection and
+   merge error detection is nice and interesting
+
+Weaknesses
+
+   - the evaluation approach, despite being carefully designed, is not very
+   informative; in particular, we have no intuitive idea about how the
+   Variation of Information numbers tranlsate to segmentation quality.  The
+   data seems very noisy and it's difficult to be convinced that the results
+   are not mostly due to chance.
+
+   - the approach only operates in 2D. This is not a dealbreaker, but it is
+   clear that 3D information would be very helpful to improve the
+   performance
+
+Constructive Feedback
+
+   - The approach should be validated on a larger dataset: hopefully, this
+   will yield clearer performance indications.  Moreover, some examples of
+   corrections on real data could be provided (maybe as supplementary
+   material).
+
+   Other comments:
+   - it's interesting that the authors experimented with "Random
+   Recommendations" and "Automatic Corrections".  It's not clear why the
+   former seems to have exactly the same performance as Automatic
+   Segmentation.  Maybe the Random Recommendations were all non-errors?
+   - it's counterintuitive that the average Dojo user made the segmentation
+   worse, and the best user only marginally better.  This also limits the
+   credibility of the experimental validation.
+
+
+------------------------ Submission 165, Review 2 ------------------------
+
+Title: Recommending Segmentation Errors and Corrections for Proofreading in Connectomics
+
+
+Revised Overall Recommendation
+
+   Sufficient - Probably accept
+
+Opinion after the rebuttal
+
+   The authors have shown in the rebuttal, that they have extensively
+   improved their experimental evaluation due to reviewers's concerns. While
+   in principle this would justify giving a better recommendation, I will
+   still stick with my original recommendation of probably accept. The
+   reason is, that the new experiments and results are a major revision
+   compared to the initially submitted work, and it would be unfair compared
+   to other MICCAI contributions to overly take such a major rewrite into
+   account.
+
+   However, the potential of this work and the interest to the MICCAI
+   community has been confirmed by the rebuttal and the outlook on even
+   better results.
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   In this work the problem of correcting errors from automatic segmentation
+   in huge data sets like when analyzing terabytes of connectomics data is
+   dealt with. Since cell segmentation is never 100% accurate, proofreading
+   and efficient error correction are of huge importance for connectomics
+   research. High practical relevance of this problem justifies that even
+   small steps ahead in error correction are important in this context. The
+   proposed work classifies segmentation errors into split errors and merge
+   errors, and proposes as its main contribution a convolutional neural
+   network, that learns from annotated erroneous segmentation data how to
+   generate proposals for segmentation errors from previously unseen
+   segmented data. Quantitative evaluation indicates that this approach may
+   be able to make the proofreading process more efficient.
+
+Strengths
+
+   Up to my knowledge, the presented idea of using annotated segmentation
+   errors for training a CNN to generate error proposals is original, and a
+   neat idea as well, making it worthwhile to present to the MICCAI
+   community. As already stated above, even small improvements in
+   segmentation error correction may have a large impact on practical
+   proofreading given huge data sets like those available in connectomics
+   research. The presentation of the paper is very clear and it is good to
+   read and in almost every part well understandable. The technical
+   contribution in terms of the proposed CNN architecture is rather
+   straight-forward, however the main contribution lies in the idea how
+   split and merge errors are modelled, therefore this is not an issue for
+   criticism. From the technical point of view, I am enthusiastic about the
+   proposed approach.
+
+Weaknesses
+
+   My main concern of this work lies in the quantitative evaluation that
+   should demonstrate the benefits of the user correction via the concept of
+   a simulated user. The introduction of this simulated user is not
+   motivated very well. The simulated user does not need to visually find
+   errors and manually correct them. Instead after getting a stream of error
+   corrections to assess, the simulated user corrects those by !knowing! how
+   it influences the variation of information measure, thus making perfect
+   decisions. So the simulated user simulates an expert, i.e. a perfect user
+   doing corrections, which is not practically available. Therefore, this
+   experiment gives a best-case result, and given the small improvement
+   towards the automatic segmentation as well as the large overlap in the
+   error distributions with most other versions (especially with the random
+   recommendations) of the experiment as shown in Fig. 3, it has to be
+   assumed that real-world improvement is not very large. Unfortunately,
+   there is no experiment showing an expert doing the proposed segmentation
+   error corrections. Such an experiment would have improved a lot the
+   empirical outcome of this work. The authors also do not mention a
+   potential problem of their approach, which is the expert users getting
+   lazy when doing corrections and just trusting the errors proposed by the
+   CNN, without scanning other areas, that may be wrong but which have not
+   been detected by the error correction. So the newly introduced
+   corrections would be diminished due to the additionally overlooked ones.
+
+Constructive Feedback
+
+   Most importantly, this work should at least contain in its evaluation one
+   real user, who actually uses the error correction proposals for doing the
+   real-world correction work.
+
+   There are also a number of minor issues, that are missing at the moment.
+   In the abstract VI is used but not defined. A typo on page 2, third
+   paragraph (Given an membrane). From the method description it is not
+   clear how large the context windows for training the CNN are. Were
+   different patch sizes evaluated? How was their size defined? In Table 1,
+   the training and test losses are not very interesting to report. Instead,
+   in addition to the test accuracy, precision, recall and f1-score should
+   be reported, to indicate if more split or more merge errors are
+   occurring. Figure 3 should also indicate significance of differences
+   between groups. Also, how many errors were assessed in total to generate
+   Figure 3? In section 4, second line "as a post-process through split and
+   merge errors" is probably what the authors meant.
+
+   Overall, this method gives a neat idea that has the potential for more
+   efficient processing of huge segmented data sets, however, some problems
+   remain in the evaluation, that need to be improved to empirically
+   validate the claimed hypothesis.
+
+
+------------------------ Submission 165, Review 3 ------------------------
+
+Title: Recommending Segmentation Errors and Corrections for Proofreading in Connectomics
+
+
+Revised Overall Recommendation
+
+   Short of acceptable - Probably Reject
+
+Opinion after the rebuttal
+
+
+Expertise
+
+   Expert
+
+Summary, Contributions and Significance
+
+   This paper uses post-segmentation learning to identify locations where
+   errors are likely and presents them to the user for correction. Their
+   method considers both merge errors and split errors. To evaluate there is
+   a split error, they look at 10 equal spaced points around each boundary
+   and determine if that boundary should be present or not. They use
+   variation of information to make this determination during training. If
+   the variation of information goes down by removing a given boundary, then
+   the removal of that boundary is considered part of the ground truth set
+   for training. For the merge errors, they split each region into a number
+   of smaller regions and use seeds placed apart from each other to
+   determine possible boundaries. They again use the variation of
+   information to determine if the new boundaries should be included or not.
+   Once this truth set has been built, they use a convolutional neural
+   network to train on this result. During testing, the users are presented
+   with the proposed correction determined from this learning to accept or
+   reject the change. In this paper they tested on 5 2d images from the 2013
+   ISBI challenge training set and evaluated using variation of information.
+   They used a simulated user for their testing and were able to produce
+   results that improve on what the automatic segmentation only method was
+   able to achieve. Their results were compared to DOJO, another
+   proofreading software, and compares favorably for scores with an
+   estimated time savings.
+
+Strengths
+
+   The use of a training method to detect errors is novel.
+
+   The way false merges are treated is novel
+
+
+Weaknesses
+
+   The results are evaluated on a very small set (5 images) and with a
+   simulated user rather than a real user.
+
+   Timing for each correction assessment is taken as an estimate of what the
+   authors think someone should be able to do without relying on any data of
+   what it took for a user to even to a partial set. This might change the
+   results of the paper.
+
+Constructive Feedback
+
+   Have a real user validate the system on a small number of images. Get
+   real timing results from this as well.
+
+   For simulated results , you can set aside a larger number of images for
+   testing.
+
+
+------------------------ Submission 165, Review 4 ------------------------
+
+Title: Recommending Segmentation Errors and Corrections for Proofreading in Connectomics
+
+Reviewer:           Secondary
+
+Comments to the authors
+
+
+
+------------------------ Submission 165, Review 5 ------------------------
+
+Title: Recommending Segmentation Errors and Corrections for Proofreading in Connectomics
+
+Reviewer:           Secondary
+
+Comments to the authors
+
+   As pointed out by all reviewers, this paper presents a nice idea and an
+   interesting application. However, I also agree with the reviewers that
+   the work presents limited methodological novelty and not a very strong
+   validation (small set, not real user, no timing, difficult to interpret
+   results). Nevertheless, the authors have performed a very serious
+   revision addressing criticism of the reviewers (extended the data set,
+   added expert observers) and demonstrated interesting results. However,
+   this would be characterized as a major revision and it would require
+   substantial rewriting to include the additional experiments and results
+   in the manuscript.
+   The paper is also very application specific and might therefore be more
+   suitable for one of the workshops.
+
+

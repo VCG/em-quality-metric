@@ -11,6 +11,174 @@ class Fixer(object):
 
 
   @staticmethod
+  def splits_global_from_M(cnn, bigM, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), hours=.5, randomize=False, error_rate=0, oversampling=False):
+
+
+    bigM = np.array(bigM)
+    # for development, we just need the matrix and the patches
+    # return bigM, None, global_patches
+
+    out_volume = np.array(volume_segmentation)
+    # return out_volume
+
+    good_fix_counter = 0
+    bad_fix_counter = 0
+    fixes = []
+    # error_rate = 0
+    vi_s_30mins = []
+
+    for i in range(17280): # 24 h
+    # while (matrix.max() >= .5):
+
+      # print i
+
+      if (i>0 and i % 360):
+        # compute VI every 30 minutes
+        vi_after_30_min = []
+        for ov in range(out_volume.shape[0]):
+            vi = Util.vi(volume_groundtruth[ov], out_volume[ov])
+            vi_after_30_min.append(vi)
+        vi_s_30mins.append(vi_after_30_min)
+
+      superMax = -np.inf
+      superL = -1
+      superN = -1
+      superSlice = -1
+
+      #
+      for slice in range(bigM.shape[0]):
+          max_in_slice = bigM[slice].max()
+          
+          largest_indices = np.where(bigM[slice]==max_in_slice)
+          # print largest_indices
+          if max_in_slice > superMax:
+              
+              # found a new large one
+              l,n = largest_indices[0][0], largest_indices[1][0]
+              superSlice = slice
+              superL = l
+              superN = n
+              superMax = max_in_slice
+
+              # print 'found', l, n, slice, max_in_slice
+          
+      if randomize:
+        superMax = .5
+        superSlice = np.random.choice(bigM.shape[0])
+
+        uniqueIDs = np.where(bigM[superSlice] > -3)
+
+        superL = np.random.choice(uniqueIDs[0])
+
+        neighbors = Util.grab_neighbors(volume_segmentation[superSlice], superL)
+        superN = np.random.choice(neighbors)
+
+
+      # print 'merging', superL, superN, 'in slice ', superSlice, 'with', superMax
+
+      image = volume[superSlice]
+      prob = volume_prob[superSlice]
+      # segmentation = volume_segmentation[slice]
+      groundtruth = volume_groundtruth[superSlice]
+
+
+
+      ### now we have a new max
+      slice_with_max_value = np.array(out_volume[superSlice])
+
+      rollback_slice_with_max_value = np.array(slice_with_max_value)
+
+      last_vi = Util.vi(slice_with_max_value, groundtruth)
+
+      # now we merge
+      # print 'merging', superL, superN
+      slice_with_max_value[slice_with_max_value == superN] = superL
+
+
+    
+      after_merge_vi = Util.vi(slice_with_max_value, groundtruth)
+      # after_merge_ed = Util.vi(segmentation_copy, groundtruth)
+      
+      # pxlsize = len(np.where(before_segmentation_copy == l)[0])
+      # pxlsize2 = len(np.where(before_segmentation_copy == n)[0])
+
+
+      good_fix = False
+      # print '-'*80
+      # print 'vi diff', last_vi-after_merge_vi
+      if after_merge_vi < last_vi:
+        #
+        # this is a good fix
+        #
+        good_fix = True
+        good_fix_counter += 1
+        # Util.view_labels(before_segmentation_copy,[l,n], crop=False)
+        # print 'good fix'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2   
+        fixes.append('Good')       
+      else:
+        #
+        # this is a bad fix
+        #
+        good_fix = False
+        bad_fix_counter += 1
+        fixes.append('Bad')
+        # print 'bad fix, excluding it..'
+        # print 'size first label:', pxlsize
+        # print 'size second label:',pxlsize2
+
+      #
+      #
+      # ERROR RATE
+      #
+      rnd = random.random()
+
+      if rnd < error_rate:
+        # no matter what, this is a user error
+        good_fix = not good_fix
+        print 'user err'
+      
+
+
+
+      # reset all l,n entries
+      bigM[superSlice][superL,superN] = -2
+      bigM[superSlice][superN,superL] = -2
+
+      if good_fix:
+
+
+        # re-calculate neighbors
+        # grab new neighbors of l
+        l_neighbors = Util.grab_neighbors(slice_with_max_value, superL)
+
+        for l_neighbor in l_neighbors:
+          # recalculate new neighbors of l
+
+          if l_neighbor == 0:
+              # ignore neighbor zero
+              continue
+
+          prediction = Patch.grab_group_test_and_unify(cnn, image, prob, slice_with_max_value, superL, l_neighbor, oversampling=oversampling)
+          # print superL, l_neighbor
+          # print 'new pred', prediction
+          bigM[superSlice][superL,l_neighbor] = prediction
+          bigM[superSlice][l_neighbor,superL] = prediction
+
+      else:
+
+        slice_with_max_value = rollback_slice_with_max_value
+
+
+
+
+      out_volume[superSlice] = slice_with_max_value
+
+    return bigM, out_volume, fixes, vi_s_30mins
+
+
+  @staticmethod
   def splits_global(cnn, volume, volume_prob, volume_segmentation, volume_groundtruth=np.zeros((1,1)), randomize=False, error_rate=0, sureness_threshold=0., smallest_first=False, oversampling=False, verbose=True, max=10000):
 
     bigM = []
@@ -64,7 +232,7 @@ class Fixer(object):
 
     bigM = np.array(bigM)
     # for development, we just need the matrix and the patches
-    return bigM, None, global_patches
+    # return bigM, None, global_patches
 
     out_volume = np.array(volume_segmentation)
     # return out_volume
@@ -73,7 +241,7 @@ class Fixer(object):
     bad_fix_counter = 0
     # error_rate = 0
 
-    for i in range(120):
+    for i in range(360):
 
       # print i
 
@@ -446,7 +614,7 @@ class Fixer(object):
       M[l,n] = prediction
       M[n,l] = prediction
       
-
+    orig_M = np.array(M)
     #
     # NOW the matrix is filled and we can start merging
     #
@@ -539,7 +707,7 @@ class Fixer(object):
     if verbose:
       print 'Merge loop finished in', time.time()-t0, 'seconds.'
 
-    if groundtruth.shape[0]>1:
+    if groundtruth.shape[0]>1 and len(vi_s)>0:
       min_vi_index = vi_s.index(np.min(vi_s))
       if verbose:
         print 'Before VI:', before_vi
@@ -547,7 +715,7 @@ class Fixer(object):
         print 'Sureness threshold:', surenesses[min_vi_index]
 
 
-    return vi_s, merge_pairs, surenesses
+    return vi_s, merge_pairs, surenesses, orig_M
 
 
 

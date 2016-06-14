@@ -442,7 +442,7 @@ class Util(object):
           Util.view(state_array, large=True)
 
         elif best == -1 and i % snapshot_interval == 0:
-          Util.view(state_array, large=False)
+          Util.view(state_array, large=True)
 
 
   @staticmethod

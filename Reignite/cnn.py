@@ -90,8 +90,8 @@ class CNN(object):
         path = self._PATCH_PATH
 
 
-      test = np.load(self._PATCH_PATH+'test.npz')
-      test_targets = np.load(self._PATCH_PATH+'test_targets.npz')
+      test = np.load(path+'test.npz')
+      test_targets = np.load(path+'test_targets.npz')
 
       #
       # we also normalize all binary images as uint8
@@ -104,7 +104,7 @@ class CNN(object):
         'dyn_obj': test['dyn_obj'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'dyn_bnd': test['dyn_bnd'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
         'border_overlap': test['border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255,
-        'larger_border_overlap': test['larger_border_overlaps'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
+        'larger_border_overlap': test['larger_border_overlap'].astype(np.uint8).reshape(-1, 1, self._patch_size[0], self._patch_size[1])*255
       }
 
       test_targets = test_targets['targets'].astype(np.uint8)

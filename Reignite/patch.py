@@ -509,6 +509,9 @@ class Patch(object):
           # output['borders_labeled'] = borders_labeled[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]]
           # output['borders_w_center'] = borders_w_center[border_bbox[0]:border_bbox[1], border_bbox[2]:border_bbox[3]]
 
+
+
+
           patches.append(output)
           
 
